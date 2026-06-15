@@ -617,7 +617,7 @@ button { cursor: pointer; font-family: inherit; }
 .builder-topbar-hint { font-size: 12px; color: #aaa; flex: 1; text-align: center; }
 .builder-topbar-right { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
 .builder-user { font-size: 13px; color: #777; }
-.builder-btn-ghost { background: none; border: 1.5px solid #ddd; border-radius: 6px; padding: 5px 12px; font-size: 13px; color: #555; transition: .2s; }
+.builder-btn-ghost { background: none; border: 1.5px solid #ddd; border-radius: 6px; padding: 5px 12px; font-size: 13px; color: #555; transition: .2s; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
 .builder-btn-ghost:hover { border-color: #0099CC; color: #0099CC; }
 .builder-save-btn-top {
   background: #0099CC; color: #fff; border: none;
