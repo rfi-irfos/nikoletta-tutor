@@ -18,15 +18,15 @@ export function useContent(lang: Lang) {
     // browser/CDN-cached content.json. content.json is tiny; freshness wins.
     const bust = `?t=${Date.now()}`
     ;(async () => {
-      const file = lang === 'de' ? 'content.de.json' : 'content.json'
+      const file = lang === 'en' ? 'content.json' : `content.${lang}.json`
       try {
         const res = await fetch(`${import.meta.env.BASE_URL}${file}${bust}`, { cache: 'no-store' })
         if (!res.ok) throw new Error('missing')
         const data = await res.json()
         if (!cancelled) setContent(data)
       } catch {
-        // DE missing -> fall back to EN file, then to bundled default
-        if (lang === 'de') {
+        // Non-EN missing -> fall back to EN file, then to bundled default
+        if (lang !== 'en') {
           try {
             const res = await fetch(`${import.meta.env.BASE_URL}content.json${bust}`, { cache: 'no-store' })
             if (res.ok) { const d = await res.json(); if (!cancelled) setContent(d); return }

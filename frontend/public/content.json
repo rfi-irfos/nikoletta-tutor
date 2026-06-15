@@ -52,7 +52,7 @@
   },
   "products": {
     "title": "Sessions & Packages",
-    "tabs": ["Alle", "English", "Deutsch", "Exam Prep", "Hungarian", "Kids"],
+    "tabs": ["All", "English", "Deutsch", "Exam Prep", "Hungarian", "Kids"],
     "items": [
       {
         "id": "p1",

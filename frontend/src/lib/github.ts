@@ -10,9 +10,9 @@ const UPLOADS_DIR   = (import.meta.env.VITE_GH_UPLOADS_DIR   as string) || 'publ
 
 export { CONTENT_PATH, UPLOADS_DIR }
 
-// content.json (en) -> content.de.json (de). Keeps both languages side by side.
+// content.json (en) -> content.de.json / content.hu.json. Languages side by side.
 export function contentPathFor(lang: string): string {
-  return lang === 'de' ? CONTENT_PATH.replace(/\.json$/, '.de.json') : CONTENT_PATH
+  return lang === 'en' ? CONTENT_PATH : CONTENT_PATH.replace(/\.json$/, `.${lang}.json`)
 }
 
 function headers() {

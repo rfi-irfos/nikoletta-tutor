@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 
-export type Lang = 'en' | 'de'
+export type Lang = 'en' | 'de' | 'hu'
 
 const KEY = 'niki-lang'
 const EVENT = 'niki:lang-change'
@@ -8,9 +8,12 @@ const EVENT = 'niki:lang-change'
 function detect(): Lang {
   try {
     const saved = localStorage.getItem(KEY)
-    if (saved === 'en' || saved === 'de') return saved
+    if (saved === 'en' || saved === 'de' || saved === 'hu') return saved
   } catch { /* localStorage unavailable */ }
-  return navigator.language?.toLowerCase().startsWith('de') ? 'de' : 'en'
+  const nav = navigator.language?.toLowerCase() ?? ''
+  if (nav.startsWith('de')) return 'de'
+  if (nav.startsWith('hu')) return 'hu'
+  return 'en'
 }
 
 // ── UI chrome strings (everything not stored in content.json) ─────────────────
@@ -59,6 +62,28 @@ export const UI = {
     bookTrial: 'Kostenlose Probestunde buchen',
     whatsIncluded: 'Das ist dabei',
     close: 'Schließen',
+  },
+  hu: {
+    namePlaceholder: 'A neved',
+    emailPlaceholder: 'E-mail cím',
+    phonePlaceholder: 'Telefon (nem kötelező)',
+    messagePlaceholder: 'Írd le röviden, min szeretnél dolgozni',
+    send: 'Üzenet küldése',
+    sending: 'Küldés folyamatban',
+    success: 'Köszönöm! Niki hamarosan jelentkezik nálad.',
+    error: 'Valami hiba történt. Kérlek, próbáld újra, vagy írj közvetlenül e-mailt.',
+    colorScheme: 'Színséma',
+    openMenu: 'Menü megnyitása',
+    closeMenu: 'Menü bezárása',
+    language: 'Nyelv',
+    themeLight: 'Világos',
+    themeDark: 'Sötét',
+    themeContrast: 'Magas kontraszt',
+    mailSubject: 'Próbaóra iránti érdeklődés tőle:',
+    book: 'Érdeklődés',
+    bookTrial: 'Ingyenes próbaóra foglalása',
+    whatsIncluded: 'Mit tartalmaz',
+    close: 'Bezárás',
   },
 } as const
 

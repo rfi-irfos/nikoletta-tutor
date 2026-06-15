@@ -333,6 +333,7 @@ function ThemeToggle({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) =
 const LANG_OPTS: { id: Lang; label: string }[] = [
   { id: 'en', label: 'EN' },
   { id: 'de', label: 'DE' },
+  { id: 'hu', label: 'HU' },
 ]
 
 function LanguageToggle() {
@@ -374,7 +375,7 @@ export function PublicSite({
   const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer } = content
 
   const [focusedEl, setFocusedEl] = useState<HTMLElement | null>(null)
-  const [activeTab, setActiveTab] = useState('Alle')
+  const [activeTab, setActiveTab] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
   const [modalProduct, setModalProduct] = useState<ProductItem | null>(null)
   const { theme, setTheme } = useTheme()
@@ -643,7 +644,9 @@ export function PublicSite({
 
   // ── Normal / Edit render ─────────────────────────────────────────────────────
 
-  const filteredProducts = activeTab === 'Alle'
+  // First tab is always the "show all" tab, whatever its localized label is.
+  const allTab = products?.tabs?.[0] ?? ''
+  const filteredProducts = (activeTab === '' || activeTab === allTab)
     ? (products?.items ?? [])
     : (products?.items ?? []).filter(p => p.category === activeTab)
 
@@ -816,10 +819,10 @@ export function PublicSite({
               <E field="products.title" value={products.title} as="h2" className="site-products-h2" />
               {!editMode && (products?.tabs?.length ?? 0) > 1 && (
                 <div className="site-tabs">
-                  {products.tabs.map(tab => (
+                  {products.tabs.map((tab, ti) => (
                     <button
                       key={tab}
-                      className={`site-tab-btn ${activeTab === tab ? 'active' : ''}`}
+                      className={`site-tab-btn ${activeTab === tab || (activeTab === '' && ti === 0) ? 'active' : ''}`}
                       onClick={() => setActiveTab(tab)}
                     >{tab}</button>
                   ))}

@@ -1,0 +1,196 @@
+{
+  "meta": {
+    "title": "Nikoletta Csonka · Nyelvi coaching",
+    "description": "Törd át a nyelvi gátat. Nyelvi coaching angolul, németül és magyarul. Grazban vagy online.",
+    "primaryColor": "#C4956A",
+    "accentColor": "#3D4A40",
+    "font": "'Nunito', system-ui, -apple-system, sans-serif"
+  },
+  "nav": {
+    "logo": "",
+    "brand": "Nikoletta Csonka",
+    "links": [
+      { "label": "Rólam", "href": "#usp" },
+      { "label": "Órák", "href": "#products" },
+      { "label": "Nyelvek", "href": "#categories" },
+      { "label": "Blog", "href": "#news" },
+      { "label": "Kapcsolat", "href": "#location" }
+    ],
+    "ctaLabel": "Ingyenes próbaóra",
+    "ctaHref": "#location"
+  },
+  "hero": {
+    "tag": "Nyelvi coach · Graz és online",
+    "headline": "Évekig tanultad.<br><span>Mégsem tudsz megszólalni?</span>",
+    "subheadline": "Segítek felnőtteknek és gyerekeknek áttörni azt a hallgatást, amit a merev iskolai tanulás évei hagytak maguk után. Először a beszéd, a nyelvtan csak eszköz, mindig a te tempódban.",
+    "ctaLabel": "Kezdj egy ingyenes próbaórával",
+    "ctaHref": "#location",
+    "ctaSecLabel": "Hogyan működik",
+    "ctaSecHref": "#usp",
+    "image": "uploads/hero-niki.svg",
+    "bgX": 55,
+    "bgY": 42,
+    "minHeight": 620
+  },
+  "trust": {
+    "items": [
+      { "id": "t1", "icon": "shield", "bold": "TEFL minősítés", "text": "nemzetközileg elismert" },
+      { "id": "t2", "icon": "delivery", "bold": "10+ év", "text": "tapasztalat a tanításban" },
+      { "id": "t3", "icon": "location", "bold": "Graz + online", "text": "rugalmas időpontok" },
+      { "id": "t4", "icon": "tag", "bold": "3 nyelv", "text": "angol · német · magyar" }
+    ]
+  },
+  "categories": {
+    "eyebrow": "Kinek szól?",
+    "title": "Találd meg, ami neked való",
+    "items": [
+      { "id": "c1", "name": "Felnőttek", "sub": "Törd át a gátat", "image": "uploads/cat-adults.svg", "tab": "Angol" },
+      { "id": "c2", "name": "Gyerekek és tinik", "sub": "Építs önbizalmat korán", "image": "uploads/cat-kids-teens.svg", "tab": "Gyerekek" },
+      { "id": "c3", "name": "Szakemberek", "sub": "Üzleti angol és prezentációk", "image": "uploads/cat-pro.svg", "tab": "Angol" },
+      { "id": "c4", "name": "Vizsgázók", "sub": "B1 · B2 · C1 · IELTS", "image": "uploads/cat-exam.svg", "tab": "Vizsga" }
+    ]
+  },
+  "products": {
+    "title": "Órák és csomagok",
+    "tabs": ["Mind", "Angol", "Német", "Vizsga", "Magyar", "Gyerekek"],
+    "items": [
+      {
+        "id": "p1",
+        "name": "Társalgási angol",
+        "description": "Egyéni órák, a beszédre fókuszálva. A nyelvtan eszköz, nem cél. Te beszélsz, én pedig segítek, hogy jobban mondd.",
+        "price": "Igény szerint",
+        "image": "uploads/img-conversation.svg",
+        "badge": "Legnépszerűbb",
+        "category": "Angol",
+        "specs": ["Egyéni vagy kiscsoport", "Online vagy Grazban", "Rugalmas időpontok"]
+      },
+      {
+        "id": "p2",
+        "name": "Üzleti angol",
+        "description": "E-mailek, prezentációk, megbeszélések, tárgyalások. Gyakorlati üzleti nyelv a való világhoz. Semmi tankönyvízű mondat.",
+        "price": "Igény szerint",
+        "image": "uploads/img-business.svg",
+        "category": "Angol",
+        "specs": ["Munkahelyi szituációs gyakorlatok", "E-mail- és íráskorrekció", "Prezentációs coaching"]
+      },
+      {
+        "id": "p3",
+        "name": "Némettanulás / korrepetálás",
+        "description": "Akár diák vagy, akár felnőtt, pontosan azon dolgozunk, ami hiányzik. Vizsgára vagy egyszerűen a gördülékenységért.",
+        "price": "Igény szerint",
+        "image": "uploads/img-deutsch.svg",
+        "category": "Német",
+        "specs": ["Minden iskolai szint", "Vizsgafelkészítés is", "Anyanyelvi szintű visszajelzés"]
+      },
+      {
+        "id": "p4",
+        "name": "Vizsgafelkészítés",
+        "description": "B1, B2, C1 és IELTS. Strukturált gyakorlás valódi vizsgakörülmények között, célzott visszajelzéssel a gyenge pontjaidra.",
+        "price": "Igény szerint",
+        "image": "uploads/img-exam.svg",
+        "badge": "Nagy kereslet",
+        "category": "Vizsga",
+        "specs": ["B1 / B2 / C1 / IELTS", "Próbavizsgák is", "Nyelvvizsgaközpontos tapasztalat"]
+      },
+      {
+        "id": "p5",
+        "name": "Magyar kezdőknek",
+        "description": "A magyart nehéznek tartják, de én logikussá teszem. Ideális expateknek, akik magyarul beszélő családtaggal vagy kollégákkal szeretnének kapcsolódni.",
+        "price": "Igény szerint",
+        "image": "uploads/img-hungarian.svg",
+        "category": "Magyar",
+        "specs": ["Anyanyelvi tanár", "Először a hasznos szókincs", "Csak online órák"]
+      },
+      {
+        "id": "p6",
+        "name": "Angol gyerekeknek és tiniknek",
+        "description": "Játékos, türelmes, bátorító. Az köré épül, ami a gyerekeket tényleg érdekli: játékok, történetek, kedvenc témák. Hogy a nyelv megragadjon.",
+        "price": "Igény szerint",
+        "image": "uploads/img-kids.svg",
+        "category": "Gyerekek",
+        "specs": ["6-18 éves kor", "Játékok és mesélés", "Szülői visszajelzés minden óra után"]
+      }
+    ]
+  },
+  "usp": {
+    "eyebrow": "A módszerem",
+    "title": "Miért működik ez",
+    "items": [
+      {
+        "id": "u1",
+        "title": "Először a beszéd",
+        "description": "Az első perctől beszélsz. Semmi nyelvtani előadás, mielőtt szükséged lenne rá. A nyelv a szádban él, nem egy munkalapon."
+      },
+      {
+        "id": "u2",
+        "title": "Nyelvtan apró adagokban",
+        "description": "A szabályok akkor jönnek, amikor hasznosak, pont a megfelelő pillanatban. Kicsi, célzott, azonnal alkalmazott. Semmi elvont, a valós használattól elszakadt dolog."
+      },
+      {
+        "id": "u3",
+        "title": "A te céljaid, a te tempód",
+        "description": "Utazás? Munka? Vizsga? Vagy egyszerűen az, hogy végre biztosan érezd magad? Minden óra arról szól, amin éppen dolgozol. Onnan indulunk, mindig."
+      }
+    ]
+  },
+  "news": {
+    "eyebrow": "A coaching-szobából",
+    "title": "Gondolatok a nyelvtanulásról",
+    "items": [
+      {
+        "id": "n1",
+        "date": "2026-06-01",
+        "title": "A pillanat, amikor a tanulók abbahagyják a fejben fordítást",
+        "body": "Általában a 8. vagy 10. óra körül történik. Kattan egyet. Már nem nyúlnak először a német után, csak beszélnek. Ezt a pillanatot szeretem a legjobban a coachingban."
+      },
+      {
+        "id": "n2",
+        "date": "2026-05-15",
+        "title": "Miért működik a vizsgafelkészítés akkor a legjobban, ha nem a vizsgára tanítunk",
+        "body": "Akik szinte mellékesen teljesítik a B2-t, mert tényleg megtanultak kommunikálni, mindig jobban teljesítenek azoknál, akik csak a vizsgaformátumot magolták. A nyelv elvégzi a nehéz munkát."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Beszéljünk",
+    "subtitle": "Az első óra ingyenes. Semmi kötelezettség. Csak 30 perc, hogy lássuk, megvan-e a közös hang.",
+    "photo": "uploads/niki-photo.jpg",
+    "email": "nikoletta.csonka@gmail.com",
+    "phone": "",
+    "address": "Graz, Ausztria (teljesen online is)",
+    "whatsapp": "",
+    "formEnabled": true
+  },
+  "whatsapp": {
+    "enabled": false,
+    "number": "",
+    "message": "Szia Niki! Szeretnék egy ingyenes próbaórát foglalni."
+  },
+  "footer": {
+    "brand": "Nikoletta Csonka",
+    "tagline": "nyelvi coaching",
+    "description": "Nyelvi gátak feloldása, egy beszélgetés a másik után.",
+    "cols": [
+      {
+        "title": "Órák",
+        "links": [
+          { "label": "Angol coaching", "href": "#products" },
+          { "label": "Némettanulás", "href": "#products" },
+          { "label": "Vizsgafelkészítés", "href": "#products" },
+          { "label": "Gyerekek és tinik", "href": "#products" }
+        ]
+      },
+      {
+        "title": "Kapcsolat",
+        "links": [
+          { "label": "Ingyenes próbaóra", "href": "#location" },
+          { "label": "Írj Nikinek", "href": "mailto:nikoletta.csonka@gmail.com" }
+        ]
+      }
+    ],
+    "links": [
+      { "label": "Adatvédelem", "href": "#" }
+    ],
+    "copyright": "© 2026 Nikoletta Csonka · Nyelvi coaching · Graz"
+  }
+}
