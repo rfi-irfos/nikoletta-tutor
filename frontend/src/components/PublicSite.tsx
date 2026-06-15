@@ -94,7 +94,12 @@ function FormatToolbar({ anchorEl }: { anchorEl: HTMLElement | null }) {
   const tbW = 308
   const left = Math.max(8, Math.min(rect.left + rect.width / 2 - tbW / 2, window.innerWidth - tbW - 8))
   const top = rect.top < 56 ? rect.bottom + 6 : rect.top - 46
-  const exec = (cmd: string, val?: string) => { document.execCommand(cmd, false, val); anchorEl.focus() }
+  const exec = (cmd: string, val?: string) => {
+    anchorEl.focus()
+    // produce CSS spans (not legacy <font>) so colour/size actually render
+    if (cmd === 'foreColor' || cmd === 'fontSize') { try { document.execCommand('styleWithCSS', false, 'true') } catch { /* noop */ } }
+    document.execCommand(cmd, false, val)
+  }
   return (
     <div className="format-toolbar" style={{ position: 'fixed', top, left, width: tbW, zIndex: 9999 }} onMouseDown={e => e.preventDefault()}>
       <button className="fmt-btn fmt-b" onClick={() => exec('bold')}>B</button>
@@ -732,6 +737,10 @@ export function PublicSite({
           ref={heroRef as React.RefObject<HTMLElement>}
           onMouseDown={e => {
             if (!editMode) return
+            // don't hijack the drag when the user is selecting/clicking editable
+            // text, buttons or links — only drag from the bare hero background
+            const el = e.target as HTMLElement
+            if (el.isContentEditable || el.closest('.editable-text, .editable-img-wrap, button, a')) return
             heroDragRef.current = { startX: e.clientX, startY: e.clientY, startBgX: heroBgPos.x, startBgY: heroBgPos.y }
           }}
         >

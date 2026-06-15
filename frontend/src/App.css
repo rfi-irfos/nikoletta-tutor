@@ -544,9 +544,17 @@ button { cursor: pointer; font-family: inherit; }
 /* ══════════════════════════════════════════════════════════════════════════════
    INLINE EDIT LAYER
 ══════════════════════════════════════════════════════════════════════════════ */
-.editable-text { outline: none; border-radius: 3px; transition: box-shadow .15s; cursor: text; }
-.editable-text:hover { box-shadow: 0 0 0 2px rgba(0,153,204,.35); }
-.editable-text:focus { box-shadow: 0 0 0 2px #0099CC; background: rgba(0,153,204,.06); }
+.editable-text {
+  outline: none; border-radius: 3px; transition: box-shadow .15s; cursor: text;
+  -webkit-user-select: text; user-select: text; -webkit-user-modify: read-write;
+}
+.editable-text:hover { box-shadow: 0 0 0 2px rgba(196,149,106,.4); }
+.editable-text:focus { box-shadow: 0 0 0 2px #C4956A; background: rgba(196,149,106,.08); }
+/* Make sure nothing in the edit canvas suppresses text selection of editables */
+.builder-canvas-pane [contenteditable="true"],
+.builder-canvas-pane .editable-text {
+  -webkit-user-select: text !important; user-select: text !important; cursor: text;
+}
 
 .editable-img-wrap { position: relative; cursor: pointer; display: block; }
 .editable-img { transition: filter .15s; }
