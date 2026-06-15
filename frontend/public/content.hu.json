@@ -155,15 +155,15 @@
     "title": "Beszéljünk",
     "subtitle": "Az első óra ingyenes. Semmi kötelezettség. Csak 30 perc, hogy lássuk, megvan-e a közös hang.",
     "photo": "uploads/niki-photo.jpg",
-    "email": "nikoletta.csonka@gmail.com",
-    "phone": "",
+    "email": "nikoletta.tutor@gmail.com",
+    "phone": "+436705599003",
     "address": "Graz, Ausztria (teljesen online is)",
     "whatsapp": "",
     "formEnabled": true
   },
   "whatsapp": {
-    "enabled": false,
-    "number": "",
+    "enabled": true,
+    "number": "+436705599003",
     "message": "Szia Niki! Szeretnék egy ingyenes próbaórát foglalni."
   },
   "footer": {
@@ -184,7 +184,7 @@
         "title": "Kapcsolat",
         "links": [
           { "label": "Ingyenes próbaóra", "href": "#location" },
-          { "label": "Írj Nikinek", "href": "mailto:nikoletta.csonka@gmail.com" }
+          { "label": "Írj Nikinek", "href": "mailto:nikoletta.tutor@gmail.com" }
         ]
       }
     ],

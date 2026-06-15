@@ -155,15 +155,15 @@
     "title": "Let's talk",
     "subtitle": "First session is free. No commitment. Just 30 minutes to see if we click.",
     "photo": "uploads/niki-photo.jpg",
-    "email": "nikoletta.csonka@gmail.com",
-    "phone": "",
+    "email": "nikoletta.tutor@gmail.com",
+    "phone": "+436705599003",
     "address": "Graz, Austria (also fully online)",
     "whatsapp": "",
     "formEnabled": true
   },
   "whatsapp": {
-    "enabled": false,
-    "number": "",
+    "enabled": true,
+    "number": "+436705599003",
     "message": "Hi Niki! I would like to book a free trial session."
   },
   "footer": {
@@ -184,7 +184,7 @@
         "title": "Contact",
         "links": [
           { "label": "Book a free trial", "href": "#location" },
-          { "label": "Email Niki", "href": "mailto:nikoletta.csonka@gmail.com" }
+          { "label": "Email Niki", "href": "mailto:nikoletta.tutor@gmail.com" }
         ]
       }
     ],

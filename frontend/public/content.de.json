@@ -155,15 +155,15 @@
     "title": "Sprechen wir",
     "subtitle": "Die erste Stunde ist kostenlos. Keine Verpflichtung. Nur 30 Minuten, um zu sehen, ob es passt.",
     "photo": "uploads/niki-photo.jpg",
-    "email": "nikoletta.csonka@gmail.com",
-    "phone": "",
+    "email": "nikoletta.tutor@gmail.com",
+    "phone": "+436705599003",
     "address": "Graz, Österreich (auch komplett online)",
     "whatsapp": "",
     "formEnabled": true
   },
   "whatsapp": {
-    "enabled": false,
-    "number": "",
+    "enabled": true,
+    "number": "+436705599003",
     "message": "Hallo Niki! Ich würde gerne eine kostenlose Probestunde buchen."
   },
   "footer": {
@@ -184,7 +184,7 @@
         "title": "Kontakt",
         "links": [
           { "label": "Kostenlose Probestunde", "href": "#location" },
-          { "label": "Niki schreiben", "href": "mailto:nikoletta.csonka@gmail.com" }
+          { "label": "Niki schreiben", "href": "mailto:nikoletta.tutor@gmail.com" }
         ]
       }
     ],
