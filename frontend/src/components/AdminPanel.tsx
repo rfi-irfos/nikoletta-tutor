@@ -57,9 +57,23 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [uploading, setUploading] = useState(false)
   const [editingProduct, setEditingProduct] = useState<string | null>(null)
   const [editingNews, setEditingNews] = useState<string | null>(null)
+  const [specsInput, setSpecsInput] = useState('')
+  const [panelWidth, setPanelWidth] = useState(380)
   const [device, setDevice] = useState<DeviceView>('edit')
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
+
+  // reset the specs tag input whenever a different session opens
+  useEffect(() => { setSpecsInput('') }, [editingProduct])
+
+  // drag-resize the right settings panel (380–620px)
+  const startPanelResize = (e: React.MouseEvent) => {
+    e.preventDefault()
+    const startX = e.clientX, startW = panelWidth
+    const onMove = (ev: MouseEvent) => setPanelWidth(Math.max(320, Math.min(640, startW + (startX - ev.clientX))))
+    const onUp = () => { document.removeEventListener('mousemove', onMove); document.removeEventListener('mouseup', onUp) }
+    document.addEventListener('mousemove', onMove); document.addEventListener('mouseup', onUp)
+  }
 
   // ── Init positions snapshot for canvas ────────────────────────────────────
 
@@ -246,10 +260,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
         {/* LEFT: Canvas editor OR device preview */}
         {device === 'edit' ? (
           <div className="builder-canvas-pane" ref={previewRef}>
+            {/* 1:1 edit layer: the REAL public site, inline-editable (no separate
+                draggable-box canvas). Click any text to edit, images to swap. */}
             <PublicSite
               content={draft}
-              editMode={false}
-              rearrangeMode={true}
+              editMode={true}
               initPositions={initPositions}
               onTextChange={(field, value) => update(field, value)}
               onImageClick={handleImageClick}
@@ -269,8 +284,9 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           </div>
         )}
 
-        {/* RIGHT: Panel */}
-        <aside className="builder-panel">
+        {/* RIGHT: Panel (drag the left edge to resize) */}
+        <aside className="builder-panel" style={{ width: panelWidth }}>
+          <div className="builder-panel-resize" onMouseDown={startPanelResize} title="Breite ziehen" />
           {/* Tab bar */}
           <div className="builder-tabs">
             {tabs.map(t => (
@@ -286,82 +302,24 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
             {/* ── PRODUCTS TAB ──────────────────────────────────────────── */}
             {activeTab === 'products' && (
               <div className="panel-products">
-
-                {editingProd ? (
-                  /* ─ Product edit form ─ */
-                  <div className="panel-product-form">
-                    <button className="panel-back-btn" onClick={() => setEditingProduct(null)}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-                      Zur Liste
-                    </button>
-
-                    {/* Image */}
-                    <div className="panel-product-img-area" onClick={() => uploadProductImage(editingProd.id)}>
-                      {editingProd.image
-                        ? <img src={editingProd.image} alt={editingProd.name} />
-                        : <div className="panel-product-img-empty">
-                            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                            <span>Bild hochladen</span>
-                          </div>
-                      }
-                      <div className="panel-product-img-overlay">Bild ändern</div>
+                <div className="panel-product-list">
+                  {(draft.products?.items ?? []).map(p => (
+                    <div key={p.id} className={`panel-product-row ${editingProduct === p.id ? 'active' : ''}`} onClick={() => setEditingProduct(p.id)}>
+                      <div className="panel-product-thumb">
+                        {p.image ? <img src={p.image} alt={p.name} /> : <div className="panel-product-thumb-empty" />}
+                      </div>
+                      <div className="panel-product-info">
+                        <div className="panel-product-name">{p.name}</div>
+                        <div className="panel-product-meta">{p.category} &nbsp;·&nbsp; {p.price}</div>
+                      </div>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
                     </div>
-
-                    <Field label="Name">
-                      <input value={editingProd.name} onChange={e => updateProduct(editingProd.id, 'name', e.target.value)} placeholder="Produktname" />
-                    </Field>
-                    <Field label="Preis">
-                      <input value={editingProd.price} onChange={e => updateProduct(editingProd.id, 'price', e.target.value)} placeholder="ab €799" />
-                    </Field>
-                    <Field label="Kategorie">
-                      <select value={editingProd.category} onChange={e => updateProduct(editingProd.id, 'category', e.target.value)}>
-                        {(draft.products?.tabs?.filter(t => t !== 'Alle') ?? ['E-Bikes']).map(t => (
-                          <option key={t} value={t}>{t}</option>
-                        ))}
-                      </select>
-                    </Field>
-                    <Field label="Bezeichnung">
-                      <input value={editingProd.badge ?? ''} onChange={e => updateProduct(editingProd.id, 'badge', e.target.value)} placeholder="Bestseller, Beliebt …" />
-                    </Field>
-                    <Field label="Spezifikationen (Komma-getrennt)">
-                      <input
-                        value={(editingProd.specs ?? []).join(', ')}
-                        onChange={e => updateProduct(editingProd.id, 'specs', e.target.value.split(',').map(s => s.trim()).filter(Boolean))}
-                        placeholder="48V, 20Ah, 80 km"
-                      />
-                    </Field>
-                    <Field label="Beschreibung">
-                      <textarea rows={3} value={editingProd.description} onChange={e => updateProduct(editingProd.id, 'description', e.target.value)} placeholder="Kurze Produktbeschreibung" />
-                    </Field>
-
-                    <button className="panel-delete-btn" onClick={() => deleteProduct(editingProd.id)}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                      Produkt löschen
-                    </button>
-                  </div>
-                ) : (
-                  /* ─ Product list ─ */
-                  <>
-                    <div className="panel-product-list">
-                      {(draft.products?.items ?? []).map(p => (
-                        <div key={p.id} className="panel-product-row" onClick={() => setEditingProduct(p.id)}>
-                          <div className="panel-product-thumb">
-                            {p.image ? <img src={p.image} alt={p.name} /> : <div className="panel-product-thumb-empty" />}
-                          </div>
-                          <div className="panel-product-info">
-                            <div className="panel-product-name">{p.name}</div>
-                            <div className="panel-product-meta">{p.category} &nbsp;·&nbsp; {p.price}</div>
-                          </div>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-                        </div>
-                      ))}
-                    </div>
-                    <button className="panel-add-big-btn" onClick={addProduct}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                      Produkt hinzufügen
-                    </button>
-                  </>
-                )}
+                  ))}
+                </div>
+                <button className="panel-add-big-btn" onClick={addProduct}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Session hinzufügen
+                </button>
               </div>
             )}
 
@@ -409,55 +367,21 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
             {/* ── NEWS TAB ──────────────────────────────────────────────── */}
             {activeTab === 'news' && (
               <div className="panel-products">
-                {editingNewsItem ? (
-                  <div className="panel-product-form">
-                    <button className="panel-back-btn" onClick={() => setEditingNews(null)}>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-                      Zur Liste
-                    </button>
-                    <div className="panel-product-img-area" onClick={() => uploadNewsImage(editingNewsItem.id)}>
-                      {editingNewsItem.image
-                        ? <img src={editingNewsItem.image} alt={editingNewsItem.title} />
-                        : <div className="panel-product-img-empty">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                            <span>Bild (optional)</span>
-                          </div>
-                      }
-                      <div className="panel-product-img-overlay">Bild ändern</div>
+                <div className="panel-product-list">
+                  {(draft.news?.items ?? []).map(n => (
+                    <div key={n.id} className={`panel-product-row ${editingNews === n.id ? 'active' : ''}`} onClick={() => setEditingNews(n.id)}>
+                      <div className="panel-product-info">
+                        <div className="panel-product-name">{n.title}</div>
+                        <div className="panel-product-meta">{n.date}</div>
+                      </div>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
                     </div>
-                    <Field label="Datum">
-                      <input type="date" value={editingNewsItem.date} onChange={e => updateNews(editingNewsItem.id, 'date', e.target.value)} />
-                    </Field>
-                    <Field label="Titel">
-                      <input value={editingNewsItem.title} onChange={e => updateNews(editingNewsItem.id, 'title', e.target.value)} />
-                    </Field>
-                    <Field label="Text">
-                      <textarea rows={4} value={editingNewsItem.body} onChange={e => updateNews(editingNewsItem.id, 'body', e.target.value)} />
-                    </Field>
-                    <button className="panel-delete-btn" onClick={() => deleteNews(editingNewsItem.id)}>
-                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                      Eintrag löschen
-                    </button>
-                  </div>
-                ) : (
-                  <>
-                    <div className="panel-product-list">
-                      {(draft.news?.items ?? []).map(n => (
-                        <div key={n.id} className="panel-product-row" onClick={() => setEditingNews(n.id)}>
-                          <div className="panel-product-info">
-                            <div className="panel-product-name">{n.title}</div>
-                            <div className="panel-product-meta">{n.date}</div>
-                          </div>
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-                        </div>
-                      ))}
-                    </div>
-                    <button className="panel-add-big-btn" onClick={addNews}>
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                      Neuigkeit hinzufügen
-                    </button>
-                  </>
-                )}
+                  ))}
+                </div>
+                <button className="panel-add-big-btn" onClick={addNews}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Blogbeitrag hinzufügen
+                </button>
               </div>
             )}
 
@@ -639,6 +563,135 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           </div>
         </aside>
       </div>
+
+      {/* ── SESSION EDIT MODAL ─────────────────────────────────────────── */}
+      {editingProd && (
+        <div className="pem-overlay" onClick={() => setEditingProduct(null)}>
+          <div className="pem" onClick={e => e.stopPropagation()}>
+            <div className="pem-header">
+              <span className="pem-title">Session bearbeiten</span>
+              <button className="pem-close" onClick={() => setEditingProduct(null)} title="Schließen">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div className="pem-body">
+              <div className="pem-img-area">
+                {editingProd.image
+                  ? <img src={editingProd.image} alt={editingProd.name} className="pem-img" />
+                  : <div className="pem-img-placeholder">Kein Bild</div>}
+                <button className="pem-img-btn" onClick={() => uploadProductImage(editingProd.id)}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Bild tauschen
+                </button>
+              </div>
+              <div className="pem-fields">
+                <div className="pem-field">
+                  <label>Name</label>
+                  <input value={editingProd.name} onChange={e => updateProduct(editingProd.id, 'name', e.target.value)} />
+                </div>
+                <div className="pem-row">
+                  <div className="pem-field">
+                    <label>Preis</label>
+                    <input value={editingProd.price} onChange={e => updateProduct(editingProd.id, 'price', e.target.value)} placeholder="Auf Anfrage" />
+                  </div>
+                  <div className="pem-field">
+                    <label>Kategorie</label>
+                    <select value={editingProd.category} onChange={e => updateProduct(editingProd.id, 'category', e.target.value)}>
+                      {(draft.products?.tabs?.slice(1) ?? []).map(t => <option key={t} value={t}>{t}</option>)}
+                      {!(draft.products?.tabs?.slice(1) ?? []).includes(editingProd.category) && <option value={editingProd.category}>{editingProd.category}</option>}
+                    </select>
+                  </div>
+                  <div className="pem-field">
+                    <label>Badge</label>
+                    <input value={editingProd.badge ?? ''} onChange={e => updateProduct(editingProd.id, 'badge', e.target.value)} placeholder="z.B. Beliebt" />
+                  </div>
+                </div>
+                <div className="pem-field">
+                  <label>Beschreibung</label>
+                  <textarea rows={3} value={editingProd.description} onChange={e => updateProduct(editingProd.id, 'description', e.target.value)} />
+                </div>
+                <div className="pem-field">
+                  <label>Inhalte (Tags)</label>
+                  <div className="pem-tags">
+                    {(editingProd.specs ?? []).map((s, i) => (
+                      <span key={i} className="pem-tag">
+                        {s}
+                        <button onClick={() => updateProduct(editingProd.id, 'specs', (editingProd.specs ?? []).filter((_, idx) => idx !== i))} title="Entfernen">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                  <div className="pem-tag-input-row">
+                    <input value={specsInput} placeholder="Tag hinzufügen, Enter" onChange={e => setSpecsInput(e.target.value)}
+                      onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); const v = specsInput.trim(); if (v) { updateProduct(editingProd.id, 'specs', [...(editingProd.specs ?? []), v]); setSpecsInput('') } } }} />
+                    <button className="pem-tag-add" onClick={() => { const v = specsInput.trim(); if (v) { updateProduct(editingProd.id, 'specs', [...(editingProd.specs ?? []), v]); setSpecsInput('') } }}>+</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="pem-footer">
+              <button className="panel-delete-btn" onClick={() => deleteProduct(editingProd.id)}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                Löschen
+              </button>
+              <div className="pem-footer-right">
+                <button className="builder-save-btn-top done" onClick={() => setEditingProduct(null)}>Fertig</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── BLOG EDIT MODAL ────────────────────────────────────────────── */}
+      {editingNewsItem && (
+        <div className="pem-overlay" onClick={() => setEditingNews(null)}>
+          <div className="pem" onClick={e => e.stopPropagation()}>
+            <div className="pem-header">
+              <span className="pem-title">Blogbeitrag bearbeiten</span>
+              <button className="pem-close" onClick={() => setEditingNews(null)} title="Schließen">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+            <div className="pem-body">
+              <div className="pem-img-area">
+                {editingNewsItem.image
+                  ? <img src={editingNewsItem.image} alt={editingNewsItem.title} className="pem-img" />
+                  : <div className="pem-img-placeholder">Kein Bild</div>}
+                <button className="pem-img-btn" onClick={() => uploadNewsImage(editingNewsItem.id)}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Bild (optional)
+                </button>
+              </div>
+              <div className="pem-fields">
+                <div className="pem-row" style={{ gridTemplateColumns: '1fr' }}>
+                  <div className="pem-field">
+                    <label>Datum</label>
+                    <input type="date" value={editingNewsItem.date} onChange={e => updateNews(editingNewsItem.id, 'date', e.target.value)} />
+                  </div>
+                </div>
+                <div className="pem-field">
+                  <label>Titel</label>
+                  <input value={editingNewsItem.title} onChange={e => updateNews(editingNewsItem.id, 'title', e.target.value)} />
+                </div>
+                <div className="pem-field">
+                  <label>Text</label>
+                  <textarea rows={6} value={editingNewsItem.body} onChange={e => updateNews(editingNewsItem.id, 'body', e.target.value)} />
+                </div>
+              </div>
+            </div>
+            <div className="pem-footer">
+              <button className="panel-delete-btn" onClick={() => deleteNews(editingNewsItem.id)}>
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                Löschen
+              </button>
+              <div className="pem-footer-right">
+                <button className="builder-save-btn-top done" onClick={() => setEditingNews(null)}>Fertig</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
