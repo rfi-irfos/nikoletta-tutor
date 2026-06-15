@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
-import type { SiteContent, SectionId, CanvasPos } from '../types/content'
+import type { SiteContent, SectionId, CanvasPos, ProductItem } from '../types/content'
 import { useTheme, type Theme } from '../hooks/useTheme'
 import { useLang, type Lang } from '../hooks/useLang'
 
@@ -376,6 +376,7 @@ export function PublicSite({
   const [focusedEl, setFocusedEl] = useState<HTMLElement | null>(null)
   const [activeTab, setActiveTab] = useState('Alle')
   const [menuOpen, setMenuOpen] = useState(false)
+  const [modalProduct, setModalProduct] = useState<ProductItem | null>(null)
   const { theme, setTheme } = useTheme()
   const { t } = useLang()
 
@@ -385,6 +386,22 @@ export function PublicSite({
     if (tabs.length && !tabs.includes(activeTab)) setActiveTab(tabs[0])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content.products?.tabs])
+
+  // Close the session detail modal on Escape
+  useEffect(() => {
+    if (!modalProduct) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setModalProduct(null) }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [modalProduct])
+
+  // Tier 1 → Tier 2: an audience card drills into the matching Sessions filter
+  const drillToSessions = (cat: { tab?: string }, idx: number) => {
+    const tabs = content.products?.tabs ?? []
+    const target = (cat.tab && tabs.includes(cat.tab)) ? cat.tab : (tabs[idx + 1] ?? tabs[0] ?? 'Alle')
+    setActiveTab(target)
+    requestAnimationFrame(() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
+  }
   const [heroBgPos, setHeroBgPos] = useState({ x: hero.bgX ?? 50, y: hero.bgY ?? 50 })
   const [heroHeight, setHeroHeight] = useState(hero.minHeight ?? 680)
   const heroDragRef  = useRef<{ startX: number; startY: number; startBgX: number; startBgY: number } | null>(null)
@@ -770,11 +787,21 @@ export function PublicSite({
             <E field="categories.title" value={categories.title} as="h2" className="site-section-title" />
             <div className="site-cat-grid">
               {categories.items.map((c, i) => (
-                <div key={c.id} className="site-cat-card">
+                <div
+                  key={c.id}
+                  className={`site-cat-card ${!editMode ? 'clickable' : ''}`}
+                  {...(!editMode ? {
+                    role: 'button',
+                    tabIndex: 0,
+                    onClick: () => drillToSessions(c, i),
+                    onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drillToSessions(c, i) } },
+                  } : {})}
+                >
                   <EImg field={`categories.items.${i}.image`} src={c.image} alt={c.name} className="site-cat-img" />
                   <div className="site-cat-overlay">
                     <E field={`categories.items.${i}.name`} value={c.name} as="div" className="site-cat-name" />
                     <E field={`categories.items.${i}.sub`} value={c.sub} as="div" className="site-cat-sub" />
+                    {!editMode && <span className="site-cat-arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>}
                   </div>
                 </div>
               ))}
@@ -801,7 +828,16 @@ export function PublicSite({
             </div>
             <div className="site-product-grid">
               {(editMode ? products.items : filteredProducts).map((p, i) => (
-                <div key={p.id} className="site-pcard">
+                <div
+                  key={p.id}
+                  className={`site-pcard ${!editMode ? 'clickable' : ''}`}
+                  {...(!editMode ? {
+                    role: 'button',
+                    tabIndex: 0,
+                    onClick: () => setModalProduct(p),
+                    onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setModalProduct(p) } },
+                  } : {})}
+                >
                   <div className="site-pcard-img">
                     {p.badge && <div className="site-pcard-badge">{p.badge}</div>}
                     <EImg field={`products.items.${i}.image`} src={p.image} alt={p.name} className="site-pcard-photo" />
@@ -817,7 +853,7 @@ export function PublicSite({
                     <E field={`products.items.${i}.description`} value={p.description} as="div" className="site-pcard-desc" />
                     <div className="site-pcard-foot">
                       <E field={`products.items.${i}.price`} value={p.price} as="div" className="site-pcard-price" />
-                      <a href={`mailto:${contact?.email ?? ''}`} className="site-pcard-cta">Anfragen</a>
+                      <a href={`mailto:${contact?.email ?? ''}`} className="site-pcard-cta" onClick={e => e.stopPropagation()}>{t.book}</a>
                     </div>
                   </div>
                 </div>
@@ -926,6 +962,35 @@ export function PublicSite({
             </div>
           </div>
         </footer>
+
+        {/* ── SESSION DETAIL MODAL (tier 3) ────────────────────────────── */}
+        {modalProduct && !editMode && (
+          <div className="site-modal-scrim" onClick={() => setModalProduct(null)} role="dialog" aria-modal="true" aria-label={modalProduct.name}>
+            <div className="site-modal" onClick={e => e.stopPropagation()}>
+              <button className="site-modal-close" aria-label={t.close} onClick={() => setModalProduct(null)}><IconClose /></button>
+              {modalProduct.image && (
+                <div className="site-modal-img"><img src={modalProduct.image} alt={modalProduct.name} /></div>
+              )}
+              <div className="site-modal-body">
+                {modalProduct.category && <div className="site-modal-brand">{modalProduct.category}</div>}
+                <h3 className="site-modal-title" dangerouslySetInnerHTML={{ __html: modalProduct.name }} />
+                {(modalProduct.specs?.length ?? 0) > 0 && (
+                  <>
+                    <div className="site-modal-label">{t.whatsIncluded}</div>
+                    <div className="site-modal-specs">
+                      {modalProduct.specs!.map((s, si) => <span key={si} className="site-spec">{s}</span>)}
+                    </div>
+                  </>
+                )}
+                <p className="site-modal-desc" dangerouslySetInnerHTML={{ __html: modalProduct.description }} />
+                <div className="site-modal-foot">
+                  <div className="site-modal-price" dangerouslySetInnerHTML={{ __html: modalProduct.price }} />
+                  <a href={`mailto:${contact?.email ?? ''}?subject=${encodeURIComponent(`${t.mailSubject}`)}`} className="site-btn-lime-lg" onClick={() => setModalProduct(null)}>{t.bookTrial}</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ── WHATSAPP FLOAT ───────────────────────────────────────────── */}
         {whatsapp?.enabled && !editMode && (

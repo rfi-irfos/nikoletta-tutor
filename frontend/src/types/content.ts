@@ -18,6 +18,7 @@ export interface CategoryItem {
   sub: string
   image: string
   href?: string
+  tab?: string   // which Sessions filter tab this audience drills into
 }
 
 export interface NewsItem {

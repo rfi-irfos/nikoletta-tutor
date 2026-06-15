@@ -33,6 +33,10 @@ export const UI = {
     themeDark: 'Dark',
     themeContrast: 'High contrast',
     mailSubject: 'Trial lesson request from',
+    book: 'Book',
+    bookTrial: 'Book a free trial',
+    whatsIncluded: "What's included",
+    close: 'Close',
   },
   de: {
     namePlaceholder: 'Dein Name',
@@ -51,6 +55,10 @@ export const UI = {
     themeDark: 'Dunkel',
     themeContrast: 'Hoher Kontrast',
     mailSubject: 'Anfrage für eine Probestunde von',
+    book: 'Anfragen',
+    bookTrial: 'Kostenlose Probestunde buchen',
+    whatsIncluded: 'Das ist dabei',
+    close: 'Schließen',
   },
 } as const
 

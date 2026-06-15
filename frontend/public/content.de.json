@@ -44,10 +44,10 @@
     "eyebrow": "Für wen ist es?",
     "title": "Finde, was zu dir passt",
     "items": [
-      { "id": "c1", "name": "Erwachsene", "sub": "Durchbrich deine Blockade", "image": "uploads/cat-adults.svg" },
-      { "id": "c2", "name": "Kinder & Jugendliche", "sub": "Früh Selbstvertrauen aufbauen", "image": "uploads/cat-kids-teens.svg" },
-      { "id": "c3", "name": "Berufstätige", "sub": "Business-Englisch & Präsentationen", "image": "uploads/cat-pro.svg" },
-      { "id": "c4", "name": "Prüfungsteilnehmer", "sub": "B1 · B2 · C1 · IELTS", "image": "uploads/cat-exam.svg" }
+      { "id": "c1", "name": "Erwachsene", "sub": "Durchbrich deine Blockade", "image": "uploads/cat-adults.svg", "tab": "Englisch" },
+      { "id": "c2", "name": "Kinder & Jugendliche", "sub": "Früh Selbstvertrauen aufbauen", "image": "uploads/cat-kids-teens.svg", "tab": "Kinder" },
+      { "id": "c3", "name": "Berufstätige", "sub": "Business-Englisch & Präsentationen", "image": "uploads/cat-pro.svg", "tab": "Englisch" },
+      { "id": "c4", "name": "Prüfungsteilnehmer", "sub": "B1 · B2 · C1 · IELTS", "image": "uploads/cat-exam.svg", "tab": "Prüfungen" }
     ]
   },
   "products": {
