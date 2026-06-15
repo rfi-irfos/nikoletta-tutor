@@ -997,8 +997,8 @@ button { cursor: pointer; font-family: inherit; }
 .device-frame .site-mobile-drawer,
 .device-frame .site-mobile-scrim { position: absolute; }
 .device-desktop { width: 1280px; border-radius: 10px; }
-.device-tablet  { width: 834px; border-radius: 22px; border: 10px solid #1a1a1a; }
-.device-mobile  { width: 390px; border-radius: 30px; border: 11px solid #1a1a1a; }
+.device-tablet  { width: 834px; height: 1050px; overflow-y: auto; border-radius: 22px; border: 10px solid #1a1a1a; }
+.device-mobile  { width: 390px; height: 800px; overflow-y: auto; border-radius: 30px; border: 11px solid #1a1a1a; }
 .device-frame-label {
   text-align: center; font-size: 11px; font-weight: 700; letter-spacing: .06em;
   text-transform: uppercase; color: #8a93a0; margin-top: 12px;

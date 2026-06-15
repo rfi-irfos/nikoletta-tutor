@@ -14,10 +14,13 @@ export function useContent(lang: Lang) {
   useEffect(() => {
     let cancelled = false
     shaRef.current = null
+    // Cache-bust so admin edits (and reverts) show immediately instead of a
+    // browser/CDN-cached content.json. content.json is tiny; freshness wins.
+    const bust = `?t=${Date.now()}`
     ;(async () => {
       const file = lang === 'de' ? 'content.de.json' : 'content.json'
       try {
-        const res = await fetch(`${import.meta.env.BASE_URL}${file}`)
+        const res = await fetch(`${import.meta.env.BASE_URL}${file}${bust}`, { cache: 'no-store' })
         if (!res.ok) throw new Error('missing')
         const data = await res.json()
         if (!cancelled) setContent(data)
@@ -25,7 +28,7 @@ export function useContent(lang: Lang) {
         // DE missing -> fall back to EN file, then to bundled default
         if (lang === 'de') {
           try {
-            const res = await fetch(`${import.meta.env.BASE_URL}content.json`)
+            const res = await fetch(`${import.meta.env.BASE_URL}content.json${bust}`, { cache: 'no-store' })
             if (res.ok) { const d = await res.json(); if (!cancelled) setContent(d); return }
           } catch { /* fall through */ }
         }
