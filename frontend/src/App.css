@@ -229,8 +229,25 @@ button { cursor: pointer; font-family: inherit; }
   margin-bottom: 56px; letter-spacing: -.01em;
 }
 
-/* ── CATEGORIES ──────────────────────────────────────────────────────────── */
+/* ── CATEGORIES / DRILL-DOWN BROWSER ─────────────────────────────────────── */
 .site-categories { background: var(--surface-alt); }
+.site-browser-header {
+  max-width: 1160px; margin: 0 auto 36px; display: flex; flex-direction: column; gap: 10px;
+}
+.site-browser-back {
+  display: inline-flex; align-items: center; gap: 6px; align-self: flex-start;
+  background: none; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 8px 15px; font-size: 13px; font-weight: 700; color: var(--text-soft);
+  cursor: pointer; transition: border-color .2s, color .2s;
+}
+.site-browser-back:hover { border-color: var(--primary); color: var(--primary); }
+.site-browser-title { font-size: 34px; font-weight: 900; letter-spacing: -.01em; color: var(--text); }
+.site-browser-breadcrumb { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--text-soft); }
+.site-browser-breadcrumb button { background: none; border: none; color: var(--primary); font-weight: 700; cursor: pointer; font-size: 13px; padding: 0; }
+.site-browser-breadcrumb button:hover { text-decoration: underline; }
+.site-browser-breadcrumb span { font-weight: 700; color: var(--text); }
+.site-browser-breadcrumb svg { color: var(--border); flex-shrink: 0; }
+.site-browser-empty { text-align: center; color: var(--text-soft); font-size: 15px; padding: 30px 0; }
 .site-cat-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
   max-width: 1160px; margin: 0 auto;

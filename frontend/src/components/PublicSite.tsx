@@ -378,6 +378,7 @@ export function PublicSite({
   const [activeTab, setActiveTab] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
   const [modalProduct, setModalProduct] = useState<ProductItem | null>(null)
+  const [browseCatIdx, setBrowseCatIdx] = useState<number | null>(null)
   const { theme, setTheme } = useTheme()
   const { t } = useLang()
 
@@ -395,14 +396,6 @@ export function PublicSite({
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [modalProduct])
-
-  // Tier 1 → Tier 2: an audience card drills into the matching Sessions filter
-  const drillToSessions = (cat: { tab?: string }, idx: number) => {
-    const tabs = content.products?.tabs ?? []
-    const target = (cat.tab && tabs.includes(cat.tab)) ? cat.tab : (tabs[idx + 1] ?? tabs[0] ?? 'Alle')
-    setActiveTab(target)
-    requestAnimationFrame(() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth', block: 'start' }))
-  }
   const [heroBgPos, setHeroBgPos] = useState({ x: hero.bgX ?? 50, y: hero.bgY ?? 50 })
   const [heroHeight, setHeroHeight] = useState(hero.minHeight ?? 680)
   const heroDragRef  = useRef<{ startX: number; startY: number; startBgX: number; startBgY: number } | null>(null)
@@ -783,34 +776,86 @@ export function PublicSite({
           </div>
         )}
 
-        {/* ── CATEGORIES ───────────────────────────────────────────────── */}
-        {(categories?.items?.length ?? 0) > 0 && (
-          <section className="site-section site-categories" id="categories">
-            {categories.eyebrow && <div className="site-eyebrow">{categories.eyebrow}</div>}
-            <E field="categories.title" value={categories.title} as="h2" className="site-section-title" />
-            <div className="site-cat-grid">
-              {categories.items.map((c, i) => (
-                <div
-                  key={c.id}
-                  className={`site-cat-card ${!editMode ? 'clickable' : ''}`}
-                  {...(!editMode ? {
-                    role: 'button',
-                    tabIndex: 0,
-                    onClick: () => drillToSessions(c, i),
-                    onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); drillToSessions(c, i) } },
-                  } : {})}
-                >
-                  <EImg field={`categories.items.${i}.image`} src={c.image} alt={c.name} className="site-cat-img" />
-                  <div className="site-cat-overlay">
-                    <E field={`categories.items.${i}.name`} value={c.name} as="div" className="site-cat-name" />
-                    <E field={`categories.items.${i}.sub`} value={c.sub} as="div" className="site-cat-sub" />
-                    {!editMode && <span className="site-cat-arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>}
+        {/* ── CATEGORIES / DRILL-DOWN BROWSER ──────────────────────────── */}
+        {(categories?.items?.length ?? 0) > 0 && (() => {
+          // editMode: plain editable grid. Live: tier1 audiences -> tier2 that
+          // audience's sessions (back + breadcrumb) -> tier3 detail modal.
+          const browseCat = browseCatIdx != null ? categories.items[browseCatIdx] : null
+          const browseSessions = browseCat
+            ? (products?.items ?? []).filter(p => !browseCat.tab || p.category === browseCat.tab)
+            : []
+          return (
+            <section className="site-section site-categories site-browser" id="categories">
+              {(editMode || browseCatIdx == null) ? (
+                <>
+                  {categories.eyebrow && <div className="site-eyebrow">{categories.eyebrow}</div>}
+                  <E field="categories.title" value={categories.title} as="h2" className="site-section-title" />
+                  <div className="site-cat-grid">
+                    {categories.items.map((c, i) => (
+                      <div
+                        key={c.id}
+                        className={`site-cat-card ${!editMode ? 'clickable' : ''}`}
+                        {...(!editMode ? {
+                          role: 'button',
+                          tabIndex: 0,
+                          onClick: () => setBrowseCatIdx(i),
+                          onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setBrowseCatIdx(i) } },
+                        } : {})}
+                      >
+                        <EImg field={`categories.items.${i}.image`} src={c.image} alt={c.name} className="site-cat-img" />
+                        <div className="site-cat-overlay">
+                          <E field={`categories.items.${i}.name`} value={c.name} as="div" className="site-cat-name" />
+                          <E field={`categories.items.${i}.sub`} value={c.sub} as="div" className="site-cat-sub" />
+                          {!editMode && <span className="site-cat-arrow" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span>}
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+                </>
+              ) : (
+                <>
+                  <div className="site-browser-header">
+                    <button className="site-browser-back" onClick={() => setBrowseCatIdx(null)}>
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                      {t.back}
+                    </button>
+                    <h2 className="site-browser-title">{browseCat?.name}</h2>
+                    <nav className="site-browser-breadcrumb" aria-label="Breadcrumb">
+                      <button onClick={() => setBrowseCatIdx(null)}>{categories.title}</button>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                      <span>{browseCat?.name}</span>
+                    </nav>
+                  </div>
+                  <div className="site-product-grid">
+                    {browseSessions.map(p => (
+                      <div key={p.id} className="site-pcard clickable" role="button" tabIndex={0}
+                        onClick={() => setModalProduct(p)}
+                        onKeyDown={(e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setModalProduct(p) } }}>
+                        <div className="site-pcard-img">
+                          {p.badge && <div className="site-pcard-badge">{p.badge}</div>}
+                          {p.image ? <img src={p.image} alt={p.name} className="site-pcard-photo" /> : null}
+                        </div>
+                        <div className="site-pcard-body">
+                          <div className="site-pcard-brand">{p.category}</div>
+                          <div className="site-pcard-name" dangerouslySetInnerHTML={{ __html: p.name }} />
+                          {(p.specs?.length ?? 0) > 0 && (
+                            <div className="site-pcard-specs">{p.specs!.slice(0, 3).map((s, si) => <span key={si} className="site-spec">{s}</span>)}</div>
+                          )}
+                          <div className="site-pcard-desc" dangerouslySetInnerHTML={{ __html: p.description }} />
+                          <div className="site-pcard-foot">
+                            <div className="site-pcard-price" dangerouslySetInnerHTML={{ __html: p.price }} />
+                            <a href={`mailto:${contact?.email ?? ''}`} className="site-pcard-cta" onClick={e => e.stopPropagation()}>{t.book}</a>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {browseSessions.length === 0 && <p className="site-browser-empty">—</p>}
+                  </div>
+                </>
+              )}
+            </section>
+          )
+        })()}
 
         {/* ── PRODUCTS ─────────────────────────────────────────────────── */}
         {(products?.items?.length ?? 0) > 0 && (

@@ -40,6 +40,7 @@ export const UI = {
     bookTrial: 'Book a free trial',
     whatsIncluded: "What's included",
     close: 'Close',
+    back: 'Back',
   },
   de: {
     namePlaceholder: 'Dein Name',
@@ -62,6 +63,7 @@ export const UI = {
     bookTrial: 'Kostenlose Probestunde buchen',
     whatsIncluded: 'Das ist dabei',
     close: 'Schließen',
+    back: 'Zurück',
   },
   hu: {
     namePlaceholder: 'A neved',
@@ -84,6 +86,7 @@ export const UI = {
     bookTrial: 'Ingyenes próbaóra foglalása',
     whatsIncluded: 'Mit tartalmaz',
     close: 'Bezárás',
+    back: 'Vissza',
   },
 } as const
 
