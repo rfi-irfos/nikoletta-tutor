@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Niki Csonka · Language Coaching",
+    "title": "Nikoletta Csonka · Language Coaching",
     "description": "Break through the language barrier. Conversational coaching in English, German, and Hungarian. In Graz or online.",
     "primaryColor": "#C4956A",
     "accentColor": "#3D4A40",
@@ -8,7 +8,7 @@
   },
   "nav": {
     "logo": "",
-    "brand": "niki csonka",
+    "brand": "nikoletta csonka",
     "links": [
       { "label": "About", "href": "#usp" },
       { "label": "Sessions", "href": "#products" },
@@ -166,7 +166,7 @@
     "message": "Hi Niki! I would like to book a free trial session."
   },
   "footer": {
-    "brand": "niki csonka",
+    "brand": "nikoletta csonka",
     "tagline": "language coaching",
     "description": "Breaking language blocks, one conversation at a time.",
     "cols": [
@@ -190,6 +190,6 @@
     "links": [
       { "label": "Privacy", "href": "#" }
     ],
-    "copyright": "© 2026 Niki Csonka · Language Coaching · Graz"
+    "copyright": "© 2026 Nikoletta Csonka · Language Coaching · Graz"
   }
 }

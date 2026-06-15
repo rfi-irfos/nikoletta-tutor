@@ -2,6 +2,8 @@ import { useState, useRef } from 'react'
 import type { SiteContent, ProductItem, NewsItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
+import { useStudents } from '../lib/useStudents'
+import type { Student } from '../types/students'
 
 interface Props {
   content: SiteContent
@@ -12,7 +14,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'news' | 'contact' | 'style'
+type PanelTab = 'products' | 'hero' | 'news' | 'contact' | 'style' | 'students'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
 // ── Device preview switch (Edit / Desktop / Tablet / Mobile) ──────────────────
@@ -40,6 +42,10 @@ const DEVICE_OPTS: { id: DeviceView; label: string; icon: React.ReactNode }[] = 
 export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }: Props) {
   const [draft, setDraft] = useState<SiteContent>(content)
   const [activeTab, setActiveTab] = useState<PanelTab>('products')
+  const { students, saving: studentsSaving, add: addStudent, update: updateStudent, remove: removeStudent } = useStudents()
+  const [editingStudent, setEditingStudent] = useState<Student | null>(null)
+  const [newStudentForm, setNewStudentForm] = useState(false)
+  const [studentDraft, setStudentDraft] = useState<Partial<Student>>({})
   const [saved, setSaved] = useState(false)
   const [uploadTarget, setUploadTarget] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -151,11 +157,12 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   }
 
   const tabs: Array<{ id: PanelTab; label: string }> = [
-    { id: 'products', label: 'Produkte' },
+    { id: 'students', label: 'Students' },
+    { id: 'products', label: 'Sessions' },
     { id: 'hero',     label: 'Hero' },
-    { id: 'news',     label: 'Neuigkeiten' },
-    { id: 'contact',  label: 'Kontakt' },
-    { id: 'style',    label: 'Stil' },
+    { id: 'news',     label: 'Blog' },
+    { id: 'contact',  label: 'Contact' },
+    { id: 'style',    label: 'Style' },
   ]
 
   const editingProd = editingProduct ? draft.products?.items?.find(p => p.id === editingProduct) : null
@@ -500,6 +507,88 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                   </Field>
                 </PanelSection>
               </>
+            )}
+
+            {/* ── STUDENTS TAB ──────────────────────────────────────────── */}
+            {activeTab === 'students' && (
+              <div className="panel-students">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                  <span style={{ fontSize: 12, color: 'var(--panel-muted, #888)', fontWeight: 600 }}>{students.length} students</span>
+                  <button className="panel-add-btn" onClick={() => { setNewStudentForm(true); setStudentDraft({ status: 'active', language: 'English', level: 'B1', sessions: 0, goal: '', notes: '' }) }}>
+                    + Add student
+                  </button>
+                </div>
+
+                {newStudentForm && (
+                  <div className="panel-student-form" style={{ background: 'var(--panel-surface, #f8f8f8)', borderRadius: 10, padding: 14, marginBottom: 14, border: '1px solid var(--panel-border, #e8e8e8)' }}>
+                    <div style={{ fontWeight: 700, marginBottom: 10, fontSize: 13 }}>New student</div>
+                    {(['name', 'language', 'level', 'goal', 'notes', 'next_session'] as (keyof Student)[]).map(f => (
+                      <div key={f} style={{ marginBottom: 8 }}>
+                        <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3, textTransform: 'capitalize' }}>{f.replace('_', ' ')}</label>
+                        {f === 'notes' || f === 'goal'
+                          ? <textarea rows={2} value={(studentDraft[f] as string) ?? ''} onChange={e => setStudentDraft(d => ({ ...d, [f]: e.target.value }))} style={{ width: '100%', borderRadius: 6, border: '1px solid var(--panel-border, #e0e0e0)', padding: '6px 8px', fontSize: 12, resize: 'vertical' }} />
+                          : <input value={(studentDraft[f] as string) ?? ''} onChange={e => setStudentDraft(d => ({ ...d, [f]: e.target.value }))} style={{ width: '100%', borderRadius: 6, border: '1px solid var(--panel-border, #e0e0e0)', padding: '6px 8px', fontSize: 12 }} />
+                        }
+                      </div>
+                    ))}
+                    <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                      <button className="panel-add-btn" disabled={!studentDraft.name} onClick={() => { addStudent(studentDraft as Omit<Student, 'id' | 'since'>); setNewStudentForm(false); setStudentDraft({}) }}>
+                        {studentsSaving ? 'Saving…' : 'Save'}
+                      </button>
+                      <button className="panel-back-btn" onClick={() => { setNewStudentForm(false); setStudentDraft({}) }}>Cancel</button>
+                    </div>
+                  </div>
+                )}
+
+                {students.length === 0 && !newStudentForm && (
+                  <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--panel-muted, #aaa)', fontSize: 13 }}>
+                    No students yet. Add your first one above.
+                  </div>
+                )}
+
+                {students.map(s => (
+                  <div key={s.id} style={{ background: 'var(--panel-surface, #f8f8f8)', borderRadius: 10, padding: 12, marginBottom: 10, border: '1px solid var(--panel-border, #e8e8e8)' }}>
+                    {editingStudent?.id === s.id ? (
+                      <div>
+                        <div style={{ fontWeight: 700, marginBottom: 8, fontSize: 13 }}>Edit: {s.name}</div>
+                        {(['name', 'language', 'level', 'status', 'sessions', 'next_session', 'goal', 'notes'] as (keyof Student)[]).map(f => (
+                          <div key={f} style={{ marginBottom: 7 }}>
+                            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 2, textTransform: 'capitalize' }}>{f.replace('_', ' ')}</label>
+                            {f === 'status'
+                              ? <select value={editingStudent[f] as string} onChange={e => setEditingStudent(d => d ? ({ ...d, [f]: e.target.value } as Student) : null)} style={{ width: '100%', borderRadius: 6, border: '1px solid var(--panel-border, #e0e0e0)', padding: '5px 8px', fontSize: 12 }}>
+                                  <option value="active">Active</option>
+                                  <option value="paused">Paused</option>
+                                  <option value="completed">Completed</option>
+                                </select>
+                              : f === 'notes' || f === 'goal'
+                              ? <textarea rows={2} value={(editingStudent[f] as string) ?? ''} onChange={e => setEditingStudent(d => d ? ({ ...d, [f]: e.target.value } as Student) : null)} style={{ width: '100%', borderRadius: 6, border: '1px solid var(--panel-border, #e0e0e0)', padding: '5px 8px', fontSize: 12, resize: 'vertical' }} />
+                              : <input value={(editingStudent[f] as string | number) ?? ''} onChange={e => setEditingStudent(d => d ? ({ ...d, [f]: f === 'sessions' ? parseInt(e.target.value) || 0 : e.target.value } as Student) : null)} style={{ width: '100%', borderRadius: 6, border: '1px solid var(--panel-border, #e0e0e0)', padding: '5px 8px', fontSize: 12 }} />
+                            }
+                          </div>
+                        ))}
+                        <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                          <button className="panel-add-btn" onClick={() => { updateStudent(s.id, editingStudent!); setEditingStudent(null) }} disabled={studentsSaving}>{studentsSaving ? 'Saving…' : 'Save'}</button>
+                          <button className="panel-back-btn" onClick={() => setEditingStudent(null)}>Cancel</button>
+                          <button className="panel-delete-btn" style={{ marginLeft: 'auto' }} onClick={() => { if (confirm(`Remove ${s.name}?`)) { removeStudent(s.id); setEditingStudent(null) } }}>Remove</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 2 }}>{s.name}</div>
+                          <div style={{ fontSize: 11, color: 'var(--panel-muted, #888)', marginBottom: 4 }}>{s.language} · {s.level} · {s.sessions} sessions{s.next_session ? ` · next: ${s.next_session}` : ''}</div>
+                          {s.goal && <div style={{ fontSize: 11, fontStyle: 'italic', color: 'var(--panel-muted, #999)', marginBottom: 2 }}>Goal: {s.goal}</div>}
+                          {s.notes && <div style={{ fontSize: 11, color: 'var(--panel-muted, #aaa)' }}>{s.notes}</div>}
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 4, alignItems: 'flex-end', flexShrink: 0 }}>
+                          <span style={{ fontSize: 10, fontWeight: 700, padding: '2px 7px', borderRadius: 20, background: s.status === 'active' ? '#E8F5E8' : s.status === 'paused' ? '#FFF8E8' : '#F0F0F0', color: s.status === 'active' ? '#3A7A3A' : s.status === 'paused' ? '#9A7A10' : '#888' }}>{s.status}</span>
+                          <button className="panel-back-btn" style={{ fontSize: 11, padding: '3px 10px' }} onClick={() => setEditingStudent({ ...s })}>Edit</button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             )}
 
           </div>
