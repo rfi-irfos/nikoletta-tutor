@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>e-techbike.at</title>
+<script>
+  // SPA redirect: GitHub Pages serves this for unknown paths.
+  // Preserve the hash so /#admin still works.
+  var l = window.location;
+  l.replace(l.origin + l.pathname.split('/').slice(0, 1).join('/') + '/' + (l.hash || ''));
+</script>
+</head>
+</html>
