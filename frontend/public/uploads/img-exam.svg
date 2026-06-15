@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#F8F5FC"/>
+      <stop offset="100%" stop-color="#EDE6F5"/>
+    </linearGradient>
+    <radialGradient id="g1" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#DDD4F0" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#F8F5FC" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="75%" cy="30%" r="40%">
+      <stop offset="0%" stop-color="#EDE0A8" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#F8F5FC" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="380" fill="url(#bg)"/>
+  <rect width="600" height="380" fill="url(#g1)"/>
+  <rect width="600" height="380" fill="url(#g2)"/>
+
+  <circle cx="500" cy="80" r="120" fill="#E8E0A8" opacity="0.22"/>
+  <circle cx="120" cy="300" r="130" fill="#D0C8EC" opacity="0.2"/>
+
+  <!-- Path / road leading to an open gate — metaphor for passing exam -->
+  <!-- Road -->
+  <path d="M60 360 Q200 340 300 280 Q400 220 480 150" stroke="#D8D0EC" stroke-width="38" fill="none" stroke-linecap="round" opacity="0.6"/>
+  <!-- Road center dashes -->
+  <path d="M80 348 Q200 330 300 272 Q398 214 476 146" stroke="#EDE8F5" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="18,14" opacity="0.8"/>
+
+  <!-- Gate / arch at end of path -->
+  <path d="M440 90 Q480 55 520 90" stroke="#E0D880" stroke-width="10" fill="none" stroke-linecap="round" opacity="0.85"/>
+  <line x1="440" y1="90" x2="440" y2="148" stroke="#E0D880" stroke-width="10" stroke-linecap="round" opacity="0.85"/>
+  <line x1="520" y1="90" x2="520" y2="148" stroke="#E0D880" stroke-width="10" stroke-linecap="round" opacity="0.85"/>
+  <!-- Star above gate -->
+  <circle cx="480" cy="45" r="18" fill="#EDE880" opacity="0.82"/>
+  <circle cx="480" cy="45" r="10" fill="#F5F0A8" opacity="0.9"/>
+
+  <!-- Floating certificate / paper -->
+  <rect x="155" y="130" width="140" height="100" rx="10" fill="#F0EAF8" opacity="0.88"/>
+  <rect x="175" y="152" width="100" height="8" rx="4" fill="#C8B8E4" opacity="0.45"/>
+  <rect x="175" y="168" width="80" height="7" rx="3.5" fill="#C8B8E4" opacity="0.36"/>
+  <rect x="175" y="182" width="90" height="7" rx="3.5" fill="#C8B8E4" opacity="0.4"/>
+  <rect x="175" y="196" width="70" height="7" rx="3.5" fill="#C8B8E4" opacity="0.32"/>
+  <!-- Seal on certificate -->
+  <circle cx="265" cy="210" r="14" fill="#E8E0A8" opacity="0.85"/>
+  <circle cx="265" cy="210" r="9" fill="#F0EAC0" opacity="0.9"/>
+
+  <!-- Person walking path (abstract) -->
+  <circle cx="250" cy="248" r="32" fill="#EABBA8"/>
+  <path d="M220 252 Q220 223 250 218 Q280 223 280 252" fill="#D8A898" opacity="0.5"/>
+  <rect x="222" y="278" width="56" height="58" rx="12" fill="#EABBA8" opacity="0.8"/>
+  <!-- Legs walking -->
+  <path d="M234 335 Q228 355 218 368" stroke="#E8B0A0" stroke-width="16" fill="none" stroke-linecap="round"/>
+  <path d="M264 335 Q270 355 278 368" stroke="#E8B0A0" stroke-width="16" fill="none" stroke-linecap="round"/>
+
+  <!-- Small floating B2 / C1 badges -->
+  <circle cx="130" cy="155" r="26" fill="#D4CCE8" opacity="0.82"/>
+  <text x="130" y="162" font-family="system-ui" font-size="13" font-weight="600" fill="#8878B0" text-anchor="middle" opacity="0.85">B2</text>
+
+  <circle cx="390" cy="250" r="26" fill="#C8D8CC" opacity="0.78"/>
+  <text x="390" y="257" font-family="system-ui" font-size="13" font-weight="600" fill="#5A8870" text-anchor="middle" opacity="0.85">C1</text>
+
+  <!-- Plants -->
+  <path d="M32 380 Q42 328 64 302 Q80 282 100 264" stroke="#AABF9E" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="100" cy="264" rx="20" ry="13" fill="#BACCB0" opacity="0.66" transform="rotate(-30 100 264)"/>
+</svg>

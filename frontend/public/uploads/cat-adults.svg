@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#FBF6F2"/>
+      <stop offset="100%" stop-color="#F2E8E0"/>
+    </linearGradient>
+    <radialGradient id="g1" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#F0D4C4" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FBF6F2" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <rect width="400" height="300" fill="url(#g1)"/>
+
+  <circle cx="200" cy="150" r="160" fill="#EEC8B8" opacity="0.18"/>
+  <circle cx="340" cy="260" r="110" fill="#C8D8C8" opacity="0.15"/>
+
+  <!-- Person - centered, warm and open -->
+  <ellipse cx="200" cy="285" rx="120" ry="18" fill="#E0C0B0" opacity="0.12"/>
+  <!-- Body -->
+  <path d="M148 208 Q148 258 138 278 Q170 300 230 278 Q220 258 250 208 Q224 190 200 186 Q176 190 148 208Z" fill="#EABBA8"/>
+  <!-- Head -->
+  <circle cx="200" cy="140" r="64" fill="#EAC0AE"/>
+  <!-- Hair -->
+  <path d="M138 132 Q144 76 200 70 Q256 76 262 132 Q258 100 200 96 Q142 100 138 132Z" fill="#D8B0A0" opacity="0.6"/>
+  <!-- Arms open (welcoming) -->
+  <path d="M148 240 Q108 225 88 208" stroke="#EABBA8" stroke-width="26" fill="none" stroke-linecap="round"/>
+  <path d="M250 240 Q290 225 312 208" stroke="#EABBA8" stroke-width="26" fill="none" stroke-linecap="round"/>
+  <circle cx="88" cy="208" r="13" fill="#E0B0A0"/>
+  <circle cx="312" cy="208" r="13" fill="#E0B0A0"/>
+
+  <!-- Soft glow around person -->
+  <circle cx="200" cy="160" r="90" fill="#F8E8E0" opacity="0.3"/>
+
+  <!-- Plants -->
+  <path d="M35 300 Q45 252 65 228 Q80 210 98 192" stroke="#AABF9E" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="98" cy="192" rx="18" ry="12" fill="#BACCB0" opacity="0.65" transform="rotate(-30 98 192)"/>
+  <path d="M365 300 Q355 252 335 228 Q320 210 302 192" stroke="#AABF9E" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="302" cy="192" rx="18" ry="12" fill="#BACCB0" opacity="0.65" transform="rotate(30 302 192)"/>
+</svg>

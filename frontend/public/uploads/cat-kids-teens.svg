@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#F4F8FC"/>
+      <stop offset="100%" stop-color="#E8F0F8"/>
+    </linearGradient>
+    <radialGradient id="g1" cx="50%" cy="40%" r="52%">
+      <stop offset="0%" stop-color="#C8E0F0" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#F4F8FC" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <rect width="400" height="300" fill="url(#g1)"/>
+
+  <circle cx="200" cy="150" r="160" fill="#D4E8F4" opacity="0.2"/>
+
+  <!-- Two kids, one shorter, one taller, side by side -->
+  <!-- Kid 1 (left, smaller) -->
+  <ellipse cx="148" cy="285" rx="68" ry="12" fill="#D0C8E8" opacity="0.12"/>
+  <path d="M112 215 Q110 252 104 268 Q132 285 188 268 Q182 252 182 215 Q166 203 150 200 Q134 203 112 215Z" fill="#D4CCE8"/>
+  <circle cx="150" cy="158" r="48" fill="#DDD4EC"/>
+  <path d="M104 154 Q108 110 150 105 Q192 110 196 154 Q193 128 150 125 Q107 128 104 154Z" fill="#C8C0E0" opacity="0.55"/>
+  <!-- Arm waving up -->
+  <path d="M112 232 Q85 210 70 188" stroke="#D4CCE8" stroke-width="20" fill="none" stroke-linecap="round"/>
+  <circle cx="70" cy="188" r="10" fill="#CCC4E4"/>
+  <path d="M182 232 Q195 245 200 258" stroke="#CCBCE4" stroke-width="18" fill="none" stroke-linecap="round"/>
+
+  <!-- Kid 2 (right, taller) -->
+  <ellipse cx="262" cy="285" rx="72" ry="12" fill="#C8E4D4" opacity="0.12"/>
+  <path d="M222 210 Q220 250 214 268 Q244 285 304 268 Q296 250 296 210 Q278 196 262 193 Q246 196 222 210Z" fill="#C4D8C0"/>
+  <circle cx="262" cy="150" r="54" fill="#C8DCC4"/>
+  <path d="M210 146 Q214 98 262 92 Q310 98 314 146 Q310 118 262 115 Q214 118 210 146Z" fill="#B4CCAA" opacity="0.55"/>
+  <!-- Arms up (both up, excited) -->
+  <path d="M222 232 Q200 208 184 188" stroke="#C4D8C0" stroke-width="22" fill="none" stroke-linecap="round"/>
+  <path d="M296 232 Q318 208 334 188" stroke="#C4D8C0" stroke-width="22" fill="none" stroke-linecap="round"/>
+  <circle cx="184" cy="188" r="11" fill="#BCD0B8"/>
+  <circle cx="334" cy="188" r="11" fill="#BCD0B8"/>
+
+  <!-- Floating star/joy elements -->
+  <circle cx="130" cy="100" r="14" fill="#F0E8A8" opacity="0.78"/>
+  <circle cx="130" cy="100" r="7" fill="#F5F0C0" opacity="0.85"/>
+  <circle cx="285" cy="88" r="12" fill="#F0D8E8" opacity="0.75"/>
+  <circle cx="285" cy="88" r="6" fill="#F8E8F0" opacity="0.82"/>
+  <circle cx="210" cy="68" r="10" fill="#D8EED8" opacity="0.72"/>
+  <circle cx="210" cy="68" r="5" fill="#E8F8E8" opacity="0.8"/>
+</svg>

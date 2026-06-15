@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#F4F6FA"/>
+      <stop offset="100%" stop-color="#E8EEFF"/>
+    </linearGradient>
+    <radialGradient id="g1" cx="50%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#D0D8F0" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#F4F6FA" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <rect width="400" height="300" fill="url(#g1)"/>
+
+  <circle cx="200" cy="150" r="160" fill="#D4DCEC" opacity="0.2"/>
+  <circle cx="340" cy="240" r="100" fill="#DCCCE8" opacity="0.15"/>
+
+  <!-- Presentation scene -->
+  <!-- Screen/board -->
+  <rect x="90" y="80" width="220" height="145" rx="12" fill="#EEF0F8" opacity="0.9"/>
+  <rect x="90" y="80" width="220" height="145" rx="12" fill="none" stroke="#D0D8EC" stroke-width="2" opacity="0.6"/>
+  <!-- Screen content — abstract chart lines -->
+  <polyline points="115,190 148,165 180,155 212,140 244,128 277,118" stroke="#B8C8E0" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.7"/>
+  <circle cx="277" cy="118" r="6" fill="#C0C8E8" opacity="0.85"/>
+  <!-- Screen content text lines -->
+  <rect x="115" y="92" width="100" height="8" rx="4" fill="#C8D0E8" opacity="0.4"/>
+  <rect x="115" y="106" width="75" height="7" rx="3.5" fill="#C8D0E8" opacity="0.32"/>
+  <!-- Stand -->
+  <rect x="192" y="225" width="16" height="30" rx="3" fill="#C8D0E4" opacity="0.6"/>
+  <rect x="168" y="253" width="64" height="8" rx="4" fill="#C0C8E0" opacity="0.55"/>
+
+  <!-- Presenter (right side, slightly off-center) -->
+  <circle cx="345" cy="155" r="34" fill="#EABBA8"/>
+  <path d="M313 159 Q313 130 345 125 Q377 130 377 159" fill="#D8A898" opacity="0.48"/>
+  <rect x="316" y="188" width="58" height="68" rx="12" fill="#EABBA8" opacity="0.8"/>
+  <!-- Arm pointing to board -->
+  <path d="M316 215 Q280 205 248 190" stroke="#E8B0A0" stroke-width="18" fill="none" stroke-linecap="round"/>
+  <!-- Other arm -->
+  <path d="M374 215 Q385 228 390 248" stroke="#E0A898" stroke-width="16" fill="none" stroke-linecap="round"/>
+
+  <!-- Audience dots (abstract) -->
+  <circle cx="60" cy="270" r="18" fill="#D8DCF0" opacity="0.65"/>
+  <circle cx="100" cy="262" r="18" fill="#D8DCF0" opacity="0.6"/>
+  <circle cx="140" cy="268" r="18" fill="#D8DCF0" opacity="0.58"/>
+  <circle cx="180" cy="262" r="18" fill="#D8DCF0" opacity="0.55"/>
+
+  <!-- Plants -->
+  <path d="M25 300 Q34 255 52 232 Q66 214 84 196" stroke="#AABF9E" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="84" cy="196" rx="18" ry="12" fill="#BACCB0" opacity="0.64" transform="rotate(-30 84 196)"/>
+</svg>

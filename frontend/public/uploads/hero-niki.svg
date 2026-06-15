@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 700">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#FDF9F6"/>
+      <stop offset="50%" stop-color="#F8EEE8"/>
+      <stop offset="100%" stop-color="#F0E4DA"/>
+    </linearGradient>
+    <radialGradient id="glow1" cx="38%" cy="48%" r="50%">
+      <stop offset="0%" stop-color="#F5DDD0" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#FDF9F6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow2" cx="72%" cy="44%" r="42%">
+      <stop offset="0%" stop-color="#E4DCEF" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#FDF9F6" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1400" height="700" fill="url(#bg)"/>
+  <rect width="1400" height="700" fill="url(#glow1)"/>
+  <rect width="1400" height="700" fill="url(#glow2)"/>
+
+  <!-- Soft ambient circles -->
+  <circle cx="200" cy="170" r="210" fill="#EECCC0" opacity="0.16"/>
+  <circle cx="1220" cy="540" r="250" fill="#CCDBCC" opacity="0.16"/>
+  <circle cx="1280" cy="110" r="170" fill="#D4CCE8" opacity="0.14"/>
+  <circle cx="140" cy="620" r="190" fill="#EAD8A8" opacity="0.14"/>
+  <circle cx="700" cy="330" r="360" fill="#F8EEE0" opacity="0.25"/>
+
+  <!-- LEFT figure — abstract organic shape, soft blush -->
+  <!-- Shadow -->
+  <ellipse cx="370" cy="525" rx="120" ry="16" fill="#E0B0A0" opacity="0.12"/>
+  <!-- Body shape — flowing blob, not boxy -->
+  <path d="M290 340 Q260 420 268 490 Q330 540 440 510 Q480 450 465 360 Q430 305 380 298 Q325 302 290 340Z" fill="#EABBA8"/>
+  <!-- Head -->
+  <circle cx="368" cy="218" r="78" fill="#EAC0AE"/>
+  <!-- Hair — soft, rounded -->
+  <path d="M292 208 Q298 126 368 118 Q438 126 444 208 Q440 175 368 170 Q296 175 292 208Z" fill="#D8A898" opacity="0.7"/>
+  <!-- Neck -->
+  <rect x="348" y="286" width="40" height="30" rx="12" fill="#E8BCA8"/>
+  <!-- Arm reaching toward center -->
+  <path d="M456 375 Q545 338 618 312" stroke="#EABBA8" stroke-width="30" fill="none" stroke-linecap="round"/>
+  <circle cx="618" cy="312" r="15" fill="#E0B0A0"/>
+  <!-- Other arm down -->
+  <path d="M296 378 Q258 415 238 455" stroke="#E0AEA0" stroke-width="26" fill="none" stroke-linecap="round"/>
+
+  <!-- Speech bubbles floating from left person -->
+  <circle cx="650" cy="175" r="36" fill="#EDE0F5" opacity="0.88"/>
+  <circle cx="705" cy="148" r="24" fill="#EDE0F5" opacity="0.78"/>
+  <circle cx="735" cy="130" r="13" fill="#EDE0F5" opacity="0.65"/>
+
+  <circle cx="685" cy="245" r="40" fill="#F0E4F8" opacity="0.82"/>
+  <circle cx="748" cy="218" r="26" fill="#F0E4F8" opacity="0.72"/>
+  <circle cx="782" cy="200" r="15" fill="#F0E4F8" opacity="0.6"/>
+
+  <!-- Abstract "words" inside bubbles -->
+  <rect x="634" y="169" width="32" height="6" rx="3" fill="#C0B0D8" opacity="0.4"/>
+  <rect x="636" y="179" width="21" height="5" rx="2.5" fill="#C0B0D8" opacity="0.3"/>
+  <rect x="668" y="238" width="36" height="6" rx="3" fill="#B8A8D0" opacity="0.38"/>
+  <rect x="671" y="249" width="23" height="5" rx="2.5" fill="#B8A8D0" opacity="0.28"/>
+
+  <!-- Connection lines between people -->
+  <path d="M624 300 Q700 270 780 280" stroke="#E8C8B8" stroke-width="2.5" fill="none" opacity="0.55" stroke-dasharray="7,5"/>
+
+  <!-- RIGHT figure — soft sage tone -->
+  <ellipse cx="1030" cy="525" rx="120" ry="16" fill="#A8C0AA" opacity="0.14"/>
+  <path d="M950 340 Q925 420 932 490 Q995 540 1105 510 Q1140 450 1130 360 Q1095 305 1042 298 Q985 302 950 340Z" fill="#BED0BE"/>
+  <circle cx="1042" cy="218" r="74" fill="#C4D4C4"/>
+  <path d="M968 208 Q974 130 1042 122 Q1110 130 1116 208 Q1112 175 1042 170 Q972 175 968 208Z" fill="#A8C0A8" opacity="0.65"/>
+  <rect x="1022" y="286" width="40" height="30" rx="12" fill="#C0CEC0"/>
+  <!-- Arm reaching toward center -->
+  <path d="M954 375 Q865 338 782 312" stroke="#BED0BE" stroke-width="28" fill="none" stroke-linecap="round"/>
+  <circle cx="782" cy="312" r="14" fill="#B0C4B0"/>
+  <!-- Other arm -->
+  <path d="M1126 378 Q1164 415 1184 455" stroke="#B4C8B4" stroke-width="24" fill="none" stroke-linecap="round"/>
+
+  <!-- Floating word-shapes right side -->
+  <rect x="840" y="245" width="40" height="7" rx="3.5" fill="#B8D0C0" opacity="0.35"/>
+  <rect x="843" y="257" width="26" height="5" rx="2.5" fill="#B8D0C0" opacity="0.25"/>
+
+  <!-- Warm ground band -->
+  <rect x="0" y="530" width="1400" height="170" fill="#F0E8DA" opacity="0.35"/>
+
+  <!-- Plants left -->
+  <path d="M85 700 Q98 595 138 545 Q163 514 192 482" stroke="#AABF9E" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M138 545 Q108 510 88 487" stroke="#AABF9E" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M163 514 Q146 482 124 464" stroke="#AABF9E" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="192" cy="482" rx="33" ry="21" fill="#BACCB0" opacity="0.72" transform="rotate(-28 192 482)"/>
+  <ellipse cx="88" cy="487" rx="26" ry="17" fill="#C0D4AA" opacity="0.62" transform="rotate(22 88 487)"/>
+  <ellipse cx="124" cy="464" rx="23" ry="15" fill="#BACCB0" opacity="0.58" transform="rotate(10 124 464)"/>
+
+  <path d="M22 700 Q36 638 64 597 Q86 571 112 550" stroke="#AABF9E" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <ellipse cx="112" cy="550" rx="27" ry="18" fill="#B8CCA8" opacity="0.58" transform="rotate(-35 112 550)"/>
+
+  <!-- Plants right -->
+  <path d="M1315 700 Q1302 595 1262 545 Q1237 514 1208 482" stroke="#AABF9E" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <path d="M1262 545 Q1292 510 1312 487" stroke="#AABF9E" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+  <path d="M1237 514 Q1254 482 1276 464" stroke="#AABF9E" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="1208" cy="482" rx="33" ry="21" fill="#BACCB0" opacity="0.72" transform="rotate(28 1208 482)"/>
+  <ellipse cx="1312" cy="487" rx="26" ry="17" fill="#C0D4AA" opacity="0.62" transform="rotate(-22 1312 487)"/>
+  <ellipse cx="1276" cy="464" rx="23" ry="15" fill="#BACCB0" opacity="0.58" transform="rotate(-10 1276 464)"/>
+
+  <path d="M1378 700 Q1364 638 1336 597 Q1314 571 1288 550" stroke="#AABF9E" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <ellipse cx="1288" cy="550" rx="27" ry="18" fill="#B8CCA8" opacity="0.58" transform="rotate(35 1288 550)"/>
+</svg>

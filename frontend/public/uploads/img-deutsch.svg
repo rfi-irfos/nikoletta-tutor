@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#FBF8F2"/>
+      <stop offset="100%" stop-color="#F3ECE0"/>
+    </linearGradient>
+    <radialGradient id="g1" cx="50%" cy="48%" r="52%">
+      <stop offset="0%" stop-color="#ECDCC0" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#FBF8F2" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="380" fill="url(#bg)"/>
+  <rect width="600" height="380" fill="url(#g1)"/>
+
+  <circle cx="160" cy="150" r="130" fill="#E8D4B0" opacity="0.2"/>
+  <circle cx="470" cy="270" r="120" fill="#C8D4C4" opacity="0.18"/>
+
+  <!-- Open book — soft golden pages -->
+  <!-- Left page -->
+  <path d="M165 100 Q175 105 300 108 L300 290 Q170 285 160 278 Z" fill="#F0E4C4" opacity="0.9"/>
+  <!-- Right page -->
+  <path d="M300 108 Q425 105 435 100 L440 278 Q305 285 300 290 Z" fill="#EAD8B4" opacity="0.85"/>
+  <!-- Spine shadow -->
+  <rect x="296" y="105" width="8" height="185" rx="4" fill="#D4C090" opacity="0.3"/>
+
+  <!-- Lines on left page -->
+  <rect x="186" y="138" width="96" height="8" rx="4" fill="#C8B080" opacity="0.35"/>
+  <rect x="186" y="155" width="82" height="8" rx="4" fill="#C8B080" opacity="0.28"/>
+  <rect x="186" y="172" width="90" height="8" rx="4" fill="#C8B080" opacity="0.32"/>
+  <rect x="186" y="189" width="70" height="8" rx="4" fill="#C8B080" opacity="0.25"/>
+  <rect x="186" y="206" width="86" height="8" rx="4" fill="#C8B080" opacity="0.3"/>
+  <rect x="186" y="223" width="75" height="8" rx="4" fill="#C8B080" opacity="0.26"/>
+  <rect x="186" y="240" width="92" height="8" rx="4" fill="#C8B080" opacity="0.28"/>
+  <rect x="186" y="257" width="65" height="8" rx="4" fill="#C8B080" opacity="0.22"/>
+
+  <!-- Lines on right page -->
+  <rect x="318" y="138" width="96" height="8" rx="4" fill="#B8A070" opacity="0.32"/>
+  <rect x="318" y="155" width="78" height="8" rx="4" fill="#B8A070" opacity="0.26"/>
+  <rect x="318" y="172" width="88" height="8" rx="4" fill="#B8A070" opacity="0.3"/>
+  <rect x="318" y="189" width="68" height="8" rx="4" fill="#B8A070" opacity="0.24"/>
+  <rect x="318" y="206" width="82" height="8" rx="4" fill="#B8A070" opacity="0.28"/>
+  <rect x="318" y="223" width="72" height="8" rx="4" fill="#B8A070" opacity="0.24"/>
+  <rect x="318" y="240" width="90" height="8" rx="4" fill="#B8A070" opacity="0.26"/>
+
+  <!-- Small highlight word on left page -->
+  <rect x="186" y="138" width="96" height="8" rx="4" fill="#E8C4A0" opacity="0.55"/>
+
+  <!-- Person reading (right side, gentle) -->
+  <circle cx="508" cy="180" r="44" fill="#EABBA8"/>
+  <path d="M466 185 Q466 145 508 138 Q550 145 550 185" fill="#D8A898" opacity="0.5"/>
+  <rect x="475" y="222" width="66" height="70" rx="14" fill="#EABBA8" opacity="0.8"/>
+  <!-- Arms holding book -->
+  <path d="M475 255 Q450 258 432 278" stroke="#E8B0A0" stroke-width="20" fill="none" stroke-linecap="round"/>
+  <path d="M541 255 Q558 258 570 278" stroke="#E8B0A0" stroke-width="18" fill="none" stroke-linecap="round"/>
+
+  <!-- Small book in person's hands -->
+  <rect x="420" y="272" width="85" height="58" rx="8" fill="#F0E4C4" opacity="0.85"/>
+  <rect x="457" y="272" width="3" height="58" fill="#D4C090" opacity="0.3"/>
+
+  <!-- Plants -->
+  <path d="M32 380 Q42 325 66 298 Q82 280 102 262" stroke="#AABF9E" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="102" cy="262" rx="20" ry="13" fill="#BACCB0" opacity="0.66" transform="rotate(-30 102 262)"/>
+  <path d="M568 380 Q558 325 534 298 Q518 280 498 262" stroke="#AABF9E" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="498" cy="262" rx="20" ry="13" fill="#BACCB0" opacity="0.66" transform="rotate(30 498 262)"/>
+</svg>

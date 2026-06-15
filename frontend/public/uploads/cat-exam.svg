@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#F8F5FC"/>
+      <stop offset="100%" stop-color="#EDE6F8"/>
+    </linearGradient>
+    <radialGradient id="g1" cx="55%" cy="42%" r="52%">
+      <stop offset="0%" stop-color="#DDD4F0" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#F8F5FC" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="70%" cy="25%" r="38%">
+      <stop offset="0%" stop-color="#EEEAA8" stop-opacity="0.42"/>
+      <stop offset="100%" stop-color="#F8F5FC" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#bg)"/>
+  <rect width="400" height="300" fill="url(#g1)"/>
+  <rect width="400" height="300" fill="url(#g2)"/>
+
+  <circle cx="320" cy="60" r="100" fill="#E8E0A8" opacity="0.2"/>
+  <circle cx="100" cy="250" r="110" fill="#D0C8EC" opacity="0.18"/>
+
+  <!-- Certificate / achievement document (center) -->
+  <rect x="95" y="80" width="210" height="155" rx="14" fill="#F2EEF8" opacity="0.92"/>
+  <rect x="95" y="80" width="210" height="155" rx="14" fill="none" stroke="#D8D0EC" stroke-width="1.5" opacity="0.55"/>
+  <!-- Ribbon top -->
+  <rect x="168" y="75" width="64" height="14" rx="7" fill="#DDD4F0" opacity="0.75"/>
+  <!-- Lines on document -->
+  <rect x="118" y="108" width="164" height="9" rx="4.5" fill="#C8B8E4" opacity="0.45"/>
+  <rect x="128" y="124" width="144" height="7" rx="3.5" fill="#C8B8E4" opacity="0.35"/>
+  <rect x="118" y="140" width="160" height="7" rx="3.5" fill="#C8B8E4" opacity="0.38"/>
+  <rect x="128" y="155" width="130" height="7" rx="3.5" fill="#C8B8E4" opacity="0.3"/>
+  <rect x="118" y="171" width="148" height="7" rx="3.5" fill="#C8B8E4" opacity="0.34"/>
+  <!-- Seal -->
+  <circle cx="200" cy="210" r="22" fill="#E8E4A8" opacity="0.85"/>
+  <circle cx="200" cy="210" r="14" fill="#F0ECC0" opacity="0.9"/>
+  <circle cx="200" cy="210" r="7" fill="#F8F4D0" opacity="0.95"/>
+
+  <!-- Gold star above document -->
+  <circle cx="200" cy="50" r="28" fill="#EDEAA8" opacity="0.82"/>
+  <circle cx="200" cy="50" r="18" fill="#F5F2C0" opacity="0.9"/>
+  <circle cx="200" cy="50" r="9" fill="#FAFAC8" opacity="0.95"/>
+
+  <!-- Floating level badges -->
+  <circle cx="66" cy="145" r="28" fill="#D8D0F0" opacity="0.8"/>
+  <text x="66" y="153" font-family="system-ui" font-size="13" font-weight="600" fill="#8070C0" text-anchor="middle" opacity="0.85">B2</text>
+
+  <circle cx="334" cy="155" r="28" fill="#C8DCE0" opacity="0.78"/>
+  <text x="334" y="163" font-family="system-ui" font-size="13" font-weight="600" fill="#508098" text-anchor="middle" opacity="0.85">C1</text>
+
+  <!-- Plants -->
+  <path d="M28 300 Q38 254 58 230 Q74 212 92 196" stroke="#AABF9E" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="92" cy="196" rx="18" ry="12" fill="#BACCB0" opacity="0.64" transform="rotate(-30 92 196)"/>
+  <path d="M372 300 Q362 254 342 230 Q326 212 308 196" stroke="#AABF9E" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <ellipse cx="308" cy="196" rx="18" ry="12" fill="#BACCB0" opacity="0.64" transform="rotate(30 308 196)"/>
+</svg>

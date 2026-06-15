@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 380">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0%" stop-color="#FDF5F5"/>
+      <stop offset="100%" stop-color="#F5E8E8"/>
+    </linearGradient>
+    <radialGradient id="g1" cx="50%" cy="50%" r="58%">
+      <stop offset="0%" stop-color="#F0D4D4" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FDF5F5" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="380" fill="url(#bg)"/>
+  <rect width="600" height="380" fill="url(#g1)"/>
+
+  <circle cx="300" cy="190" r="200" fill="#F0C8C8" opacity="0.18"/>
+  <circle cx="100" cy="320" r="130" fill="#C8D8C8" opacity="0.16"/>
+
+  <!-- Abstract Hungarian folk-inspired motif — soft terracotta/rose -->
+  <!-- Central flower/tulip -->
+  <!-- Stem -->
+  <line x1="300" y1="310" x2="300" y2="175" stroke="#C4B0A8" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+  <!-- Leaves on stem -->
+  <path d="M300 260 Q270 240 252 218" stroke="#AABF9E" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <ellipse cx="245" cy="213" rx="22" ry="14" fill="#BACCB0" opacity="0.68" transform="rotate(40 245 213)"/>
+  <path d="M300 240 Q330 220 348 198" stroke="#AABF9E" stroke-width="4" fill="none" stroke-linecap="round" opacity="0.7"/>
+  <ellipse cx="355" cy="193" rx="22" ry="14" fill="#BACCB0" opacity="0.68" transform="rotate(-40 355 193)"/>
+
+  <!-- Central tulip petals -->
+  <ellipse cx="300" cy="148" rx="28" ry="38" fill="#F0C0C0" opacity="0.88"/>
+  <ellipse cx="268" cy="158" rx="22" ry="32" fill="#EAB8B8" opacity="0.78" transform="rotate(-20 268 158)"/>
+  <ellipse cx="332" cy="158" rx="22" ry="32" fill="#EAB8B8" opacity="0.78" transform="rotate(20 332 158)"/>
+  <ellipse cx="300" cy="132" rx="16" ry="22" fill="#F8D4D4" opacity="0.9"/>
+
+  <!-- Side flowers (smaller) -->
+  <line x1="175" y1="310" x2="175" y2="210" stroke="#C4B0A8" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+  <ellipse cx="175" cy="192" rx="20" ry="26" fill="#F0C4C4" opacity="0.75"/>
+  <ellipse cx="158" cy="200" rx="16" ry="22" fill="#EAB8C0" opacity="0.65" transform="rotate(-18 158 200)"/>
+  <ellipse cx="192" cy="200" rx="16" ry="22" fill="#EAB8C0" opacity="0.65" transform="rotate(18 192 200)"/>
+
+  <line x1="425" y1="310" x2="425" y2="210" stroke="#C4B0A8" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+  <ellipse cx="425" cy="192" rx="20" ry="26" fill="#F0C4C4" opacity="0.75"/>
+  <ellipse cx="408" cy="200" rx="16" ry="22" fill="#EAB8C0" opacity="0.65" transform="rotate(-18 408 200)"/>
+  <ellipse cx="442" cy="200" rx="16" ry="22" fill="#EAB8C0" opacity="0.65" transform="rotate(18 442 200)"/>
+
+  <!-- Decorative dots (folk motif) -->
+  <circle cx="300" cy="106" r="10" fill="#E8C0C0" opacity="0.8"/>
+  <circle cx="300" cy="106" r="5" fill="#F8D8D8" opacity="0.9"/>
+
+  <circle cx="175" cy="162" r="8" fill="#E8C0C0" opacity="0.75"/>
+  <circle cx="425" cy="162" r="8" fill="#E8C0C0" opacity="0.75"/>
+
+  <!-- Ground band -->
+  <rect x="100" y="308" width="400" height="8" rx="4" fill="#D4C0B8" opacity="0.25"/>
+
+  <!-- Decorative arcs background -->
+  <path d="M90 320 Q140 260 200 240" stroke="#F0C8C0" stroke-width="2" fill="none" opacity="0.4"/>
+  <path d="M510 320 Q460 260 400 240" stroke="#F0C8C0" stroke-width="2" fill="none" opacity="0.4"/>
+</svg>
