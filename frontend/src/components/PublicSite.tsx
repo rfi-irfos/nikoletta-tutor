@@ -906,6 +906,11 @@ export function PublicSite({
             </div>
           )}
           <div className="site-location-info">
+            {contact?.photo && (
+              <div className="site-contact-photo">
+                <EImg field="contact.photo" src={contact.photo} alt="Niki" />
+              </div>
+            )}
             <E field="contact.title" value={contact?.title ?? ''} as="h2" className="site-location-h2" />
             {contact?.subtitle && <E field="contact.subtitle" value={contact.subtitle} as="p" className="site-location-sub" />}
             <div className="site-cinfo-list">

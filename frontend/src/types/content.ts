@@ -80,6 +80,7 @@ export interface SiteContent {
   contact: {
     title: string
     subtitle?: string
+    photo?: string
     email: string
     phone: string
     address: string

@@ -27,9 +27,9 @@
     "ctaHref": "#location",
     "ctaSecLabel": "So funktioniert es",
     "ctaSecHref": "#usp",
-    "image": "uploads/niki-photo.jpg",
-    "bgX": 50,
-    "bgY": 22,
+    "image": "uploads/hero-niki.svg",
+    "bgX": 55,
+    "bgY": 42,
     "minHeight": 620
   },
   "trust": {
@@ -154,6 +154,7 @@
   "contact": {
     "title": "Sprechen wir",
     "subtitle": "Die erste Stunde ist kostenlos. Keine Verpflichtung. Nur 30 Minuten, um zu sehen, ob es passt.",
+    "photo": "uploads/niki-photo.jpg",
     "email": "nikoletta.csonka@gmail.com",
     "phone": "",
     "address": "Graz, Österreich (auch komplett online)",

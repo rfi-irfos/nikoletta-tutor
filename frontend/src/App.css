@@ -357,6 +357,13 @@ button { cursor: pointer; font-family: inherit; }
   box-shadow: 0 28px 64px rgba(196,149,106,.18);
   border: 1px solid rgba(255,255,255,.65);
 }
+.site-contact-photo {
+  width: 104px; height: 104px; border-radius: 50%; overflow: hidden;
+  margin-bottom: 22px; border: 4px solid rgba(255,255,255,.85);
+  box-shadow: 0 10px 28px rgba(196,149,106,.3);
+}
+.site-contact-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.site[data-theme="hc"] .site-contact-photo { border-color: #ffd400; }
 .site-location-h2 { font-size: 38px; font-weight: 900; color: #3A322C; margin-bottom: 14px; }
 .site-location-sub { font-size: 16px; color: #6E5F53; line-height: 1.7; margin-bottom: 30px; }
 .site-cinfo-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 26px; }

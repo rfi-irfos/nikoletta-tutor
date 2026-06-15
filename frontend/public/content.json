@@ -27,9 +27,9 @@
     "ctaHref": "#location",
     "ctaSecLabel": "How it works",
     "ctaSecHref": "#usp",
-    "image": "uploads/niki-photo.jpg",
-    "bgX": 50,
-    "bgY": 22,
+    "image": "uploads/hero-niki.svg",
+    "bgX": 55,
+    "bgY": 42,
     "minHeight": 620
   },
   "trust": {
@@ -154,6 +154,7 @@
   "contact": {
     "title": "Let's talk",
     "subtitle": "First session is free. No commitment. Just 30 minutes to see if we click.",
+    "photo": "uploads/niki-photo.jpg",
     "email": "nikoletta.csonka@gmail.com",
     "phone": "",
     "address": "Graz, Austria (also fully online)",
