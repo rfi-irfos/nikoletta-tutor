@@ -1,9 +1,10 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import type { SiteContent, ProductItem, NewsItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
 import { useStudents } from '../lib/useStudents'
 import type { Student } from '../types/students'
+import { useLang } from '../hooks/useLang'
 
 interface Props {
   content: SiteContent
@@ -46,6 +47,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [editingStudent, setEditingStudent] = useState<Student | null>(null)
   const [newStudentForm, setNewStudentForm] = useState(false)
   const [studentDraft, setStudentDraft] = useState<Partial<Student>>({})
+  const { lang, setLang } = useLang()
+
+  // When the editing language switches, the parent refetches that language's
+  // content. Re-seed the local draft so the panel edits the right document.
+  useEffect(() => { setDraft(content) }, [content])
   const [saved, setSaved] = useState(false)
   const [uploadTarget, setUploadTarget] = useState<string | null>(null)
   const [uploading, setUploading] = useState(false)
@@ -91,7 +97,21 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
 
   const addProduct = () => {
     const id = `p${Date.now()}`
-    const newProduct: ProductItem = { id, name: 'Neues Produkt', description: '', price: '', image: '', category: 'E-Bikes', specs: [] }
+    const cat = draft.products?.tabs?.find(t => t !== 'Alle') ?? (lang === 'de' ? 'Englisch' : 'English')
+    const tmpl = lang === 'de'
+      ? {
+          name: 'Neue Stunde',
+          description: 'Beschreibe diese Stunde in ein, zwei Sätzen. Für wen ist sie, was nimmt man mit, und was macht deinen Ansatz besonders?',
+          price: 'Auf Anfrage',
+          specs: ['Einzeln oder Kleingruppe', 'Online oder in Graz', 'Flexible Termine'],
+        }
+      : {
+          name: 'New session',
+          description: 'Describe this session in a sentence or two. Who is it for, what will they walk away with, and what makes your approach different?',
+          price: 'On request',
+          specs: ['1-on-1 or small group', 'Online or in Graz', 'Flexible scheduling'],
+        }
+    const newProduct: ProductItem = { id, name: tmpl.name, description: tmpl.description, price: tmpl.price, image: '', category: cat, specs: tmpl.specs }
     update('products.items', [...(draft.products?.items ?? []), newProduct])
     setEditingProduct(id)
   }
@@ -115,7 +135,16 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const addNews = () => {
     const id = `n${Date.now()}`
     const today = new Date().toISOString().split('T')[0]
-    const newItem: NewsItem = { id, date: today, title: 'Neue Neuigkeit', body: '', image: '' }
+    const tmpl = lang === 'de'
+      ? {
+          title: 'Neuer Blogbeitrag',
+          body: 'Schreib hier deinen Beitrag. Erzähl eine Geschichte aus einer Stunde, einen Tipp für Lernende oder einen Gedanken zum Sprachenlernen. Ein paar warme, ehrliche Absätze wirken am besten.',
+        }
+      : {
+          title: 'New blog post',
+          body: 'Write your post here. Share a story from a lesson, a tip for learners, or a thought about language learning. A few warm, honest paragraphs work best.',
+        }
+    const newItem: NewsItem = { id, date: today, title: tmpl.title, body: tmpl.body, image: '' }
     update('news.items', [...(draft.news?.items ?? []), newItem])
     setEditingNews(id)
   }
@@ -176,7 +205,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
       <div className="builder-topbar">
         <div className="builder-brand">
           <span className="builder-brand-dot" />
-          <strong>{draft.nav?.brand || 'Meine Website'}</strong>
+          <strong>{draft.nav?.brand || 'My website'}</strong>
+          <span className="builder-lang-switch" role="group" aria-label="Editing language">
+            <button type="button" className={`builder-lang-btn ${lang === 'en' ? 'active' : ''}`} onClick={() => setLang('en')}>EN</button>
+            <button type="button" className={`builder-lang-btn ${lang === 'de' ? 'active' : ''}`} onClick={() => setLang('de')}>DE</button>
+          </span>
         </div>
         <div className="builder-device-switch" role="group" aria-label="Ansicht wählen">
           {DEVICE_OPTS.map(d => (

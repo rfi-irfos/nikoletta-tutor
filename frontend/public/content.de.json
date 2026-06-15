@@ -1,0 +1,195 @@
+{
+  "meta": {
+    "title": "Nikoletta Csonka · Sprachcoaching",
+    "description": "Durchbrich die Sprachbarriere. Sprachcoaching in Englisch, Deutsch und Ungarisch. In Graz oder online.",
+    "primaryColor": "#C4956A",
+    "accentColor": "#3D4A40",
+    "font": "'Nunito', system-ui, -apple-system, sans-serif"
+  },
+  "nav": {
+    "logo": "",
+    "brand": "Nikoletta Csonka",
+    "links": [
+      { "label": "Über mich", "href": "#usp" },
+      { "label": "Angebote", "href": "#products" },
+      { "label": "Sprachen", "href": "#categories" },
+      { "label": "Blog", "href": "#news" },
+      { "label": "Kontakt", "href": "#location" }
+    ],
+    "ctaLabel": "Kostenlose Probestunde",
+    "ctaHref": "#location"
+  },
+  "hero": {
+    "tag": "Sprachcoach · Graz & Online",
+    "headline": "Jahrelang gelernt.<br><span>Und sprichst trotzdem nicht?</span>",
+    "subheadline": "Ich helfe Erwachsenen und Kindern, die Sprachlosigkeit zu durchbrechen, die jahrelanges starres Schullernen hinterlassen hat. Sprechen zuerst, Grammatik als Werkzeug, immer in deinem Tempo.",
+    "ctaLabel": "Mit einer kostenlosen Probestunde starten",
+    "ctaHref": "#location",
+    "ctaSecLabel": "So funktioniert es",
+    "ctaSecHref": "#usp",
+    "image": "uploads/niki-photo.jpg",
+    "bgX": 50,
+    "bgY": 22,
+    "minHeight": 620
+  },
+  "trust": {
+    "items": [
+      { "id": "t1", "icon": "shield", "bold": "TEFL zertifiziert", "text": "international anerkannt" },
+      { "id": "t2", "icon": "delivery", "bold": "10+ Jahre", "text": "Erfahrung im Unterrichten" },
+      { "id": "t3", "icon": "location", "bold": "Graz + Online", "text": "flexible Stunden" },
+      { "id": "t4", "icon": "tag", "bold": "3 Sprachen", "text": "Englisch · Deutsch · Ungarisch" }
+    ]
+  },
+  "categories": {
+    "eyebrow": "Für wen ist es?",
+    "title": "Finde, was zu dir passt",
+    "items": [
+      { "id": "c1", "name": "Erwachsene", "sub": "Durchbrich deine Blockade", "image": "uploads/cat-adults.svg" },
+      { "id": "c2", "name": "Kinder & Jugendliche", "sub": "Früh Selbstvertrauen aufbauen", "image": "uploads/cat-kids-teens.svg" },
+      { "id": "c3", "name": "Berufstätige", "sub": "Business-Englisch & Präsentationen", "image": "uploads/cat-pro.svg" },
+      { "id": "c4", "name": "Prüfungsteilnehmer", "sub": "B1 · B2 · C1 · IELTS", "image": "uploads/cat-exam.svg" }
+    ]
+  },
+  "products": {
+    "title": "Angebote & Pakete",
+    "tabs": ["Alle", "Englisch", "Deutsch", "Prüfungen", "Ungarisch", "Kinder"],
+    "items": [
+      {
+        "id": "p1",
+        "name": "Konversation Englisch",
+        "description": "Einzelstunden mit Fokus aufs Sprechen. Grammatik ist Werkzeug, nicht das Ziel. Du sprichst und ich helfe dir, es besser zu sagen.",
+        "price": "Auf Anfrage",
+        "image": "uploads/img-conversation.svg",
+        "badge": "Beliebteste",
+        "category": "Englisch",
+        "specs": ["Einzeln oder Kleingruppe", "Online oder in Graz", "Flexible Termine"]
+      },
+      {
+        "id": "p2",
+        "name": "Business-Englisch",
+        "description": "E-Mails, Präsentationen, Meetings, Verhandlungen. Praktisches Business-Englisch für die echte Welt. Keine Lehrbuchphrasen.",
+        "price": "Auf Anfrage",
+        "image": "uploads/img-business.svg",
+        "category": "Englisch",
+        "specs": ["Rollenspiele aus dem Arbeitsalltag", "E-Mail- & Schreibfeedback", "Präsentationscoaching"]
+      },
+      {
+        "id": "p3",
+        "name": "Deutschstunden / Nachhilfe",
+        "description": "Ob Schüler oder Erwachsener, wir arbeiten an genau dem, was dir fehlt. Für Prüfungen oder einfach flüssiger werden.",
+        "price": "Auf Anfrage",
+        "image": "uploads/img-deutsch.svg",
+        "category": "Deutsch",
+        "specs": ["Alle Schulstufen", "Prüfungsvorbereitung möglich", "Feedback auf Muttersprachenniveau"]
+      },
+      {
+        "id": "p4",
+        "name": "Prüfungsvorbereitung",
+        "description": "B1, B2, C1 und IELTS. Strukturiertes Üben unter echten Prüfungsbedingungen und gezieltes Feedback zu deinen Schwachstellen.",
+        "price": "Auf Anfrage",
+        "image": "uploads/img-exam.svg",
+        "badge": "Stark gefragt",
+        "category": "Prüfungen",
+        "specs": ["B1 / B2 / C1 / IELTS", "Probeprüfungen inklusive", "Erfahrung im Sprachprüfungszentrum"]
+      },
+      {
+        "id": "p5",
+        "name": "Ungarisch für Anfänger",
+        "description": "Ungarisch gilt als schwierig, aber ich mache es logisch. Ideal für Expats, die sich mit ungarischsprachiger Familie oder Kollegen verbinden möchten.",
+        "price": "Auf Anfrage",
+        "image": "uploads/img-hungarian.svg",
+        "category": "Ungarisch",
+        "specs": ["Muttersprachlerin", "Praktischer Wortschatz zuerst", "Nur Online-Stunden"]
+      },
+      {
+        "id": "p6",
+        "name": "Englisch für Kinder & Jugendliche",
+        "description": "Spielerisch, geduldig, ermutigend. Rund um das, was Kinder wirklich interessiert: Spiele, Geschichten, Lieblingsthemen. Damit die Sprache hängen bleibt.",
+        "price": "Auf Anfrage",
+        "image": "uploads/img-kids.svg",
+        "category": "Kinder",
+        "specs": ["6 bis 18 Jahre", "Spiele & Geschichten", "Eltern-Update nach jeder Stunde"]
+      }
+    ]
+  },
+  "usp": {
+    "eyebrow": "Mein Ansatz",
+    "title": "Warum das funktioniert",
+    "items": [
+      {
+        "id": "u1",
+        "title": "Sprechen zuerst",
+        "description": "Du sprichst ab der ersten Minute. Keine Grammatikvorträge, bevor du sie brauchst. Sprache lebt in deinem Mund, nicht auf einem Arbeitsblatt."
+      },
+      {
+        "id": "u2",
+        "title": "Grammatik in Häppchen",
+        "description": "Regeln kommen dann, wenn sie nützlich sind, genau im richtigen Moment. Klein, gezielt, sofort angewendet. Nichts Abstraktes, losgelöst vom echten Gebrauch."
+      },
+      {
+        "id": "u3",
+        "title": "Deine Ziele, dein Tempo",
+        "description": "Reisen? Beruf? Prüfungen? Oder einfach endlich sicher fühlen? Jede Stunde dreht sich um genau das, worauf du hinarbeitest. Da fangen wir an, immer."
+      }
+    ]
+  },
+  "news": {
+    "eyebrow": "Aus dem Coaching-Raum",
+    "title": "Gedanken zum Sprachenlernen",
+    "items": [
+      {
+        "id": "n1",
+        "date": "2026-06-01",
+        "title": "Der Moment, in dem Lernende aufhören, im Kopf zu übersetzen",
+        "body": "Es passiert meist um die 8. oder 10. Stunde. Es macht Klick. Sie greifen nicht mehr zuerst nach dem Deutschen und sprechen einfach. Das ist der Moment, den ich am meisten liebe."
+      },
+      {
+        "id": "n2",
+        "date": "2026-05-15",
+        "title": "Warum Prüfungsvorbereitung am besten funktioniert, wenn man nicht auf die Prüfung hin lehrt",
+        "body": "Lernende, die B2 fast nebenbei bestehen, weil sie wirklich kommunizieren gelernt haben, sind immer besser als die, die nur das Prüfungsformat gepaukt haben. Die Sprache übernimmt die schwere Arbeit."
+      }
+    ]
+  },
+  "contact": {
+    "title": "Sprechen wir",
+    "subtitle": "Die erste Stunde ist kostenlos. Keine Verpflichtung. Nur 30 Minuten, um zu sehen, ob es passt.",
+    "email": "nikoletta.csonka@gmail.com",
+    "phone": "",
+    "address": "Graz, Österreich (auch komplett online)",
+    "whatsapp": "",
+    "formEnabled": true
+  },
+  "whatsapp": {
+    "enabled": false,
+    "number": "",
+    "message": "Hallo Niki! Ich würde gerne eine kostenlose Probestunde buchen."
+  },
+  "footer": {
+    "brand": "Nikoletta Csonka",
+    "tagline": "sprachcoaching",
+    "description": "Sprachblockaden lösen, ein Gespräch nach dem anderen.",
+    "cols": [
+      {
+        "title": "Angebote",
+        "links": [
+          { "label": "Englisch-Coaching", "href": "#products" },
+          { "label": "Deutschstunden", "href": "#products" },
+          { "label": "Prüfungsvorbereitung", "href": "#products" },
+          { "label": "Kinder & Jugendliche", "href": "#products" }
+        ]
+      },
+      {
+        "title": "Kontakt",
+        "links": [
+          { "label": "Kostenlose Probestunde", "href": "#location" },
+          { "label": "Niki schreiben", "href": "mailto:nikoletta.csonka@gmail.com" }
+        ]
+      }
+    ],
+    "links": [
+      { "label": "Datenschutz", "href": "#" }
+    ],
+    "copyright": "© 2026 Nikoletta Csonka · Sprachcoaching · Graz"
+  }
+}

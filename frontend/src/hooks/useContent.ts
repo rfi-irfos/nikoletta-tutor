@@ -1,46 +1,61 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { SiteContent } from '../types/content'
-import { ghRead, ghWrite, b64Encode, CONTENT_PATH, UPLOADS_DIR } from '../lib/github'
+import { ghRead, ghWrite, b64Encode, contentPathFor, UPLOADS_DIR } from '../lib/github'
+import type { Lang } from './useLang'
 
-export function useContent() {
+export function useContent(lang: Lang) {
   const [content, setContent]   = useState<SiteContent | null>(null)
   const [loading, setLoading]   = useState(true)
   const [saving, setSaving]     = useState(false)
   const shaRef = useRef<string | null>(null)
 
+  // Fetch the active language's content. Swaps in place on language change
+  // (no full-screen spinner after the first load).
   useEffect(() => {
+    let cancelled = false
+    shaRef.current = null
     ;(async () => {
+      const file = lang === 'de' ? 'content.de.json' : 'content.json'
       try {
-        const res = await fetch(`${import.meta.env.BASE_URL}content.json`)
+        const res = await fetch(`${import.meta.env.BASE_URL}${file}`)
         if (!res.ok) throw new Error('missing')
-        setContent(await res.json())
+        const data = await res.json()
+        if (!cancelled) setContent(data)
       } catch {
+        // DE missing -> fall back to EN file, then to bundled default
+        if (lang === 'de') {
+          try {
+            const res = await fetch(`${import.meta.env.BASE_URL}content.json`)
+            if (res.ok) { const d = await res.json(); if (!cancelled) setContent(d); return }
+          } catch { /* fall through */ }
+        }
         const { defaultContent } = await import('../types/defaultContent')
-        setContent(defaultContent)
+        if (!cancelled) setContent(defaultContent)
       } finally {
-        setLoading(false)
+        if (!cancelled) setLoading(false)
       }
     })()
-  }, [])
+    return () => { cancelled = true }
+  }, [lang])
 
-  // Lazily prime the SHA so we can update (not just create) the file
+  // Lazily prime the SHA for the active language so we can update (not just create)
   const ensureSha = useCallback(async () => {
     if (shaRef.current) return shaRef.current
     try {
-      const file = await ghRead(CONTENT_PATH)
+      const file = await ghRead(contentPathFor(lang))
       shaRef.current = file.sha
     } catch {
       shaRef.current = null  // file doesn't exist yet — first save creates it
     }
     return shaRef.current
-  }, [])
+  }, [lang])
 
   const save = useCallback(async (updated: SiteContent): Promise<boolean> => {
     setSaving(true)
     try {
       const sha = await ensureSha()
       const b64 = b64Encode(JSON.stringify(updated, null, 2))
-      const file = await ghWrite(CONTENT_PATH, b64, sha, 'content: update via admin panel')
+      const file = await ghWrite(contentPathFor(lang), b64, sha, `content: update ${lang} via admin panel`)
       shaRef.current = file?.sha ?? null
       setContent(updated)
       return true
@@ -50,7 +65,7 @@ export function useContent() {
     } finally {
       setSaving(false)
     }
-  }, [ensureSha])
+  }, [ensureSha, lang])
 
   const uploadImage = useCallback(async (file: File): Promise<string | null> => {
     return new Promise(resolve => {

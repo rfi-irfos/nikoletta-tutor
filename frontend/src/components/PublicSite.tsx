@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
 import type { SiteContent, SectionId, CanvasPos } from '../types/content'
 import { useTheme, type Theme } from '../hooks/useTheme'
+import { useLang, type Lang } from '../hooks/useLang'
 
 // ── Edit context ─────────────────────────────────────────────────────────────
 
@@ -207,11 +208,13 @@ function TrustIcon({ icon }: { icon: string }) {
 
 // ── Contact form ──────────────────────────────────────────────────────────────
 
-function ContactForm() {
+function ContactForm({ email }: { email: string }) {
+  const { t } = useLang()
   const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' })
   const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'err'>('idle')
 
   const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }))
+  const to = email || 'nikoletta.csonka@gmail.com'
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -219,7 +222,7 @@ function ContactForm() {
     if (!key) {
       // Fallback: open mailto pre-filled
       const body = encodeURIComponent(`Name: ${form.name}\nPhone: ${form.phone}\n\n${form.message}`)
-      window.location.href = `mailto:nikoletta.csonka@gmail.com?subject=Trial lesson request from ${encodeURIComponent(form.name)}&body=${body}`
+      window.location.href = `mailto:${to}?subject=${encodeURIComponent(`${t.mailSubject} ${form.name}`)}&body=${body}`
       return
     }
     setStatus('sending')
@@ -229,7 +232,7 @@ function ContactForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           access_key: key,
-          subject: `Trial lesson request from ${form.name}`,
+          subject: `${t.mailSubject} ${form.name}`,
           ...form,
         }),
       })
@@ -244,7 +247,7 @@ function ContactForm() {
     return (
       <div className="site-contact-form-success">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        <p>Thank you! Niki will get back to you soon.</p>
+        <p>{t.success}</p>
       </div>
     )
   }
@@ -252,15 +255,15 @@ function ContactForm() {
   return (
     <form className="site-contact-form" onSubmit={submit}>
       <div className="site-contact-form-row">
-        <input placeholder="Your name" required value={form.name} onChange={e => set('name', e.target.value)} />
-        <input placeholder="Email address" type="email" required value={form.email} onChange={e => set('email', e.target.value)} />
+        <input placeholder={t.namePlaceholder} required value={form.name} onChange={e => set('name', e.target.value)} />
+        <input placeholder={t.emailPlaceholder} type="email" required value={form.email} onChange={e => set('email', e.target.value)} />
       </div>
-      <input placeholder="Phone (optional)" value={form.phone} onChange={e => set('phone', e.target.value)} />
-      <textarea placeholder="Tell me a bit about what you're working on …" rows={4} required value={form.message} onChange={e => set('message', e.target.value)} />
+      <input placeholder={t.phonePlaceholder} value={form.phone} onChange={e => set('phone', e.target.value)} />
+      <textarea placeholder={t.messagePlaceholder} rows={4} required value={form.message} onChange={e => set('message', e.target.value)} />
       <button type="submit" disabled={status === 'sending'} className="site-contact-form-btn">
-        {status === 'sending' ? 'Sending…' : 'Send message'}
+        {status === 'sending' ? `${t.sending}…` : t.send}
       </button>
-      {status === 'err' && <p className="site-contact-form-err">Something went wrong. Please try again or email directly.</p>}
+      {status === 'err' && <p className="site-contact-form-err">{t.error}</p>}
     </form>
   )
 }
@@ -297,26 +300,54 @@ function IconClose() {
   return <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
 }
 
-const THEME_OPTS: { id: Theme; label: string; icon: React.ReactNode }[] = [
-  { id: 'light', label: 'Helles Design', icon: <IconSun /> },
-  { id: 'dark', label: 'Dunkles Design', icon: <IconMoon /> },
-  { id: 'hc', label: 'Hoher Kontrast', icon: <IconContrast /> },
+const THEME_OPTS: { id: Theme; icon: React.ReactNode }[] = [
+  { id: 'light', icon: <IconSun /> },
+  { id: 'dark', icon: <IconMoon /> },
+  { id: 'hc', icon: <IconContrast /> },
 ]
 
 function ThemeToggle({ theme, setTheme }: { theme: Theme; setTheme: (t: Theme) => void }) {
+  const { t } = useLang()
+  const labels: Record<Theme, string> = { light: t.themeLight, dark: t.themeDark, hc: t.themeContrast }
   return (
-    <div className="theme-toggle" role="group" aria-label="Farbschema wählen">
+    <div className="theme-toggle" role="group" aria-label={t.colorScheme}>
       {THEME_OPTS.map(o => (
         <button
           key={o.id}
           type="button"
           className={`theme-toggle-btn ${theme === o.id ? 'active' : ''}`}
           aria-pressed={theme === o.id}
-          aria-label={o.label}
-          title={o.label}
+          aria-label={labels[o.id]}
+          title={labels[o.id]}
           onClick={() => setTheme(o.id)}
         >
           {o.icon}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+// ── Language toggle (EN / DE) ─────────────────────────────────────────────────
+
+const LANG_OPTS: { id: Lang; label: string }[] = [
+  { id: 'en', label: 'EN' },
+  { id: 'de', label: 'DE' },
+]
+
+function LanguageToggle() {
+  const { lang, setLang, t } = useLang()
+  return (
+    <div className="lang-toggle" role="group" aria-label={t.language}>
+      {LANG_OPTS.map(o => (
+        <button
+          key={o.id}
+          type="button"
+          className={`lang-toggle-btn ${lang === o.id ? 'active' : ''}`}
+          aria-pressed={lang === o.id}
+          onClick={() => setLang(o.id)}
+        >
+          {o.label}
         </button>
       ))}
     </div>
@@ -346,6 +377,14 @@ export function PublicSite({
   const [activeTab, setActiveTab] = useState('Alle')
   const [menuOpen, setMenuOpen] = useState(false)
   const { theme, setTheme } = useTheme()
+  const { t } = useLang()
+
+  // Keep the product filter valid when the language (and its tab labels) changes
+  useEffect(() => {
+    const tabs = content.products?.tabs ?? []
+    if (tabs.length && !tabs.includes(activeTab)) setActiveTab(tabs[0])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content.products?.tabs])
   const [heroBgPos, setHeroBgPos] = useState({ x: hero.bgX ?? 50, y: hero.bgY ?? 50 })
   const [heroHeight, setHeroHeight] = useState(hero.minHeight ?? 680)
   const heroDragRef  = useRef<{ startX: number; startY: number; startBgX: number; startBgY: number } | null>(null)
@@ -615,6 +654,7 @@ export function PublicSite({
             </nav>
             <div className="site-nav-right">
               <div className="site-nav-desktop">
+                <LanguageToggle />
                 <ThemeToggle theme={theme} setTheme={setTheme} />
                 {nav.phone && (
                   <a href={`tel:${nav.phone}`} className="site-nav-phone">
@@ -626,7 +666,7 @@ export function PublicSite({
                   <E field="nav.ctaLabel" value={nav.ctaLabel} as="a" href={nav.ctaHref ?? '#'} className="site-nav-cta" />
                 )}
               </div>
-              <button className="site-nav-burger" aria-label="Menü öffnen" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}>
+              <button className="site-nav-burger" aria-label={t.openMenu} aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}>
                 <IconMenu />
               </button>
             </div>
@@ -638,7 +678,7 @@ export function PublicSite({
         <aside className={`site-mobile-drawer ${menuOpen ? 'open' : ''}`} aria-hidden={!menuOpen}>
           <div className="site-mobile-drawer-top">
             <span className="site-mobile-drawer-brand">{nav.brand}</span>
-            <button className="site-mobile-close" aria-label="Menü schließen" onClick={() => setMenuOpen(false)}>
+            <button className="site-mobile-close" aria-label={t.closeMenu} onClick={() => setMenuOpen(false)}>
               <IconClose />
             </button>
           </div>
@@ -649,7 +689,13 @@ export function PublicSite({
           </nav>
           <div className="site-mobile-actions">
             <div>
-              <div className="site-mobile-theme-label">Farbschema</div>
+              <div className="site-mobile-theme-label">{t.language}</div>
+              <div className="site-mobile-theme-row">
+                <LanguageToggle />
+              </div>
+            </div>
+            <div>
+              <div className="site-mobile-theme-label">{t.colorScheme}</div>
               <div className="site-mobile-theme-row">
                 <ThemeToggle theme={theme} setTheme={setTheme} />
               </div>
@@ -847,9 +893,9 @@ export function PublicSite({
               )}
             </div>
             {contact?.formEnabled && !editMode ? (
-              <ContactForm />
+              <ContactForm email={contact?.email ?? ''} />
             ) : (
-              <a href={`mailto:${contact?.email ?? ''}`} className="site-btn-lime-solid">Nachricht senden</a>
+              <a href={`mailto:${contact?.email ?? ''}`} className="site-btn-lime-solid">{t.send}</a>
             )}
           </div>
         </section>
