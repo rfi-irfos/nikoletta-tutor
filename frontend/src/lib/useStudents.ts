@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { ghRead, ghWrite, b64Encode, b64Decode, isConfigured } from './github'
 import type { Student } from '../types/students'
 
-const STUDENTS_PATH = 'public/students.json'
+const STUDENTS_PATH = 'frontend/public/students.json'
 
 export function useStudents() {
   const [students, setStudents] = useState<Student[]>([])
