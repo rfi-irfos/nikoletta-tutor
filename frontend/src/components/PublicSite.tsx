@@ -400,8 +400,8 @@ function Stars({ rating, interactive, onChange }: { rating: number; interactive?
 
 // ── Reviews section (public fetch + submit form) ──────────────────────────────
 
-function ReviewsSection({ contactEmail, editMode }: { contactEmail: string; editMode: boolean }) {
-  const { t } = useLang()
+function ReviewsSection({ editMode }: { editMode: boolean }) {
+  const { t, lang } = useLang()
   const [reviews, setReviews] = useState<Testimonial[]>([])
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState({ name: '', email: '', language: '', rating: 5, text: '' })
@@ -1150,7 +1150,7 @@ export function PublicSite({
         )}
 
         {/* ── REVIEWS ──────────────────────────────────────────────────── */}
-        <ReviewsSection contactEmail={contact?.email ?? ''} editMode={editMode} />
+        <ReviewsSection editMode={editMode} />
 
         {/* ── NEWS ─────────────────────────────────────────────────────── */}
         {(news?.items?.length ?? 0) > 0 && (
