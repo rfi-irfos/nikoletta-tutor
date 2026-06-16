@@ -1,4 +1,4 @@
-export interface NavLink { label: string; href: string }
+export interface NavLink { label: string; href: string; tab?: string }
 export interface FeatureItem { id: string; title: string; description: string }
 
 export interface ProductItem {

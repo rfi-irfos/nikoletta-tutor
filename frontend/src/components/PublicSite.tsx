@@ -440,14 +440,12 @@ function ReviewsSection({ contactEmail, editMode }: { contactEmail: string; edit
     )
   }
 
-  if (reviews.length === 0 && !editMode) return null
-
   return (
     <section className="site-section site-reviews" id="reviews">
       <div className="site-eyebrow">{t.reviewsEyebrow}</div>
       <h2 className="site-section-title">{t.reviewsTitle}</h2>
 
-      <div className="site-reviews-grid">
+      {reviews.length > 0 && <div className="site-reviews-grid">
         {reviews.map(r => (
           <div key={r.id} className="site-review-card">
             <Stars rating={r.rating} />
@@ -458,7 +456,7 @@ function ReviewsSection({ contactEmail, editMode }: { contactEmail: string; edit
             </div>
           </div>
         ))}
-      </div>
+      </div>}
 
       {!editMode && !showForm && status !== 'ok' && (
         <div className="site-reviews-cta">
@@ -1219,7 +1217,16 @@ export function PublicSite({
               {footer.cols.map((col, ci) => (
                 <div key={ci} className="site-footer-col">
                   <h4>{col.title}</h4>
-                  {col.links.map((l, li) => <a key={li} href={l.href}>{l.label}</a>)}
+                  {col.links.map((l, li) => (
+                    <a key={li} href={l.href}
+                      onClick={l.tab ? (e) => {
+                        e.preventDefault()
+                        setActiveTab(l.tab!)
+                        document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })
+                      } : undefined}>
+                      {l.label}
+                    </a>
+                  ))}
                 </div>
               ))}
             </div>

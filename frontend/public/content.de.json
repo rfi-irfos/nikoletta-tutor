@@ -228,19 +228,23 @@
         "links": [
           {
             "label": "Englisch-Coaching",
-            "href": "#products"
+            "href": "#products",
+            "tab": "Englisch"
           },
           {
             "label": "Deutschstunden",
-            "href": "#products"
+            "href": "#products",
+            "tab": "Deutsch"
           },
           {
             "label": "Prüfungsvorbereitung",
-            "href": "#products"
+            "href": "#products",
+            "tab": "Prüfungen"
           },
           {
             "label": "Kinder & Jugendliche",
-            "href": "#products"
+            "href": "#products",
+            "tab": "Kinder"
           }
         ]
       },

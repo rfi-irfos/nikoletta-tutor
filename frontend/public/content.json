@@ -229,19 +229,23 @@
         "links": [
           {
             "label": "English Coaching",
-            "href": "#products"
+            "href": "#products",
+            "tab": "English"
           },
           {
             "label": "German Lessons",
-            "href": "#products"
+            "href": "#products",
+            "tab": "German"
           },
           {
             "label": "Exam Prep",
-            "href": "#products"
+            "href": "#products",
+            "tab": "Exam Prep"
           },
           {
             "label": "Kids & Teens",
-            "href": "#products"
+            "href": "#products",
+            "tab": "Kids"
           }
         ]
       },

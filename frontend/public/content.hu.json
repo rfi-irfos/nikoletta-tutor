@@ -229,19 +229,23 @@
         "links": [
           {
             "label": "Angol coaching",
-            "href": "#products"
+            "href": "#products",
+            "tab": "Angol"
           },
           {
             "label": "Némettanulás",
-            "href": "#products"
+            "href": "#products",
+            "tab": "Német"
           },
           {
             "label": "Vizsgafelkészítés",
-            "href": "#products"
+            "href": "#products",
+            "tab": "Vizsga"
           },
           {
             "label": "Gyerekek és tinik",
-            "href": "#products"
+            "href": "#products",
+            "tab": "Gyerekek"
           }
         ]
       },
