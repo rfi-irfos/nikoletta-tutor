@@ -551,9 +551,6 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
             {/* ── ÜBER MICH TAB ─────────────────────────────────────────── */}
             {activeTab === 'about' && (
               <>
-                <PanelSection title="Foto">
-                  <UploadRow src={draft.about?.photo ?? ''} onUpload={() => handleImageClick('about.photo')} uploading={uploading && uploadTarget === 'about.photo'} />
-                </PanelSection>
                 <PanelSection title="Text">
                   <Field label="Eyebrow (klein, oben)">
                     <input value={draft.about?.eyebrow ?? ''} onChange={e => update('about.eyebrow', e.target.value)} placeholder="About me" />

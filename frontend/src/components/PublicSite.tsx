@@ -963,30 +963,20 @@ export function PublicSite({
         {/* ── ABOUT ────────────────────────────────────────────────────── */}
         {content.about && (
           <section className="site-about" id="about">
-            <div className="site-about-inner">
-              <div className="site-about-photo-wrap">
-                {content.about.photo
-                  ? <EImg field="about.photo" src={content.about.photo} alt="Niki" className="site-about-photo" />
-                  : editMode
-                    ? <div className="site-about-photo-placeholder" style={{ cursor: 'pointer' }} onClick={() => onImageClick?.('about.photo')}>N</div>
-                    : <div className="site-about-photo-placeholder">N</div>
-                }
-              </div>
-              <div className="site-about-content">
-                {content.about.eyebrow && <div className="site-eyebrow" data-cid="about.eyebrow">{content.about.eyebrow}</div>}
-                <E field="about.headline" value={content.about.headline} as="h2" className="site-about-headline" />
-                <E field="about.bio" value={content.about.bio} as="p" className="site-about-bio" />
-                {(content.about.stats?.length ?? 0) > 0 && (
-                  <div className="site-about-stats">
-                    {content.about.stats!.map((s, i) => (
-                      <div key={i} className="site-about-stat">
-                        <strong data-cid={`about.stats.${i}.value`}>{s.value}</strong>
-                        <span data-cid={`about.stats.${i}.label`}>{s.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+            <div className="site-about-inner site-about-inner--no-photo">
+              {content.about.eyebrow && <div className="site-eyebrow" data-cid="about.eyebrow">{content.about.eyebrow}</div>}
+              <E field="about.headline" value={content.about.headline} as="h2" className="site-about-headline" />
+              <E field="about.bio" value={content.about.bio} as="p" className="site-about-bio" />
+              {(content.about.stats?.length ?? 0) > 0 && (
+                <div className="site-about-stats">
+                  {content.about.stats!.map((s, i) => (
+                    <div key={i} className="site-about-stat">
+                      <strong data-cid={`about.stats.${i}.value`}>{s.value}</strong>
+                      <span data-cid={`about.stats.${i}.label`}>{s.label}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </section>
         )}
