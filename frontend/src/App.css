@@ -670,6 +670,8 @@ button { cursor: pointer; font-family: inherit; }
 .builder-user { font-size: 13px; color: #777; }
 .builder-btn-ghost { background: none; border: 1.5px solid #ddd; border-radius: 6px; padding: 5px 12px; font-size: 13px; color: #555; transition: .2s; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
 .builder-btn-ghost:hover { border-color: #0099CC; color: #0099CC; }
+.builder-btn-ghost.active { background: #0099CC; border-color: #0099CC; color: #fff; }
+.builder-btn-ghost.active:hover { background: #0080aa; border-color: #0080aa; }
 .builder-save-btn-top {
   background: #0099CC; color: #fff; border: none;
   padding: 7px 18px; border-radius: 6px; font-size: 13px; font-weight: 700; transition: .2s;

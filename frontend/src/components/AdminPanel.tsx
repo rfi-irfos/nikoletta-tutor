@@ -66,6 +66,8 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [specsInput, setSpecsInput] = useState('')
   const [panelWidth, setPanelWidth] = useState(380)
   const [device, setDevice] = useState<DeviceView>('edit')
+  const [adminMode, setAdminMode] = useState(false)
+  const [adminSection, setAdminSection] = useState<'reviews' | 'students'>('reviews')
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
 
@@ -236,9 +238,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   }
 
   const tabs: Array<{ id: PanelTab; label: string }> = [
-    { id: 'students', label: 'Schüler' },
     { id: 'products', label: 'Sessions' },
-    { id: 'reviews',  label: 'Reviews' },
     { id: 'hero',     label: 'Hero' },
     { id: 'about',    label: 'Über mich' },
     { id: 'usp',      label: 'Mein Ansatz' },
@@ -282,6 +282,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
         </div>
         <div className="builder-topbar-right">
           <span className="builder-user">{user.name || user.email}</span>
+          <button
+            className={`builder-btn-ghost ${adminMode ? 'active' : ''}`}
+            onClick={() => setAdminMode(m => !m)}
+            title="Verwaltung: CRM & Bewertungen"
+          >Admin</button>
           <button
             className={`builder-save-btn-top ${saving ? 'loading' : ''} ${saved ? 'done' : ''}`}
             onClick={handleSave}
@@ -333,14 +338,21 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
         {/* RIGHT: Panel (drag the left edge to resize) */}
         <aside className="builder-panel" style={{ width: panelWidth }}>
           <div className="builder-panel-resize" onMouseDown={startPanelResize} title="Breite ziehen" />
-          {/* Tab bar */}
-          <div className="builder-tabs">
-            {tabs.map(t => (
-              <button key={t.id} className={`builder-tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)}>
-                {t.label}
-              </button>
-            ))}
-          </div>
+          {/* Tab bar — admin mode vs builder mode */}
+          {adminMode ? (
+            <div className="builder-tabs">
+              <button className={`builder-tab ${adminSection === 'reviews' ? 'active' : ''}`} onClick={() => setAdminSection('reviews')}>Reviews</button>
+              <button className={`builder-tab ${adminSection === 'students' ? 'active' : ''}`} onClick={() => setAdminSection('students')}>Schüler</button>
+            </div>
+          ) : (
+            <div className="builder-tabs">
+              {tabs.map(t => (
+                <button key={t.id} className={`builder-tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Panel content */}
           <div className="builder-panel-body">
@@ -369,8 +381,8 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
               </div>
             )}
 
-            {/* ── REVIEWS TAB ───────────────────────────────────────────── */}
-            {activeTab === 'reviews' && (
+            {/* ── REVIEWS TAB (Admin Panel) ─────────────────────────────── */}
+            {adminSection === 'reviews' && adminMode && (
               <div className="panel-products">
                 <div style={{ fontSize: 11, color: 'var(--panel-muted,#888)', marginBottom: 10, lineHeight: 1.5 }}>
                   Wenn eine Bewertung per E-Mail eingeht, hier manuell hinzufügen. Nur genehmigte erscheinen auf der Website.
@@ -692,8 +704,8 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
               </>
             )}
 
-            {/* ── STUDENTS TAB ──────────────────────────────────────────── */}
-            {activeTab === 'students' && (
+            {/* ── STUDENTS TAB (Admin Panel) ────────────────────────────── */}
+            {adminSection === 'students' && adminMode && (
               <div className="panel-students">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                   <span style={{ fontSize: 12, color: 'var(--panel-muted, #888)', fontWeight: 600 }}>{students.length} Schüler</span>
@@ -776,16 +788,18 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
 
           </div>
 
-          {/* SAVE FOOTER */}
-          <div className="builder-panel-foot">
-            <button
-              className={`builder-save-btn ${saving ? 'loading' : ''} ${saved ? 'done' : ''}`}
-              onClick={handleSave}
-              disabled={saving}
-            >
-              {saving ? 'Speichern…' : saved ? 'Gespeichert!' : 'Speichern'}
-            </button>
-          </div>
+          {/* SAVE FOOTER — only in builder mode (admin changes auto-save via GitHub) */}
+          {!adminMode && (
+            <div className="builder-panel-foot">
+              <button
+                className={`builder-save-btn ${saving ? 'loading' : ''} ${saved ? 'done' : ''}`}
+                onClick={handleSave}
+                disabled={saving}
+              >
+                {saving ? 'Speichern…' : saved ? 'Gespeichert!' : 'Speichern'}
+              </button>
+            </div>
+          )}
         </aside>
       </div>
 
