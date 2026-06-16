@@ -10,10 +10,22 @@
     "logo": "",
     "brand": "Nikoletta Csonka",
     "links": [
-      { "label": "Über mich", "href": "#usp" },
-      { "label": "Angebote", "href": "#products" },
-      { "label": "Blog", "href": "#news" },
-      { "label": "Kontakt", "href": "#location" }
+      {
+        "label": "Über mich",
+        "href": "#usp"
+      },
+      {
+        "label": "Angebote",
+        "href": "#products"
+      },
+      {
+        "label": "Blog",
+        "href": "#news"
+      },
+      {
+        "label": "Kontakt",
+        "href": "#location"
+      }
     ],
     "ctaLabel": "Kostenlose Probestunde",
     "ctaHref": "#location"
@@ -33,15 +45,42 @@
   },
   "trust": {
     "items": [
-      { "id": "t1", "icon": "shield", "bold": "TEFL zertifiziert", "text": "international anerkannt" },
-      { "id": "t2", "icon": "delivery", "bold": "10+ Jahre", "text": "Erfahrung im Unterrichten" },
-      { "id": "t3", "icon": "location", "bold": "Graz + Online", "text": "flexible Stunden" },
-      { "id": "t4", "icon": "tag", "bold": "3 Sprachen", "text": "Englisch · Deutsch · Ungarisch" }
+      {
+        "id": "t1",
+        "icon": "shield",
+        "bold": "TEFL zertifiziert",
+        "text": "international anerkannt"
+      },
+      {
+        "id": "t2",
+        "icon": "delivery",
+        "bold": "10+ Jahre",
+        "text": "Erfahrung im Unterrichten"
+      },
+      {
+        "id": "t3",
+        "icon": "location",
+        "bold": "Graz + Online",
+        "text": "flexible Stunden"
+      },
+      {
+        "id": "t4",
+        "icon": "tag",
+        "bold": "3 Sprachen",
+        "text": "Englisch · Deutsch · Ungarisch"
+      }
     ]
   },
   "products": {
     "title": "Angebote & Pakete",
-    "tabs": ["Alle", "Englisch", "Deutsch", "Prüfungen", "Ungarisch", "Kinder"],
+    "tabs": [
+      "Alle",
+      "Englisch",
+      "Deutsch",
+      "Prüfungen",
+      "Ungarisch",
+      "Kinder"
+    ],
     "items": [
       {
         "id": "p1",
@@ -51,7 +90,11 @@
         "image": "uploads/img-conversation.svg",
         "badge": "Beliebteste",
         "category": "Englisch",
-        "specs": ["Einzeln oder Kleingruppe", "Online oder in Graz", "Flexible Termine"]
+        "specs": [
+          "Einzeln oder Kleingruppe",
+          "Online oder in Graz",
+          "Flexible Termine"
+        ]
       },
       {
         "id": "p2",
@@ -60,7 +103,11 @@
         "price": "Auf Anfrage",
         "image": "uploads/img-business.svg",
         "category": "Englisch",
-        "specs": ["Rollenspiele aus dem Arbeitsalltag", "E-Mail- & Schreibfeedback", "Präsentationscoaching"]
+        "specs": [
+          "Rollenspiele aus dem Arbeitsalltag",
+          "E-Mail- & Schreibfeedback",
+          "Präsentationscoaching"
+        ]
       },
       {
         "id": "p3",
@@ -69,7 +116,11 @@
         "price": "Auf Anfrage",
         "image": "uploads/img-deutsch.svg",
         "category": "Deutsch",
-        "specs": ["Alle Schulstufen", "Prüfungsvorbereitung möglich", "Feedback auf Muttersprachenniveau"]
+        "specs": [
+          "Alle Schulstufen",
+          "Prüfungsvorbereitung möglich",
+          "Feedback auf Muttersprachenniveau"
+        ]
       },
       {
         "id": "p4",
@@ -79,16 +130,24 @@
         "image": "uploads/img-exam.svg",
         "badge": "Stark gefragt",
         "category": "Prüfungen",
-        "specs": ["B1 / B2 / C1 / IELTS", "Probeprüfungen inklusive", "Erfahrung im Sprachprüfungszentrum"]
+        "specs": [
+          "B1 / B2 / C1 / IELTS",
+          "Probeprüfungen inklusive",
+          "Erfahrung im Sprachprüfungszentrum"
+        ]
       },
       {
         "id": "p5",
         "name": "Ungarisch für Anfänger",
-        "description": "Ungarisch gilt als schwierig, aber ich mache es logisch. Ideal für Expats, die sich mit ungarischsprachiger Familie oder Kollegen verbinden möchten.",
+        "description": "Ungarisch gilt als schwierig, aber ich mache es logisch. Ideal für Expats, die sich mit ungarischsprachigen Familienmitgliedern oder Kollegen verbinden möchten, oder für alle, die die Sprache aus praktischen Gründen brauchen: Visum, Aufenthaltstitel, Staatsbürgerschaftsprüfung.",
         "price": "Auf Anfrage",
         "image": "uploads/img-hungarian.svg",
         "category": "Ungarisch",
-        "specs": ["Muttersprachlerin", "Praktischer Wortschatz zuerst", "Nur Online-Stunden"]
+        "specs": [
+          "Muttersprachlerin",
+          "Staatsbürgerschaftsprüfung",
+          "Visumvorbereitung"
+        ]
       },
       {
         "id": "p6",
@@ -97,7 +156,11 @@
         "price": "Auf Anfrage",
         "image": "uploads/img-kids.svg",
         "category": "Kinder",
-        "specs": ["6 bis 18 Jahre", "Spiele & Geschichten", "Eltern-Update nach jeder Stunde"]
+        "specs": [
+          "6 bis 18 Jahre",
+          "Spiele & Geschichten",
+          "Eltern-Update nach jeder Stunde"
+        ]
       }
     ]
   },
@@ -163,22 +226,43 @@
       {
         "title": "Angebote",
         "links": [
-          { "label": "Englisch-Coaching", "href": "#products" },
-          { "label": "Deutschstunden", "href": "#products" },
-          { "label": "Prüfungsvorbereitung", "href": "#products" },
-          { "label": "Kinder & Jugendliche", "href": "#products" }
+          {
+            "label": "Englisch-Coaching",
+            "href": "#products"
+          },
+          {
+            "label": "Deutschstunden",
+            "href": "#products"
+          },
+          {
+            "label": "Prüfungsvorbereitung",
+            "href": "#products"
+          },
+          {
+            "label": "Kinder & Jugendliche",
+            "href": "#products"
+          }
         ]
       },
       {
         "title": "Kontakt",
         "links": [
-          { "label": "Kostenlose Probestunde", "href": "#location" },
-          { "label": "Niki schreiben", "href": "mailto:nikoletta.tutor@gmail.com" }
+          {
+            "label": "Kostenlose Probestunde",
+            "href": "#location"
+          },
+          {
+            "label": "Niki schreiben",
+            "href": "mailto:nikoletta.tutor@gmail.com"
+          }
         ]
       }
     ],
     "links": [
-      { "label": "Datenschutz", "href": "#" }
+      {
+        "label": "Datenschutz",
+        "href": "#"
+      }
     ],
     "copyright": "© 2026 Nikoletta Csonka · Sprachcoaching · Graz"
   }
