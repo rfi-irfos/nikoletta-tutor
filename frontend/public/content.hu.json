@@ -12,7 +12,6 @@
     "links": [
       { "label": "Rólam", "href": "#usp" },
       { "label": "Órák", "href": "#products" },
-      { "label": "Nyelvek", "href": "#categories" },
       { "label": "Blog", "href": "#news" },
       { "label": "Kapcsolat", "href": "#location" }
     ],
@@ -38,16 +37,6 @@
       { "id": "t2", "icon": "delivery", "bold": "10+ év", "text": "tapasztalat a tanításban" },
       { "id": "t3", "icon": "location", "bold": "Graz + online", "text": "rugalmas időpontok" },
       { "id": "t4", "icon": "tag", "bold": "3 nyelv", "text": "angol · német · magyar" }
-    ]
-  },
-  "categories": {
-    "eyebrow": "Kinek szól?",
-    "title": "Találd meg, ami neked való",
-    "items": [
-      { "id": "c1", "name": "Felnőttek", "sub": "Törd át a gátat", "image": "uploads/cat-adults.svg", "tab": "Angol" },
-      { "id": "c2", "name": "Gyerekek és tinik", "sub": "Építs önbizalmat korán", "image": "uploads/cat-kids-teens.svg", "tab": "Gyerekek" },
-      { "id": "c3", "name": "Szakemberek", "sub": "Üzleti angol és prezentációk", "image": "uploads/cat-pro.svg", "tab": "Angol" },
-      { "id": "c4", "name": "Vizsgázók", "sub": "B1 · B2 · C1 · IELTS", "image": "uploads/cat-exam.svg", "tab": "Vizsga" }
     ]
   },
   "products": {

@@ -12,7 +12,6 @@
     "links": [
       { "label": "About", "href": "#usp" },
       { "label": "Sessions", "href": "#products" },
-      { "label": "Languages", "href": "#categories" },
       { "label": "Blog", "href": "#news" },
       { "label": "Contact", "href": "#location" }
     ],
@@ -38,16 +37,6 @@
       { "id": "t2", "icon": "delivery", "bold": "10+ years", "text": "teaching English and German" },
       { "id": "t3", "icon": "location", "bold": "Graz + Online", "text": "flexible sessions" },
       { "id": "t4", "icon": "tag", "bold": "3 languages", "text": "English · German · Hungarian" }
-    ]
-  },
-  "categories": {
-    "eyebrow": "Who is it for?",
-    "title": "Find your fit",
-    "items": [
-      { "id": "c1", "name": "Adults", "sub": "Break through your block", "image": "uploads/cat-adults.svg", "tab": "English" },
-      { "id": "c2", "name": "Kids & Teens", "sub": "Build confidence early", "image": "uploads/cat-kids-teens.svg", "tab": "Kids" },
-      { "id": "c3", "name": "Professionals", "sub": "Business English & presentations", "image": "uploads/cat-pro.svg", "tab": "English" },
-      { "id": "c4", "name": "Exam Students", "sub": "B1 · B2 · C1 · IELTS", "image": "uploads/cat-exam.svg", "tab": "Exam Prep" }
     ]
   },
   "products": {

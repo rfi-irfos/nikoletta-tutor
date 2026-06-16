@@ -394,6 +394,14 @@ export function PublicSite({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content.products?.tabs])
 
+  // When language changes, refresh open modal to show translated content
+  useEffect(() => {
+    if (!modalProduct) return
+    const fresh = (content.products?.items ?? []).find(p => p.id === modalProduct.id)
+    if (fresh) setModalProduct(fresh)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content.products?.items])
+
   // Close the session detail modal on Escape
   useEffect(() => {
     if (!modalProduct) return
