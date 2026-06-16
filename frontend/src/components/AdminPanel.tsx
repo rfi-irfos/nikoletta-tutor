@@ -17,7 +17,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'news' | 'contact' | 'style' | 'students' | 'reviews'
+type PanelTab = 'products' | 'hero' | 'usp' | 'news' | 'contact' | 'style' | 'students' | 'reviews'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
 // ── Device preview switch (Edit / Desktop / Tablet / Mobile) ──────────────────
@@ -106,6 +106,8 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
       if (item) { setActiveTab('news'); setEditingNews(item.id) }
     } else if (cid.startsWith('contact.') || cid.startsWith('whatsapp.')) {
       setActiveTab('contact')
+    } else if (cid.startsWith('usp.')) {
+      setActiveTab('usp')
     } else if (cid.startsWith('meta.') || cid.startsWith('footer.')) {
       setActiveTab('style')
     }
@@ -233,6 +235,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
     { id: 'products', label: 'Sessions' },
     { id: 'reviews',  label: 'Reviews' },
     { id: 'hero',     label: 'Hero' },
+    { id: 'usp',      label: 'Mein Ansatz' },
     { id: 'news',     label: 'Blog' },
     { id: 'contact',  label: 'Kontakt' },
     { id: 'style',    label: 'Stil' },
@@ -487,6 +490,54 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                   <Field label="Nummer">
                     <input value={draft.nav?.phone ?? ''} onChange={e => update('nav.phone', e.target.value)} />
                   </Field>
+                </PanelSection>
+              </>
+            )}
+
+            {/* ── USP / MEIN ANSATZ TAB ─────────────────────────────────── */}
+            {activeTab === 'usp' && (
+              <>
+                <PanelSection title="Abschnitts-Beschriftung">
+                  <Field label="Eyebrow (Akzent-Text)">
+                    <input value={draft.usp?.eyebrow ?? ''} onChange={e => update('usp.eyebrow', e.target.value)} placeholder="My approach" />
+                  </Field>
+                  <Field label="Überschrift">
+                    <input value={draft.usp?.title ?? ''} onChange={e => update('usp.title', e.target.value)} placeholder="Why this works" />
+                  </Field>
+                </PanelSection>
+                <PanelSection title="Karten">
+                  {(draft.usp?.items ?? []).map((u, i) => (
+                    <div key={u.id} style={{ background: 'var(--panel-surface,#f8f8f8)', borderRadius: 10, padding: 12, marginBottom: 10, border: '1px solid var(--panel-border,#e8e8e8)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                        <span style={{ fontWeight: 600, fontSize: 12 }}>Karte {i + 1}</span>
+                        <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--panel-danger,#d44)', fontSize: 12, padding: '2px 6px' }}
+                          onClick={() => update('usp.items', (draft.usp?.items ?? []).filter((_, j) => j !== i))}>
+                          Löschen
+                        </button>
+                      </div>
+                      <Field label="Titel">
+                        <input value={u.title ?? ''} onChange={e => {
+                          const items = [...(draft.usp?.items ?? [])]
+                          items[i] = { ...items[i], title: e.target.value }
+                          update('usp.items', items)
+                        }} placeholder="Conversation First" />
+                      </Field>
+                      <Field label="Beschreibung">
+                        <textarea rows={3} value={u.description ?? ''} onChange={e => {
+                          const items = [...(draft.usp?.items ?? [])]
+                          items[i] = { ...items[i], description: e.target.value }
+                          update('usp.items', items)
+                        }} placeholder="Beschreibe diesen Punkt..." />
+                      </Field>
+                    </div>
+                  ))}
+                  <button className="panel-add-big-btn" onClick={() => {
+                    const items = [...(draft.usp?.items ?? []), { id: `u${Date.now()}`, title: 'Neue Karte', description: '' }]
+                    update('usp.items', items)
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Karte hinzufügen
+                  </button>
                 </PanelSection>
               </>
             )}
