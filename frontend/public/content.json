@@ -266,5 +266,25 @@
       }
     ],
     "copyright": "© 2026 Nikoletta Csonka · Language Coaching · Graz"
+  },
+  "about": {
+    "eyebrow": "About me",
+    "headline": "Hello, I am Niki.",
+    "bio": "Since 2016, language coaching has been my daily life. English, German and Hungarian are not just subjects I teach, they are the languages I live in: at the market, in job interviews, in board meetings, and over coffee with friends. I have worked with 53 students so far. 50 reached their goal. The other three are still welcome back any time.",
+    "photo": "uploads/niki-photo.jpg",
+    "stats": [
+      {
+        "value": "10+",
+        "label": "years active"
+      },
+      {
+        "value": "3",
+        "label": "languages"
+      },
+      {
+        "value": "50 / 53",
+        "label": "goals reached"
+      }
+    ]
   }
 }

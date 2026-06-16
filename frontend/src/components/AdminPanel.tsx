@@ -17,7 +17,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'usp' | 'news' | 'contact' | 'style' | 'students' | 'reviews'
+type PanelTab = 'products' | 'hero' | 'about' | 'usp' | 'news' | 'contact' | 'style' | 'students' | 'reviews'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
 // ── Device preview switch (Edit / Desktop / Tablet / Mobile) ──────────────────
@@ -91,10 +91,15 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   // ── Canvas click → sidebar auto-navigate ─────────────────────────────────
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const el = (e.target as HTMLElement).closest('[data-cid]') as HTMLElement | null
+    // Don't intercept clicks on editable text — let them focus for inline editing
+    const target = e.target as HTMLElement
+    if (target.isContentEditable || target.closest('.editable-text')) return
+    const el = target.closest('[data-cid]') as HTMLElement | null
     if (!el) return
     const cid = el.dataset.cid ?? ''
-    if (cid.startsWith('hero.') || cid.startsWith('nav.')) {
+    if (cid.startsWith('about.')) {
+      setActiveTab('about')
+    } else if (cid.startsWith('hero.') || cid.startsWith('nav.')) {
       setActiveTab('hero')
     } else if (cid.startsWith('products.items.')) {
       const idx = parseInt(cid.split('.')[2])
@@ -235,6 +240,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
     { id: 'products', label: 'Sessions' },
     { id: 'reviews',  label: 'Reviews' },
     { id: 'hero',     label: 'Hero' },
+    { id: 'about',    label: 'Über mich' },
     { id: 'usp',      label: 'Mein Ansatz' },
     { id: 'news',     label: 'Blog' },
     { id: 'contact',  label: 'Kontakt' },
@@ -542,6 +548,50 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
               </>
             )}
 
+            {/* ── ÜBER MICH TAB ─────────────────────────────────────────── */}
+            {activeTab === 'about' && (
+              <>
+                <PanelSection title="Foto">
+                  <UploadRow src={draft.about?.photo ?? ''} onUpload={() => handleImageClick('about.photo')} uploading={uploading && uploadTarget === 'about.photo'} />
+                </PanelSection>
+                <PanelSection title="Text">
+                  <Field label="Eyebrow (klein, oben)">
+                    <input value={draft.about?.eyebrow ?? ''} onChange={e => update('about.eyebrow', e.target.value)} placeholder="About me" />
+                  </Field>
+                  <Field label="Überschrift">
+                    <input value={draft.about?.headline ?? ''} onChange={e => update('about.headline', e.target.value)} placeholder="Hello, I'm Niki." />
+                  </Field>
+                  <Field label="Bio-Text">
+                    <textarea rows={5} value={draft.about?.bio ?? ''} onChange={e => update('about.bio', e.target.value)} placeholder="A few warm, honest sentences about you..." />
+                  </Field>
+                </PanelSection>
+                <PanelSection title="Kennzahlen">
+                  {(draft.about?.stats ?? []).map((s, i) => (
+                    <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+                      <input style={{ width: 80, flexShrink: 0 }} value={s.value} placeholder="10+" onChange={e => {
+                        const stats = [...(draft.about?.stats ?? [])]
+                        stats[i] = { ...stats[i], value: e.target.value }
+                        update('about.stats', stats)
+                      }} />
+                      <input style={{ flex: 1 }} value={s.label} placeholder="years active" onChange={e => {
+                        const stats = [...(draft.about?.stats ?? [])]
+                        stats[i] = { ...stats[i], label: e.target.value }
+                        update('about.stats', stats)
+                      }} />
+                      <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#d44', padding: '0 4px', fontSize: 18, lineHeight: 1 }}
+                        onClick={() => update('about.stats', (draft.about?.stats ?? []).filter((_, j) => j !== i))}>×</button>
+                    </div>
+                  ))}
+                  <button className="panel-add-big-btn" onClick={() => {
+                    update('about.stats', [...(draft.about?.stats ?? []), { value: '', label: '' }])
+                  }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Kennzahl hinzufügen
+                  </button>
+                </PanelSection>
+              </>
+            )}
+
             {/* ── NEWS TAB ──────────────────────────────────────────────── */}
             {activeTab === 'news' && (
               <div className="panel-products">
@@ -814,7 +864,9 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                 Löschen
               </button>
               <div className="pem-footer-right">
-                <button className="builder-save-btn-top done" onClick={() => setEditingProduct(null)}>Fertig</button>
+                <button className="builder-save-btn-top" onClick={() => { setEditingProduct(null); handleSave() }} disabled={saving}>
+                  {saving ? 'Speichern…' : 'Speichern'}
+                </button>
               </div>
             </div>
           </div>
@@ -864,7 +916,9 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                 Löschen
               </button>
               <div className="pem-footer-right">
-                <button className="builder-save-btn-top done" onClick={() => setEditingNews(null)}>Fertig</button>
+                <button className="builder-save-btn-top" onClick={() => { setEditingNews(null); handleSave() }} disabled={saving}>
+                  {saving ? 'Speichern…' : 'Speichern'}
+                </button>
               </div>
             </div>
           </div>

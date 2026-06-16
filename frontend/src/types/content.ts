@@ -41,9 +41,18 @@ export const DEFAULT_SECTION_ORDER: SectionId[] = ['trust', 'categories', 'produ
 
 export interface CanvasPos { x: number; y: number }
 
+export interface AboutStat { value: string; label: string }
+
 export interface SiteContent {
   sectionOrder?: SectionId[]
   positions?: Record<string, CanvasPos>
+  about?: {
+    eyebrow?: string
+    headline: string
+    bio: string
+    photo?: string
+    stats?: AboutStat[]
+  }
   meta: {
     title: string
     description: string
