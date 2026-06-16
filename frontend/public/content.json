@@ -10,10 +10,22 @@
     "logo": "",
     "brand": "Nikoletta Csonka",
     "links": [
-      { "label": "About", "href": "#usp" },
-      { "label": "Sessions", "href": "#products" },
-      { "label": "Blog", "href": "#news" },
-      { "label": "Contact", "href": "#location" }
+      {
+        "label": "About",
+        "href": "#usp"
+      },
+      {
+        "label": "Sessions",
+        "href": "#products"
+      },
+      {
+        "label": "Blog",
+        "href": "#news"
+      },
+      {
+        "label": "Contact",
+        "href": "#location"
+      }
     ],
     "ctaLabel": "Free trial lesson",
     "ctaHref": "#location"
@@ -33,15 +45,42 @@
   },
   "trust": {
     "items": [
-      { "id": "t1", "icon": "shield", "bold": "TEFL Certified", "text": "internationally recognized" },
-      { "id": "t2", "icon": "delivery", "bold": "10+ years", "text": "teaching English and German" },
-      { "id": "t3", "icon": "location", "bold": "Graz + Online", "text": "flexible sessions" },
-      { "id": "t4", "icon": "tag", "bold": "3 languages", "text": "English · German · Hungarian" }
+      {
+        "id": "t1",
+        "icon": "shield",
+        "bold": "TEFL Certified",
+        "text": "internationally recognized"
+      },
+      {
+        "id": "t2",
+        "icon": "delivery",
+        "bold": "10+ years",
+        "text": "teaching English and German"
+      },
+      {
+        "id": "t3",
+        "icon": "location",
+        "bold": "Graz + Online",
+        "text": "flexible sessions"
+      },
+      {
+        "id": "t4",
+        "icon": "tag",
+        "bold": "3 languages",
+        "text": "English · German · Hungarian"
+      }
     ]
   },
   "products": {
     "title": "Sessions & Packages",
-    "tabs": ["All", "English", "German", "Exam Prep", "Hungarian", "Kids"],
+    "tabs": [
+      "All",
+      "English",
+      "German",
+      "Exam Prep",
+      "Hungarian",
+      "Kids"
+    ],
     "items": [
       {
         "id": "p1",
@@ -51,7 +90,11 @@
         "image": "uploads/img-conversation.svg",
         "badge": "Most popular",
         "category": "English",
-        "specs": ["1-on-1 or small group", "Online or in Graz", "Flexible scheduling"]
+        "specs": [
+          "1-on-1 or small group",
+          "Online or in Graz",
+          "Flexible scheduling"
+        ]
       },
       {
         "id": "p2",
@@ -60,7 +103,11 @@
         "price": "On request",
         "image": "uploads/img-business.svg",
         "category": "English",
-        "specs": ["Work-scenario roleplay", "Email & writing review", "Presentation coaching"]
+        "specs": [
+          "Work-scenario roleplay",
+          "Email & writing review",
+          "Presentation coaching"
+        ]
       },
       {
         "id": "p3",
@@ -69,7 +116,11 @@
         "price": "On request",
         "image": "uploads/img-deutsch.svg",
         "category": "German",
-        "specs": ["All school levels", "Exam preparation available", "Native-level feedback"]
+        "specs": [
+          "All school levels",
+          "Exam preparation available",
+          "Native-level feedback"
+        ]
       },
       {
         "id": "p4",
@@ -79,7 +130,11 @@
         "image": "uploads/img-exam.svg",
         "badge": "High demand",
         "category": "Exam Prep",
-        "specs": ["B1 / B2 / C1 / IELTS", "Mock exams included", "Language Exam Centre experience"]
+        "specs": [
+          "B1 / B2 / C1 / IELTS",
+          "Mock exams included",
+          "Language Exam Centre experience"
+        ]
       },
       {
         "id": "p5",
@@ -88,16 +143,24 @@
         "price": "On request",
         "image": "uploads/img-hungarian.svg",
         "category": "Hungarian",
-        "specs": ["Native speaker", "Practical vocabulary first", "Online sessions only"]
+        "specs": [
+          "Native speaker",
+          "Practical vocabulary first",
+          "Online sessions only"
+        ]
       },
       {
         "id": "p6",
-        "name": "Kids & Teens English",
+        "name": "Kids &amp; Teens",
         "description": "Fun, patient, encouraging. Built around what kids actually care about: games, stories, topics they love. So the language sticks.",
         "price": "On request",
         "image": "uploads/img-kids.svg",
         "category": "Kids",
-        "specs": ["Ages 6 to 18", "Games & storytelling", "Parent update after each session"]
+        "specs": [
+          "Ages 6 to 18",
+          "Games & storytelling",
+          "Parent update after each session"
+        ]
       }
     ]
   },
@@ -163,22 +226,43 @@
       {
         "title": "Sessions",
         "links": [
-          { "label": "English Coaching", "href": "#products" },
-          { "label": "Deutschstunden", "href": "#products" },
-          { "label": "Exam Prep", "href": "#products" },
-          { "label": "Kids & Teens", "href": "#products" }
+          {
+            "label": "English Coaching",
+            "href": "#products"
+          },
+          {
+            "label": "Deutschstunden",
+            "href": "#products"
+          },
+          {
+            "label": "Exam Prep",
+            "href": "#products"
+          },
+          {
+            "label": "Kids & Teens",
+            "href": "#products"
+          }
         ]
       },
       {
         "title": "Contact",
         "links": [
-          { "label": "Book a free trial", "href": "#location" },
-          { "label": "Email Niki", "href": "mailto:nikoletta.tutor@gmail.com" }
+          {
+            "label": "Book a free trial",
+            "href": "#location"
+          },
+          {
+            "label": "Email Niki",
+            "href": "mailto:nikoletta.tutor@gmail.com"
+          }
         ]
       }
     ],
     "links": [
-      { "label": "Privacy", "href": "#" }
+      {
+        "label": "Privacy",
+        "href": "#"
+      }
     ],
     "copyright": "© 2026 Nikoletta Csonka · Language Coaching · Graz"
   }
