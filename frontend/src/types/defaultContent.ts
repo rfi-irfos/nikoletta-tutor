@@ -173,17 +173,17 @@ export const defaultContent: SiteContent = {
       {
         title: 'Rechtliches',
         links: [
-          { label: 'AGB', href: '/agb' },
-          { label: 'Datenschutz', href: '/datenschutz' },
-          { label: 'Impressum', href: '/impressum' },
+          { label: 'AGB', href: '#p/agb' },
+          { label: 'Datenschutz', href: '#p/datenschutz' },
+          { label: 'Impressum', href: '#p/impressum' },
           { label: 'Kontakt', href: '#location' },
         ],
       },
     ],
     links: [
-      { label: 'AGB', href: '/agb' },
-      { label: 'Datenschutz', href: '/datenschutz' },
-      { label: 'Impressum', href: '/impressum' },
+      { label: 'AGB', href: '#p/agb' },
+      { label: 'Datenschutz', href: '#p/datenschutz' },
+      { label: 'Impressum', href: '#p/impressum' },
     ],
     copyright: '© 2026 e-techbike.at — made with love by RFI-IRFOS',
   },

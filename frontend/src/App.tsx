@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import './App.css'
 import { useContent } from './hooks/useContent'
 import { useAuth } from './hooks/useAuth'
@@ -5,14 +6,25 @@ import { useLang } from './hooks/useLang'
 import { PublicSite } from './components/PublicSite'
 import { AdminPanel } from './components/AdminPanel'
 import { LoginPage } from './components/LoginPage'
+import { LegalPage } from './components/LegalPage'
 
-// Hash-based admin route — works on any static host (GitHub Pages, etc.)
-const isAdmin = window.location.hash === '#admin' || window.location.hash.startsWith('#admin/')
+function getRoute(hash: string) {
+  if (hash === '#admin' || hash.startsWith('#admin/')) return { isAdmin: true, legalSlug: null }
+  if (hash.startsWith('#p/')) return { isAdmin: false, legalSlug: hash.slice(3) }
+  return { isAdmin: false, legalSlug: null }
+}
 
 export default function App() {
   const { lang } = useLang()
   const { content, loading, saving, save, uploadImage } = useContent(lang)
   const { user, login, logout } = useAuth()
+  const [route, setRoute] = useState(() => getRoute(window.location.hash))
+
+  useEffect(() => {
+    const onHash = () => setRoute(getRoute(window.location.hash))
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
 
   if (loading) {
     return (
@@ -26,7 +38,7 @@ export default function App() {
     return <div className="error-screen">Content could not be loaded.</div>
   }
 
-  if (isAdmin) {
+  if (route.isAdmin) {
     if (!user) return <LoginPage onLogin={login} />
     return (
       <AdminPanel
@@ -36,6 +48,18 @@ export default function App() {
         onSave={save}
         onUpload={uploadImage}
         onLogout={logout}
+      />
+    )
+  }
+
+  if (route.legalSlug) {
+    return (
+      <LegalPage
+        slug={route.legalSlug}
+        brand={content.nav?.brand}
+        phone={content.contact?.phone}
+        email={content.contact?.email}
+        address={content.contact?.address}
       />
     )
   }
