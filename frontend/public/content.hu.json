@@ -10,10 +10,22 @@
     "logo": "",
     "brand": "Nikoletta Csonka",
     "links": [
-      { "label": "Rólam", "href": "#usp" },
-      { "label": "Órák", "href": "#products" },
-      { "label": "Blog", "href": "#news" },
-      { "label": "Kapcsolat", "href": "#location" }
+      {
+        "label": "Rólam",
+        "href": "#usp"
+      },
+      {
+        "label": "Órák",
+        "href": "#products"
+      },
+      {
+        "label": "Blog",
+        "href": "#news"
+      },
+      {
+        "label": "Kapcsolat",
+        "href": "#location"
+      }
     ],
     "ctaLabel": "Ingyenes próbaóra",
     "ctaHref": "#location"
@@ -21,7 +33,7 @@
   "hero": {
     "tag": "Nyelvi coach · Graz és online",
     "headline": "Évekig tanultad.<br><span>Mégsem tudsz megszólalni?</span>",
-    "subheadline": "Segítek felnőtteknek és gyerekeknek áttörni azt a hallgatást, amit a merev iskolai tanulás évei hagytak maguk után. Először a beszéd, a nyelvtan csak eszköz, mindig a te tempódban.",
+    "subheadline": "Segítek felnőtteknek és gyerekeknek áttörni azt a blokádot, amit a merev iskolai tanulás évei hagytak maguk után. Először a beszéd, a nyelvtan csak eszköz, a te tempódban.",
     "ctaLabel": "Kezdj egy ingyenes próbaórával",
     "ctaHref": "#location",
     "ctaSecLabel": "Hogyan működik",
@@ -33,15 +45,42 @@
   },
   "trust": {
     "items": [
-      { "id": "t1", "icon": "shield", "bold": "TEFL minősítés", "text": "nemzetközileg elismert" },
-      { "id": "t2", "icon": "delivery", "bold": "10+ év", "text": "tapasztalat a tanításban" },
-      { "id": "t3", "icon": "location", "bold": "Graz + online", "text": "rugalmas időpontok" },
-      { "id": "t4", "icon": "tag", "bold": "3 nyelv", "text": "angol · német · magyar" }
+      {
+        "id": "t1",
+        "icon": "shield",
+        "bold": "TEFL minősítés",
+        "text": "nemzetközileg elismert"
+      },
+      {
+        "id": "t2",
+        "icon": "delivery",
+        "bold": "10+ év",
+        "text": "tapasztalat a tanításban"
+      },
+      {
+        "id": "t3",
+        "icon": "location",
+        "bold": "Graz + online",
+        "text": "rugalmas időpontok"
+      },
+      {
+        "id": "t4",
+        "icon": "tag",
+        "bold": "3 nyelv",
+        "text": "angol · német · magyar"
+      }
     ]
   },
   "products": {
     "title": "Órák és csomagok",
-    "tabs": ["Mind", "Angol", "Német", "Vizsga", "Magyar", "Gyerekek"],
+    "tabs": [
+      "Mind",
+      "Angol",
+      "Német",
+      "Vizsga",
+      "Magyar",
+      "Gyerekek"
+    ],
     "items": [
       {
         "id": "p1",
@@ -51,7 +90,11 @@
         "image": "uploads/img-conversation.svg",
         "badge": "Legnépszerűbb",
         "category": "Angol",
-        "specs": ["Egyéni vagy kiscsoport", "Online vagy Grazban", "Rugalmas időpontok"]
+        "specs": [
+          "Egyéni vagy kiscsoport",
+          "Online vagy Grazban",
+          "Rugalmas időpontok"
+        ]
       },
       {
         "id": "p2",
@@ -60,7 +103,11 @@
         "price": "Igény szerint",
         "image": "uploads/img-business.svg",
         "category": "Angol",
-        "specs": ["Munkahelyi szituációs gyakorlatok", "E-mail- és íráskorrekció", "Prezentációs coaching"]
+        "specs": [
+          "Munkahelyi szituációs gyakorlatok",
+          "E-mail- és íráskorrekció",
+          "Prezentációs coaching"
+        ]
       },
       {
         "id": "p3",
@@ -69,7 +116,11 @@
         "price": "Igény szerint",
         "image": "uploads/img-deutsch.svg",
         "category": "Német",
-        "specs": ["Minden iskolai szint", "Vizsgafelkészítés is", "Anyanyelvi szintű visszajelzés"]
+        "specs": [
+          "Minden iskolai szint",
+          "Vizsgafelkészítés is",
+          "Anyanyelvi szintű visszajelzés"
+        ]
       },
       {
         "id": "p4",
@@ -79,7 +130,11 @@
         "image": "uploads/img-exam.svg",
         "badge": "Nagy kereslet",
         "category": "Vizsga",
-        "specs": ["B1 / B2 / C1 / IELTS", "Próbavizsgák is", "Nyelvvizsgaközpontos tapasztalat"]
+        "specs": [
+          "B1 / B2 / C1 / IELTS",
+          "Próbavizsgák is",
+          "Nyelvvizsgaközpontos tapasztalat"
+        ]
       },
       {
         "id": "p5",
@@ -88,7 +143,11 @@
         "price": "Igény szerint",
         "image": "uploads/img-hungarian.svg",
         "category": "Magyar",
-        "specs": ["Anyanyelvi tanár", "Először a hasznos szókincs", "Csak online órák"]
+        "specs": [
+          "Anyanyelvi tanár",
+          "Először a hasznos szókincs",
+          "Csak online órák"
+        ]
       },
       {
         "id": "p6",
@@ -97,7 +156,11 @@
         "price": "Igény szerint",
         "image": "uploads/img-kids.svg",
         "category": "Gyerekek",
-        "specs": ["6-18 éves kor", "Játékok és mesélés", "Szülői visszajelzés minden óra után"]
+        "specs": [
+          "6-18 éves kor",
+          "Játékok és mesélés",
+          "Szülői visszajelzés minden óra után"
+        ]
       }
     ]
   },
@@ -163,22 +226,43 @@
       {
         "title": "Órák",
         "links": [
-          { "label": "Angol coaching", "href": "#products" },
-          { "label": "Némettanulás", "href": "#products" },
-          { "label": "Vizsgafelkészítés", "href": "#products" },
-          { "label": "Gyerekek és tinik", "href": "#products" }
+          {
+            "label": "Angol coaching",
+            "href": "#products"
+          },
+          {
+            "label": "Némettanulás",
+            "href": "#products"
+          },
+          {
+            "label": "Vizsgafelkészítés",
+            "href": "#products"
+          },
+          {
+            "label": "Gyerekek és tinik",
+            "href": "#products"
+          }
         ]
       },
       {
         "title": "Kapcsolat",
         "links": [
-          { "label": "Ingyenes próbaóra", "href": "#location" },
-          { "label": "Írj Nikinek", "href": "mailto:nikoletta.tutor@gmail.com" }
+          {
+            "label": "Ingyenes próbaóra",
+            "href": "#location"
+          },
+          {
+            "label": "Írj Nikinek",
+            "href": "mailto:nikoletta.tutor@gmail.com"
+          }
         ]
       }
     ],
     "links": [
-      { "label": "Adatvédelem", "href": "#" }
+      {
+        "label": "Adatvédelem",
+        "href": "#"
+      }
     ],
     "copyright": "© 2026 Nikoletta Csonka · Nyelvi coaching · Graz"
   }
