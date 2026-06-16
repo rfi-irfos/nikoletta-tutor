@@ -22,6 +22,19 @@ function loadPending(): PendingReview[] {
   try { return JSON.parse(localStorage.getItem('niki_pending_reviews') || '[]') } catch { return [] }
 }
 
+interface ContactInboxItem {
+  id: string
+  name: string
+  email: string
+  phone: string
+  message: string
+  submittedAt: string
+}
+
+function loadContactInbox(): ContactInboxItem[] {
+  try { return JSON.parse(localStorage.getItem('niki_contact_inbox') || '[]') } catch { return [] }
+}
+
 interface Props {
   content: SiteContent
   user: User
@@ -86,13 +99,22 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     return 'edit'
   })
   const [adminMode, setAdminMode] = useState(false)
-  const [adminSection, setAdminSection] = useState<'reviews' | 'students'>('reviews')
+  const [adminSection, setAdminSection] = useState<'reviews' | 'students' | 'inbox'>('inbox')
   const [pendingReviews, setPendingReviews] = useState<PendingReview[]>(loadPending)
+  const [contactInbox, setContactInbox] = useState<ContactInboxItem[]>(loadContactInbox)
 
   const removePending = useCallback((id: string) => {
     setPendingReviews(prev => {
       const next = prev.filter(r => r.id !== id)
       localStorage.setItem('niki_pending_reviews', JSON.stringify(next))
+      return next
+    })
+  }, [])
+
+  const removeInboxItem = useCallback((id: string) => {
+    setContactInbox(prev => {
+      const next = prev.filter(r => r.id !== id)
+      localStorage.setItem('niki_contact_inbox', JSON.stringify(next))
       return next
     })
   }, [])
@@ -311,9 +333,17 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
         <div className="builder-topbar-right">
           <button
             className={`builder-btn-ghost ${adminMode ? 'active' : ''}`}
-            onClick={() => { setAdminMode(m => !m); setPendingReviews(loadPending()) }}
-            title="Verwaltung: CRM & Bewertungen"
-          >Verwaltung{pendingReviews.length > 0 ? ` (${pendingReviews.length})` : ''}</button>
+            onClick={() => { setAdminMode(m => !m); setPendingReviews(loadPending()); setContactInbox(loadContactInbox()) }}
+            title="Verwaltung: Anfragen, Bewertungen & Schüler"
+            style={{ position: 'relative' }}
+          >
+            Verwaltung
+            {(pendingReviews.length + contactInbox.length) > 0 && (
+              <span style={{ position: 'absolute', top: -4, right: -6, background: '#e53e3e', color: '#fff', borderRadius: '50%', fontSize: 10, fontWeight: 700, minWidth: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>
+                {pendingReviews.length + contactInbox.length}
+              </span>
+            )}
+          </button>
           <button
             className={`builder-save-btn-top ${saving ? 'loading' : ''} ${saved ? 'done' : ''}`}
             onClick={handleSave}
@@ -340,11 +370,51 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
           <div className="admin-view-header">
             <span className="admin-view-title">Verwaltung</span>
             <div className="admin-view-tabs">
-              <button className={`admin-view-tab ${adminSection === 'reviews' ? 'active' : ''}`} onClick={() => setAdminSection('reviews')}>Reviews</button>
+              <button className={`admin-view-tab ${adminSection === 'inbox' ? 'active' : ''}`} onClick={() => setAdminSection('inbox')} style={{ position: 'relative' }}>
+                Anfragen
+                {contactInbox.length > 0 && <span style={{ marginLeft: 5, background: '#e53e3e', color: '#fff', borderRadius: 10, fontSize: 10, fontWeight: 700, padding: '1px 5px' }}>{contactInbox.length}</span>}
+              </button>
+              <button className={`admin-view-tab ${adminSection === 'reviews' ? 'active' : ''}`} onClick={() => setAdminSection('reviews')} style={{ position: 'relative' }}>
+                Reviews
+                {pendingReviews.length > 0 && <span style={{ marginLeft: 5, background: '#e53e3e', color: '#fff', borderRadius: 10, fontSize: 10, fontWeight: 700, padding: '1px 5px' }}>{pendingReviews.length}</span>}
+              </button>
               <button className={`admin-view-tab ${adminSection === 'students' ? 'active' : ''}`} onClick={() => setAdminSection('students')}>Schüler</button>
             </div>
           </div>
           <div className="admin-view-body">
+
+            {/* ── ANFRAGEN (CONTACT INBOX) ─────────────────────────── */}
+            {adminSection === 'inbox' && (
+              <div className="panel-products">
+                {contactInbox.length === 0 ? (
+                  <div style={{ textAlign: 'center', color: 'var(--panel-muted,#888)', fontSize: 13, padding: '40px 0' }}>
+                    Noch keine Anfragen eingegangen.
+                  </div>
+                ) : contactInbox.map(item => (
+                  <div key={item.id} style={{ background: 'var(--panel-surface,#f8f8f8)', borderRadius: 10, padding: 14, marginBottom: 12, border: '1px solid var(--panel-border,#e8e8e8)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+                      <span style={{ fontWeight: 700, fontSize: 14 }}>{item.name}</span>
+                      <span style={{ fontSize: 10, color: '#999' }}>{new Date(item.submittedAt).toLocaleString('de')}</span>
+                    </div>
+                    <div style={{ fontSize: 12, marginBottom: 4 }}>
+                      <a href={`mailto:${item.email}`} style={{ color: '#0099CC', textDecoration: 'none' }}>{item.email}</a>
+                      {item.phone && <span style={{ color: '#666', marginLeft: 10 }}>{item.phone}</span>}
+                    </div>
+                    <p style={{ fontSize: 13, color: '#333', margin: '8px 0 12px', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>{item.message}</p>
+                    <div style={{ display: 'flex', gap: 8 }}>
+                      <a href={`mailto:${item.email}?subject=Re: Trial lesson&body=Hi ${item.name},%0A%0A`}
+                        style={{ background: '#0099CC', color: '#fff', borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 600, textDecoration: 'none', display: 'inline-block' }}>
+                        Antworten
+                      </a>
+                      <button onClick={() => removeInboxItem(item.id)}
+                        style={{ background: 'none', border: '1px solid #bbb', color: '#666', borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                        Erledigt
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* ── REVIEWS ──────────────────────────────────────────────── */}
             {adminSection === 'reviews' && (

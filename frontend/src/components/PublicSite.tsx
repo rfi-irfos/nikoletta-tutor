@@ -240,6 +240,14 @@ function ContactForm({ email }: { email: string }) {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStatus('sending')
+
+    // Save to admin inbox (localStorage)
+    try {
+      const inbox = JSON.parse(localStorage.getItem('niki_contact_inbox') || '[]')
+      inbox.unshift({ id: `ci_${Date.now()}`, ...form, submittedAt: new Date().toISOString() })
+      localStorage.setItem('niki_contact_inbox', JSON.stringify(inbox))
+    } catch { /* ignore */ }
+
     const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
     try {
       if (key) {
