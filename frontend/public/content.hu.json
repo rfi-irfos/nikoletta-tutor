@@ -33,7 +33,7 @@
   "hero": {
     "tag": "Nyelvi coach · Graz és online",
     "headline": "Évekig tanultad.<br><span>Mégsem tudsz megszólalni?</span>",
-    "subheadline": "Segítek felnőtteknek és gyerekeknek áttörni azt a blokádot, amit a merev iskolai tanulás évei hagytak maguk után. Először a beszéd, a nyelvtan csak eszköz, a te tempódban.",
+    "subheadline": "Segítek felnőtteknek és gyerekeknek áttörni azt a hallgatást, amit a merev iskolai tanulás évei hagytak maguk után. Először a beszéd, a nyelvtan csak eszköz, mindig a te tempódban.",
     "ctaLabel": "Kezdj egy ingyenes próbaórával",
     "ctaHref": "#location",
     "ctaSecLabel": "Hogyan működik",
@@ -85,7 +85,7 @@
       {
         "id": "p1",
         "name": "Társalgási angol",
-        "description": "Egyéni órák, a beszédre fókuszálva. A nyelvtan eszköz, nem cél. Te beszélsz, én pedig segítek, hogy jobban mondd.",
+        "description": "Egyéni órák, a kommunikációra fókuszálva. A nyelvtan eszköz, nem cél. Te beszélsz, én pedig segítek, hogy több önbizalmad legyen.",
         "price": "Igény szerint",
         "image": "uploads/img-conversation.svg",
         "badge": "Legnépszerűbb",
@@ -125,7 +125,7 @@
       {
         "id": "p4",
         "name": "Vizsgafelkészítés",
-        "description": "B1, B2, C1 és IELTS. Strukturált gyakorlás valódi vizsgakörülmények között, célzott visszajelzéssel a gyenge pontjaidra.",
+        "description": "A2, B1, B2, C1. Strukturált gyakorlás valódi vizsgakörülmények között, célzott visszajelzéssel a gyenge pontjaidra.",
         "price": "Igény szerint",
         "image": "uploads/img-exam.svg",
         "badge": "Nagy kereslet",
@@ -139,14 +139,15 @@
       {
         "id": "p5",
         "name": "Magyar kezdőknek",
-        "description": "A magyart nehéznek tartják, de én logikussá teszem. Ideális expateknek, akik magyarul beszélő családtaggal vagy kollégákkal szeretnének kapcsolódni.",
+        "description": "A magyart nehéznek tartják, de én logikussá teszem. Ideális expatoknak, akik magyarul beszélő családtaggal vagy kollégákkal szeretnének kapcsolódni, vagy akiknek a nyelvre gyakorlati okokból van szükségük: vízumhoz, letelepedési engedélyhez, állampolgársági vizsgához.",
         "price": "Igény szerint",
         "image": "uploads/img-hungarian.svg",
         "category": "Magyar",
         "specs": [
           "Anyanyelvi tanár",
-          "Először a hasznos szókincs",
-          "Csak online órák"
+          "Vízum",
+          "Állampolgársági vizsga",
+          "mindennapi élethelyzetek"
         ]
       },
       {
