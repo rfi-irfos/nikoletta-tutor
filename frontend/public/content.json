@@ -270,7 +270,7 @@
   "about": {
     "eyebrow": "About me",
     "headline": "Hello, I am Niki.",
-    "bio": "Since 2016, language coaching has been my daily life. English, German and Hungarian are not just subjects I teach, they are the languages I live in: at the market, in job interviews, in board meetings, and over coffee with friends. I have worked with 53 students so far. 50 reached their goal. The other three are still welcome back any time.",
+    "bio": "Since 2014, language coaching has been my daily life. English, German and Hungarian are not just subjects I teach, they are the languages I live in: at the market, in job interviews, in board meetings, and over coffee with friends. I have worked with over 50 students (children and adults) and they are now out in the wild, speaking the desired languages with CONFIDENCE.",
     "photo": "uploads/niki-photo.jpg",
     "stats": [
       {
@@ -282,8 +282,8 @@
         "label": "languages"
       },
       {
-        "value": "50 / 53",
-        "label": "goals reached"
+        "value": "50+",
+        "label": "students who reached their goals"
       }
     ]
   }
