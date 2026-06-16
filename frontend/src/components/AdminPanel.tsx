@@ -3,7 +3,9 @@ import type { SiteContent, ProductItem, NewsItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
 import { useStudents } from '../lib/useStudents'
+import { useTestimonials } from '../lib/useTestimonials'
 import type { Student } from '../types/students'
+import type { Testimonial } from '../types/testimonials'
 import { useLang } from '../hooks/useLang'
 
 interface Props {
@@ -15,7 +17,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'news' | 'contact' | 'style' | 'students'
+type PanelTab = 'products' | 'hero' | 'news' | 'contact' | 'style' | 'students' | 'reviews'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
 // ── Device preview switch (Edit / Desktop / Tablet / Mobile) ──────────────────
@@ -44,6 +46,10 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [draft, setDraft] = useState<SiteContent>(content)
   const [activeTab, setActiveTab] = useState<PanelTab>('products')
   const { students, saving: studentsSaving, add: addStudent, update: updateStudent, remove: removeStudent } = useStudents()
+  const { testimonials, saving: reviewsSaving, add: addReview, update: updateReview, remove: removeReview } = useTestimonials()
+  const [editingReview, setEditingReview] = useState<Testimonial | null>(null)
+  const [newReviewForm, setNewReviewForm] = useState(false)
+  const [reviewDraft, setReviewDraft] = useState<Partial<Testimonial>>({})
   const [editingStudent, setEditingStudent] = useState<Student | null>(null)
   const [newStudentForm, setNewStudentForm] = useState(false)
   const [studentDraft, setStudentDraft] = useState<Partial<Student>>({})
@@ -225,6 +231,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const tabs: Array<{ id: PanelTab; label: string }> = [
     { id: 'students', label: 'Schüler' },
     { id: 'products', label: 'Sessions' },
+    { id: 'reviews',  label: 'Reviews' },
     { id: 'hero',     label: 'Hero' },
     { id: 'news',     label: 'Blog' },
     { id: 'contact',  label: 'Kontakt' },
@@ -349,6 +356,96 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                 <button className="panel-add-big-btn" onClick={addProduct}>
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   Session hinzufügen
+                </button>
+              </div>
+            )}
+
+            {/* ── REVIEWS TAB ───────────────────────────────────────────── */}
+            {activeTab === 'reviews' && (
+              <div className="panel-products">
+                <div style={{ fontSize: 11, color: 'var(--panel-muted,#888)', marginBottom: 10, lineHeight: 1.5 }}>
+                  Wenn eine Bewertung per E-Mail eingeht, hier manuell hinzufügen. Nur genehmigte erscheinen auf der Website.
+                </div>
+
+                {/* New review form */}
+                {newReviewForm && (
+                  <div style={{ background: 'var(--panel-surface,#f8f8f8)', borderRadius: 10, padding: 14, marginBottom: 14, border: '1px solid var(--panel-border,#e8e8e8)' }}>
+                    <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 10 }}>Neue Bewertung</div>
+                    {(['name','language','text'] as (keyof Testimonial)[]).map(f => (
+                      <div key={f} style={{ marginBottom: 8 }}>
+                        <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>{{ name: 'Name', language: 'Sprache', text: 'Text' }[f as string] ?? f}</label>
+                        {f === 'text'
+                          ? <textarea rows={3} value={(reviewDraft[f] as string) ?? ''} onChange={e => setReviewDraft(d => ({ ...d, [f]: e.target.value }))} style={{ width: '100%', borderRadius: 6, border: '1px solid var(--panel-border,#e0e0e0)', padding: '6px 8px', fontSize: 12, resize: 'vertical' }} />
+                          : <input value={(reviewDraft[f] as string) ?? ''} onChange={e => setReviewDraft(d => ({ ...d, [f]: e.target.value }))} style={{ width: '100%', borderRadius: 6, border: '1px solid var(--panel-border,#e0e0e0)', padding: '6px 8px', fontSize: 12 }} />
+                        }
+                      </div>
+                    ))}
+                    <div style={{ marginBottom: 8 }}>
+                      <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Sterne (1–5)</label>
+                      <input type="number" min={1} max={5} value={reviewDraft.rating ?? 5} onChange={e => setReviewDraft(d => ({ ...d, rating: Math.min(5, Math.max(1, parseInt(e.target.value) || 5)) }))} style={{ width: 60, borderRadius: 6, border: '1px solid var(--panel-border,#e0e0e0)', padding: '6px 8px', fontSize: 12 }} />
+                    </div>
+                    <div style={{ marginBottom: 8 }}>
+                      <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Datum</label>
+                      <input type="date" value={reviewDraft.date ?? new Date().toISOString().slice(0,10)} onChange={e => setReviewDraft(d => ({ ...d, date: e.target.value }))} style={{ width: '100%', borderRadius: 6, border: '1px solid var(--panel-border,#e0e0e0)', padding: '6px 8px', fontSize: 12 }} />
+                    </div>
+                    <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                      <button className="panel-add-btn" disabled={!reviewDraft.name || !reviewDraft.text || reviewsSaving}
+                        onClick={() => { addReview({ name: reviewDraft.name!, language: reviewDraft.language ?? '', rating: reviewDraft.rating ?? 5, text: reviewDraft.text!, date: reviewDraft.date ?? new Date().toISOString().slice(0,10) }); setNewReviewForm(false); setReviewDraft({}) }}>
+                        {reviewsSaving ? 'Speichern…' : 'Speichern'}
+                      </button>
+                      <button className="panel-back-btn" onClick={() => { setNewReviewForm(false); setReviewDraft({}) }}>Abbrechen</button>
+                    </div>
+                  </div>
+                )}
+
+                {/* Reviews list */}
+                <div className="panel-product-list">
+                  {testimonials.length === 0 && !newReviewForm && (
+                    <div style={{ textAlign: 'center', padding: '32px 0', color: 'var(--panel-muted,#aaa)', fontSize: 13 }}>Noch keine Bewertungen genehmigt.</div>
+                  )}
+                  {testimonials.map(r => (
+                    <div key={r.id} style={{ background: 'var(--panel-surface,#f8f8f8)', borderRadius: 10, padding: 12, marginBottom: 10, border: '1px solid var(--panel-border,#e8e8e8)' }}>
+                      {editingReview?.id === r.id ? (
+                        <div>
+                          {(['name','language','text'] as (keyof Testimonial)[]).map(f => (
+                            <div key={f} style={{ marginBottom: 7 }}>
+                              <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 2 }}>{{ name: 'Name', language: 'Sprache', text: 'Text' }[f as string] ?? f}</label>
+                              {f === 'text'
+                                ? <textarea rows={3} value={(editingReview[f] as string) ?? ''} onChange={e => setEditingReview(d => d ? ({ ...d, [f]: e.target.value } as Testimonial) : null)} style={{ width: '100%', borderRadius: 6, border: '1px solid var(--panel-border,#e0e0e0)', padding: '5px 8px', fontSize: 12, resize: 'vertical' }} />
+                                : <input value={(editingReview[f] as string) ?? ''} onChange={e => setEditingReview(d => d ? ({ ...d, [f]: e.target.value } as Testimonial) : null)} style={{ width: '100%', borderRadius: 6, border: '1px solid var(--panel-border,#e0e0e0)', padding: '5px 8px', fontSize: 12 }} />
+                              }
+                            </div>
+                          ))}
+                          <div style={{ marginBottom: 7 }}>
+                            <label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 2 }}>Sterne</label>
+                            <input type="number" min={1} max={5} value={editingReview.rating} onChange={e => setEditingReview(d => d ? ({ ...d, rating: Math.min(5, Math.max(1, parseInt(e.target.value) || 5)) } as Testimonial) : null)} style={{ width: 60, borderRadius: 6, border: '1px solid var(--panel-border,#e0e0e0)', padding: '5px 8px', fontSize: 12 }} />
+                          </div>
+                          <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
+                            <button className="panel-add-btn" disabled={reviewsSaving} onClick={() => { updateReview(r.id, editingReview!); setEditingReview(null) }}>{reviewsSaving ? 'Speichern…' : 'Speichern'}</button>
+                            <button className="panel-back-btn" onClick={() => setEditingReview(null)}>Abbrechen</button>
+                            <button className="panel-delete-btn" style={{ marginLeft: 'auto' }} onClick={() => { if (confirm(`Bewertung von "${r.name}" löschen?`)) { removeReview(r.id); setEditingReview(null) } }}>Löschen</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 3 }}>
+                              <span style={{ fontWeight: 700, fontSize: 13 }}>{r.name}</span>
+                              {r.language && <span style={{ fontSize: 10, padding: '1px 6px', borderRadius: 20, background: 'var(--panel-border,#e8e8e8)', color: 'var(--panel-muted,#888)' }}>{r.language}</span>}
+                              <span style={{ fontSize: 11, color: '#f59e0b', letterSpacing: 1 }}>{'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}</span>
+                            </div>
+                            <div style={{ fontSize: 12, color: 'var(--panel-muted,#888)', lineHeight: 1.5 }}>{r.text.slice(0, 100)}{r.text.length > 100 ? '…' : ''}</div>
+                          </div>
+                          <button className="panel-back-btn" style={{ fontSize: 11, padding: '3px 10px', flexShrink: 0 }} onClick={() => setEditingReview({ ...r })}>Bearbeiten</button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+                <button className="panel-add-big-btn" onClick={() => { setNewReviewForm(true); setReviewDraft({ rating: 5, date: new Date().toISOString().slice(0,10) }) }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Bewertung hinzufügen
                 </button>
               </div>
             )}

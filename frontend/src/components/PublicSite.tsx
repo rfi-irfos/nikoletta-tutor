@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
 import type { SiteContent, SectionId, CanvasPos, ProductItem, NewsItem } from '../types/content'
+import type { Testimonial } from '../types/testimonials'
 import { useTheme, type Theme } from '../hooks/useTheme'
 import { useLang, type Lang } from '../hooks/useLang'
 
@@ -357,6 +358,148 @@ function LanguageToggle() {
         </button>
       ))}
     </div>
+  )
+}
+
+// ── Star display ─────────────────────────────────────────────────────────────
+
+function Stars({ rating, interactive, onChange }: { rating: number; interactive?: boolean; onChange?: (r: number) => void }) {
+  const [hover, setHover] = useState(0)
+  return (
+    <div className="site-review-stars" aria-label={`${rating} out of 5 stars`}>
+      {[1, 2, 3, 4, 5].map(n => (
+        <svg
+          key={n}
+          className={`site-review-star ${n <= (interactive ? (hover || rating) : rating) ? 'filled' : ''} ${interactive ? 'interactive' : ''}`}
+          viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"
+          onClick={interactive && onChange ? () => onChange(n) : undefined}
+          onMouseEnter={interactive ? () => setHover(n) : undefined}
+          onMouseLeave={interactive ? () => setHover(0) : undefined}
+        >
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      ))}
+    </div>
+  )
+}
+
+// ── Reviews section (public fetch + submit form) ──────────────────────────────
+
+function ReviewsSection({ contactEmail, editMode }: { contactEmail: string; editMode: boolean }) {
+  const { t } = useLang()
+  const [reviews, setReviews] = useState<Testimonial[]>([])
+  const [showForm, setShowForm] = useState(false)
+  const [form, setForm] = useState({ name: '', language: '', rating: 5, text: '' })
+  const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'err'>('idle')
+
+  useEffect(() => {
+    const bust = `?t=${Date.now()}`
+    fetch(`testimonials.json${bust}`, { cache: 'no-store' })
+      .then(r => r.ok ? r.json() : [])
+      .then(setReviews)
+      .catch(() => setReviews([]))
+  }, [])
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!form.name.trim() || !form.text.trim()) return
+    const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
+    if (!key) {
+      setStatus('ok')
+      return
+    }
+    setStatus('sending')
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: key,
+          subject: `New review from ${form.name} (${form.rating}/5)`,
+          name: form.name,
+          language: form.language,
+          rating: `${form.rating}/5`,
+          review: form.text,
+          replyto: contactEmail,
+        }),
+      })
+      const data = await res.json()
+      setStatus(data.success ? 'ok' : 'err')
+    } catch {
+      setStatus('err')
+    }
+  }
+
+  if (reviews.length === 0 && editMode) {
+    return (
+      <section className="site-section site-reviews" id="reviews">
+        <div className="site-eyebrow">{t.reviewsEyebrow}</div>
+        <h2 className="site-section-title">{t.reviewsTitle}</h2>
+        <p style={{ textAlign: 'center', color: 'var(--text-soft)', fontSize: 14 }}>No approved reviews yet — add them in Reviews tab.</p>
+      </section>
+    )
+  }
+
+  if (reviews.length === 0 && !editMode) return null
+
+  return (
+    <section className="site-section site-reviews" id="reviews">
+      <div className="site-eyebrow">{t.reviewsEyebrow}</div>
+      <h2 className="site-section-title">{t.reviewsTitle}</h2>
+
+      <div className="site-reviews-grid">
+        {reviews.map(r => (
+          <div key={r.id} className="site-review-card">
+            <Stars rating={r.rating} />
+            <p className="site-review-text">"{r.text}"</p>
+            <div className="site-review-footer">
+              <span className="site-review-name">{r.name}</span>
+              {r.language && <span className="site-review-lang">{r.language}</span>}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {!editMode && !showForm && status !== 'ok' && (
+        <div className="site-reviews-cta">
+          <button className="site-btn-ghost-lg" onClick={() => setShowForm(true)}>{t.reviewLeave}</button>
+        </div>
+      )}
+
+      {!editMode && showForm && status !== 'ok' && (
+        <form className="site-review-form" onSubmit={submit}>
+          <div className="site-review-form-row">
+            <div className="site-review-form-field">
+              <label>{t.reviewName}</label>
+              <input required value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder={t.reviewNameHint} />
+            </div>
+            <div className="site-review-form-field">
+              <label>{t.reviewLanguage}</label>
+              <input value={form.language} onChange={e => setForm(p => ({ ...p, language: e.target.value }))} placeholder="English" />
+            </div>
+          </div>
+          <div className="site-review-form-field">
+            <label>{t.reviewRating}</label>
+            <Stars rating={form.rating} interactive onChange={r => setForm(p => ({ ...p, rating: r }))} />
+          </div>
+          <div className="site-review-form-field">
+            <label>{t.reviewText}</label>
+            <textarea required rows={4} value={form.text} onChange={e => setForm(p => ({ ...p, text: e.target.value }))} placeholder={t.reviewTextPlaceholder} />
+          </div>
+          <div className="site-review-form-actions">
+            <button type="button" className="site-btn-ghost-lg" onClick={() => setShowForm(false)} style={{ fontSize: 13 }}>Cancel</button>
+            <button type="submit" className="site-btn-lime-solid" disabled={status === 'sending'}>
+              {status === 'sending' ? t.reviewSubmitting : t.reviewSubmit}
+            </button>
+          </div>
+          {status === 'err' && <p className="site-contact-form-err">{t.reviewError}</p>}
+        </form>
+      )}
+
+      {!editMode && status === 'ok' && (
+        <div className="site-review-success">{t.reviewSuccess}</div>
+      )}
+    </section>
   )
 }
 
@@ -966,6 +1109,9 @@ export function PublicSite({
             </div>
           </section>
         )}
+
+        {/* ── REVIEWS ──────────────────────────────────────────────────── */}
+        <ReviewsSection contactEmail={contact?.email ?? ''} editMode={editMode} />
 
         {/* ── NEWS ─────────────────────────────────────────────────────── */}
         {(news?.items?.length ?? 0) > 0 && (
