@@ -232,84 +232,6 @@ function TrustIcon({ icon }: { icon: string }) {
   }
 }
 
-// ── Contact form ──────────────────────────────────────────────────────────────
-
-function ContactForm({ email }: { email: string }) {
-  const { t } = useLang()
-  const [form, setForm] = useState({ name: '', email: '', phone: '', message: '' })
-  const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'err'>('idle')
-
-  const set = (k: string, v: string) => setForm(p => ({ ...p, [k]: v }))
-  const to = email || 'nikoletta.csonka@gmail.com'
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setStatus('sending')
-
-    // Save to admin inbox (localStorage)
-    try {
-      const inbox = JSON.parse(localStorage.getItem('niki_contact_inbox') || '[]')
-      inbox.unshift({ id: `ci_${Date.now()}`, ...form, submittedAt: new Date().toISOString() })
-      localStorage.setItem('niki_contact_inbox', JSON.stringify(inbox))
-    } catch { /* ignore */ }
-
-    const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
-    try {
-      // Always notify Niki directly via formsubmit.co
-      const fsPromise = fetch(`https://formsubmit.co/ajax/${to}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          _subject: `${t.mailSubject} ${form.name}`,
-          _replyto: form.email,
-          _captcha: 'false',
-          ...form,
-        }),
-      }).catch(() => null)
-
-      // Also send via Web3Forms (goes to key-owner) when configured
-      const w3Promise = key ? fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          access_key: key,
-          subject: `${t.mailSubject} ${form.name}`,
-          ...form,
-        }),
-      }).catch(() => null) : Promise.resolve(null)
-
-      await Promise.all([fsPromise, w3Promise])
-      setStatus('ok')
-    } catch {
-      setStatus('err')
-    }
-  }
-
-  if (status === 'ok') {
-    return (
-      <div className="site-contact-form-success">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-        <p>{t.success}</p>
-      </div>
-    )
-  }
-
-  return (
-    <form className="site-contact-form" onSubmit={submit}>
-      <div className="site-contact-form-row">
-        <input placeholder={t.namePlaceholder} required value={form.name} onChange={e => set('name', e.target.value)} />
-        <input placeholder={t.emailPlaceholder} type="email" required value={form.email} onChange={e => set('email', e.target.value)} />
-      </div>
-      <input placeholder={t.phonePlaceholder} value={form.phone} onChange={e => set('phone', e.target.value)} />
-      <textarea placeholder={t.messagePlaceholder} rows={4} required value={form.message} onChange={e => set('message', e.target.value)} />
-      <button type="submit" disabled={status === 'sending'} className="site-contact-form-btn">
-        {status === 'sending' ? `${t.sending}…` : t.send}
-      </button>
-      {status === 'err' && <p className="site-contact-form-err">{t.error}</p>}
-    </form>
-  )
-}
-
 // ── WhatsApp button ───────────────────────────────────────────────────────────
 
 function WhatsAppButton({ number, message }: { number: string; message: string }) {
@@ -1270,8 +1192,32 @@ export function PublicSite({
                 </div>
               )}
             </div>
-            {contact?.formEnabled && !editMode ? (
-              <ContactForm email={contact?.email ?? ''} />
+            {!editMode ? (
+              <div className="site-contact-cta-row">
+                {whatsapp?.enabled && whatsapp?.number && (
+                  <a
+                    href={`https://wa.me/${whatsapp.number.replace(/\D/g, '')}?text=${encodeURIComponent(whatsapp.message || t.send)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="site-contact-cta-wa">
+                    <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20" aria-hidden>
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/>
+                      <path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.558 4.118 1.533 5.851L0 24l6.335-1.513A11.954 11.954 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.843 0-3.57-.49-5.062-1.346L2.5 21.5l.854-3.375A9.944 9.944 0 0 1 2 12c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10z"/>
+                    </svg>
+                    WhatsApp
+                  </a>
+                )}
+                {contact?.email && (
+                  <a
+                    href={`https://mail.google.com/mail/?view=cm&to=${encodeURIComponent(contact.email)}&su=${encodeURIComponent(t.mailSubject)}`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="site-contact-cta-mail">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="20" height="20" aria-hidden>
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                    E-Mail
+                  </a>
+                )}
+              </div>
             ) : (
               <a href={`mailto:${contact?.email ?? ''}`} className="site-btn-lime-solid">{t.send}</a>
             )}

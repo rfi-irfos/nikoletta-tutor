@@ -417,6 +417,29 @@ button { cursor: pointer; font-family: inherit; }
 }
 .site-contact-form-btn:hover:not(:disabled) { transform: translateY(-2px); filter: brightness(1.08); }
 .site-contact-form-btn:disabled { opacity: .65; }
+.site-contact-cta-row {
+  display: flex; gap: 12px; margin-top: 22px; flex-wrap: wrap;
+}
+.site-contact-cta-wa,
+.site-contact-cta-mail {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 13px 22px; border-radius: 12px;
+  font-size: 15px; font-weight: 700; text-decoration: none;
+  transition: transform .18s, filter .18s;
+}
+.site-contact-cta-wa:hover,
+.site-contact-cta-mail:hover { transform: translateY(-2px); filter: brightness(1.08); }
+.site-contact-cta-wa {
+  background: #25D366; color: #fff;
+}
+.site-contact-cta-mail {
+  background: #4285F4; color: #fff;
+}
+.site[data-theme="hc"] .site-contact-cta-wa,
+.site[data-theme="hc"] .site-contact-cta-mail {
+  outline: 2px solid #fff; outline-offset: 2px;
+}
+
 .site-contact-form-success {
   display: flex; align-items: center; gap: 12px; margin-top: 22px;
   background: rgba(80,140,90,.14); border: 1px solid rgba(80,140,90,.35);
