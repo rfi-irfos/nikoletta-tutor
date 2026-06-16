@@ -139,14 +139,15 @@
       {
         "id": "p5",
         "name": "Hungarian for Beginners",
-        "description": "Hungarian is famously difficult but I make it logical. Great for expats who want to connect with Hungarian-speaking family or colleagues.",
+        "description": "Hungarian is famously difficult but I make it logical. Great for expats who want to connect with Hungarian-speaking family or colleagues, or for anyone who needs the language for practical reasons: visa applications, residency permits, citizenship tests.",
         "price": "On request",
         "image": "uploads/img-hungarian.svg",
         "category": "Hungarian",
         "specs": [
           "Native speaker",
-          "Practical vocabulary first",
-          "Online sessions only"
+          "Visa preparation",
+          "Citizenship exam",
+          "everyday hungarian"
         ]
       },
       {
