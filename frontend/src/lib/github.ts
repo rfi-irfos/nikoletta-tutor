@@ -6,10 +6,11 @@ const OWNER   = import.meta.env.VITE_GH_OWNER   as string
 const REPO    = import.meta.env.VITE_GH_REPO    as string
 const CONTENT_PATH  = (import.meta.env.VITE_GH_CONTENT_PATH  as string) || 'public/content.json'
 const UPLOADS_DIR   = (import.meta.env.VITE_GH_UPLOADS_DIR   as string) || 'public/uploads'
+const TOKEN         = import.meta.env.VITE_GH_TOKEN as string
 
 export { CONTENT_PATH, UPLOADS_DIR }
 
-// PAT is never baked into the bundle — set at runtime after login
+// Runtime token takes priority over build-time TOKEN (falls back to baked-in TOKEN)
 let _runtimeToken = ''
 export function setGhToken(t: string) { _runtimeToken = t }
 export function clearGhToken() { _runtimeToken = '' }
@@ -21,7 +22,7 @@ export function contentPathFor(lang: string): string {
 
 function headers() {
   return {
-    'Authorization': `Bearer ${_runtimeToken}`,
+    'Authorization': `Bearer ${_runtimeToken || TOKEN}`,
     'Accept': 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
     'Content-Type': 'application/json',
@@ -61,5 +62,5 @@ export function b64Decode(b64: string): string {
 }
 
 export function isConfigured(): boolean {
-  return !!(OWNER && REPO && _runtimeToken)
+  return !!(OWNER && REPO && (_runtimeToken || TOKEN))
 }
