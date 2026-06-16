@@ -64,12 +64,12 @@
       },
       {
         "id": "p3",
-        "name": "Deutschstunden / Nachhilfe",
-        "description": "Ob Schüler oder Erwachsener, wir arbeiten an genau dem, was dir fehlt. Für Prüfungen oder einfach flüssiger werden.",
-        "price": "Auf Anfrage",
+        "name": "German lessons / tutoring",
+        "description": "Whether you are a student or an adult — we work on exactly what is holding you back. For exams, for everyday fluency, or anything in between.",
+        "price": "On request",
         "image": "uploads/img-deutsch.svg",
         "category": "Deutsch",
-        "specs": ["Alle Schulstufen", "Prüfungsvorbereitung möglich", "Native-Level Feedback"]
+        "specs": ["All school levels", "Exam preparation available", "Native-level feedback"]
       },
       {
         "id": "p4",
