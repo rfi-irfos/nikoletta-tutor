@@ -281,7 +281,7 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           ))}
         </div>
         <div className="builder-topbar-right">
-          <span className="builder-user">{user.name || user.email}</span>
+          <span className="builder-user">{(user.name || user.email || '').slice(0, 12)}</span>
           <button
             className={`builder-btn-ghost ${adminMode ? 'active' : ''}`}
             onClick={() => setAdminMode(m => !m)}
@@ -306,83 +306,21 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
       </div>
 
       {/* ── BODY ────────────────────────────────────────────────────────── */}
-      <div className="builder-body">
+      {adminMode ? (
 
-        {/* LEFT: Canvas editor OR device preview */}
-        {device === 'edit' ? (
-          <div className="builder-canvas-pane" ref={previewRef} onClick={handleCanvasClick}>
-            {/* 1:1 edit layer: the REAL public site, inline-editable (no separate
-                draggable-box canvas). Click any text to edit, images to swap. */}
-            <PublicSite
-              content={draft}
-              editMode={true}
-              initPositions={initPositions}
-              onTextChange={(field, value) => update(field, value)}
-              onImageClick={handleImageClick}
-              onUpdate={(field, value) => update(field, value)}
-            />
-          </div>
-        ) : (
-          <div className="builder-device-stage">
-            <div className="device-frame-wrap">
-              <div className={`device-frame device-${device}`}>
-                <PublicSite content={draft} />
-              </div>
-              <div className="device-frame-label">
-                {device === 'desktop' ? 'Web · 1280 px' : device === 'tablet' ? 'Tablet · 834 px' : 'Mobil · 390 px'}
-              </div>
+        /* ── ADMIN FULL-PAGE VIEW ───────────────────────────────────────── */
+        <div className="admin-view">
+          <div className="admin-view-header">
+            <span className="admin-view-title">Verwaltung</span>
+            <div className="admin-view-tabs">
+              <button className={`admin-view-tab ${adminSection === 'reviews' ? 'active' : ''}`} onClick={() => setAdminSection('reviews')}>Reviews</button>
+              <button className={`admin-view-tab ${adminSection === 'students' ? 'active' : ''}`} onClick={() => setAdminSection('students')}>Schüler</button>
             </div>
           </div>
-        )}
+          <div className="admin-view-body">
 
-        {/* RIGHT: Panel (drag the left edge to resize) */}
-        <aside className="builder-panel" style={{ width: panelWidth }}>
-          <div className="builder-panel-resize" onMouseDown={startPanelResize} title="Breite ziehen" />
-          {/* Tab bar — admin mode vs builder mode */}
-          {adminMode ? (
-            <div className="builder-tabs">
-              <button className={`builder-tab ${adminSection === 'reviews' ? 'active' : ''}`} onClick={() => setAdminSection('reviews')}>Reviews</button>
-              <button className={`builder-tab ${adminSection === 'students' ? 'active' : ''}`} onClick={() => setAdminSection('students')}>Schüler</button>
-            </div>
-          ) : (
-            <div className="builder-tabs">
-              {tabs.map(t => (
-                <button key={t.id} className={`builder-tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)}>
-                  {t.label}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Panel content */}
-          <div className="builder-panel-body">
-
-            {/* ── PRODUCTS TAB ──────────────────────────────────────────── */}
-            {activeTab === 'products' && (
-              <div className="panel-products">
-                <div className="panel-product-list">
-                  {(draft.products?.items ?? []).map(p => (
-                    <div key={p.id} className={`panel-product-row ${editingProduct === p.id ? 'active' : ''}`} onClick={() => setEditingProduct(p.id)}>
-                      <div className="panel-product-thumb">
-                        {p.image ? <img src={p.image} alt={p.name} /> : <div className="panel-product-thumb-empty" />}
-                      </div>
-                      <div className="panel-product-info">
-                        <div className="panel-product-name">{p.name}</div>
-                        <div className="panel-product-meta">{p.category} &nbsp;·&nbsp; {p.price}</div>
-                      </div>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-                    </div>
-                  ))}
-                </div>
-                <button className="panel-add-big-btn" onClick={addProduct}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  Session hinzufügen
-                </button>
-              </div>
-            )}
-
-            {/* ── REVIEWS TAB (Admin Panel) ─────────────────────────────── */}
-            {adminSection === 'reviews' && adminMode && (
+            {/* ── REVIEWS ──────────────────────────────────────────────── */}
+            {adminSection === 'reviews' && (
               <div className="panel-products">
                 <div style={{ fontSize: 11, color: 'var(--panel-muted,#888)', marginBottom: 10, lineHeight: 1.5 }}>
                   Wenn eine Bewertung per E-Mail eingeht, hier manuell hinzufügen. Nur genehmigte erscheinen auf der Website.
@@ -471,241 +409,8 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
               </div>
             )}
 
-            {/* ── HERO TAB ──────────────────────────────────────────────── */}
-            {activeTab === 'hero' && (
-              <>
-                <PanelSection title="Hintergrundbild">
-                  <UploadRow src={draft.hero?.image ?? ''} onUpload={() => handleImageClick('hero.image')} uploading={uploading && uploadTarget === 'hero.image'} />
-                </PanelSection>
-                <PanelSection title="Tag (oben)">
-                  <Field label="Tag-Text">
-                    <input value={draft.hero?.tag ?? ''} onChange={e => update('hero.tag', e.target.value)} placeholder="Direktimporteur · Graz · Österreich" />
-                  </Field>
-                </PanelSection>
-                <PanelSection title="Überschrift">
-                  <Field label="H1">
-                    <input value={draft.hero?.headline ?? ''} onChange={e => update('hero.headline', e.target.value)} placeholder="Elektromobilität. Jetzt." />
-                  </Field>
-                  <Field label="Unterzeile">
-                    <textarea rows={2} value={draft.hero?.subheadline ?? ''} onChange={e => update('hero.subheadline', e.target.value)} />
-                  </Field>
-                </PanelSection>
-                <PanelSection title="Buttons">
-                  <Field label="Button 1 Text">
-                    <input value={draft.hero?.ctaLabel ?? ''} onChange={e => update('hero.ctaLabel', e.target.value)} />
-                  </Field>
-                  <Field label="Button 1 Link">
-                    <input value={draft.hero?.ctaHref ?? ''} onChange={e => update('hero.ctaHref', e.target.value)} placeholder="#products" />
-                  </Field>
-                  <Field label="Button 2 Text">
-                    <input value={draft.hero?.ctaSecLabel ?? ''} onChange={e => update('hero.ctaSecLabel', e.target.value)} placeholder="optional" />
-                  </Field>
-                </PanelSection>
-                <PanelSection title="Logo">
-                  <UploadRow src={draft.nav?.logo ?? ''} onUpload={() => handleImageClick('nav.logo')} uploading={uploading && uploadTarget === 'nav.logo'} />
-                </PanelSection>
-                <PanelSection title="Telefon (Nav)">
-                  <Field label="Nummer">
-                    <input value={draft.nav?.phone ?? ''} onChange={e => update('nav.phone', e.target.value)} />
-                  </Field>
-                </PanelSection>
-              </>
-            )}
-
-            {/* ── USP / MEIN ANSATZ TAB ─────────────────────────────────── */}
-            {activeTab === 'usp' && (
-              <>
-                <PanelSection title="Abschnitts-Beschriftung">
-                  <Field label="Eyebrow (Akzent-Text)">
-                    <input value={draft.usp?.eyebrow ?? ''} onChange={e => update('usp.eyebrow', e.target.value)} placeholder="My approach" />
-                  </Field>
-                  <Field label="Überschrift">
-                    <input value={draft.usp?.title ?? ''} onChange={e => update('usp.title', e.target.value)} placeholder="Why this works" />
-                  </Field>
-                </PanelSection>
-                <PanelSection title="Karten">
-                  {(draft.usp?.items ?? []).map((u, i) => (
-                    <div key={u.id} style={{ background: 'var(--panel-surface,#f8f8f8)', borderRadius: 10, padding: 12, marginBottom: 10, border: '1px solid var(--panel-border,#e8e8e8)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-                        <span style={{ fontWeight: 600, fontSize: 12 }}>Karte {i + 1}</span>
-                        <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--panel-danger,#d44)', fontSize: 12, padding: '2px 6px' }}
-                          onClick={() => update('usp.items', (draft.usp?.items ?? []).filter((_, j) => j !== i))}>
-                          Löschen
-                        </button>
-                      </div>
-                      <Field label="Titel">
-                        <input value={u.title ?? ''} onChange={e => {
-                          const items = [...(draft.usp?.items ?? [])]
-                          items[i] = { ...items[i], title: e.target.value }
-                          update('usp.items', items)
-                        }} placeholder="Conversation First" />
-                      </Field>
-                      <Field label="Beschreibung">
-                        <textarea rows={3} value={u.description ?? ''} onChange={e => {
-                          const items = [...(draft.usp?.items ?? [])]
-                          items[i] = { ...items[i], description: e.target.value }
-                          update('usp.items', items)
-                        }} placeholder="Beschreibe diesen Punkt..." />
-                      </Field>
-                    </div>
-                  ))}
-                  <button className="panel-add-big-btn" onClick={() => {
-                    const items = [...(draft.usp?.items ?? []), { id: `u${Date.now()}`, title: 'Neue Karte', description: '' }]
-                    update('usp.items', items)
-                  }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Karte hinzufügen
-                  </button>
-                </PanelSection>
-              </>
-            )}
-
-            {/* ── ÜBER MICH TAB ─────────────────────────────────────────── */}
-            {activeTab === 'about' && (
-              <>
-                <PanelSection title="Text">
-                  <Field label="Eyebrow (klein, oben)">
-                    <input value={draft.about?.eyebrow ?? ''} onChange={e => update('about.eyebrow', e.target.value)} placeholder="About me" />
-                  </Field>
-                  <Field label="Überschrift">
-                    <input value={draft.about?.headline ?? ''} onChange={e => update('about.headline', e.target.value)} placeholder="Hello, I'm Niki." />
-                  </Field>
-                  <Field label="Bio-Text">
-                    <textarea rows={5} value={draft.about?.bio ?? ''} onChange={e => update('about.bio', e.target.value)} placeholder="A few warm, honest sentences about you..." />
-                  </Field>
-                </PanelSection>
-                <PanelSection title="Kennzahlen">
-                  {(draft.about?.stats ?? []).map((s, i) => (
-                    <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
-                      <input style={{ width: 80, flexShrink: 0 }} value={s.value} placeholder="10+" onChange={e => {
-                        const stats = [...(draft.about?.stats ?? [])]
-                        stats[i] = { ...stats[i], value: e.target.value }
-                        update('about.stats', stats)
-                      }} />
-                      <input style={{ flex: 1 }} value={s.label} placeholder="years active" onChange={e => {
-                        const stats = [...(draft.about?.stats ?? [])]
-                        stats[i] = { ...stats[i], label: e.target.value }
-                        update('about.stats', stats)
-                      }} />
-                      <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#d44', padding: '0 4px', fontSize: 18, lineHeight: 1 }}
-                        onClick={() => update('about.stats', (draft.about?.stats ?? []).filter((_, j) => j !== i))}>×</button>
-                    </div>
-                  ))}
-                  <button className="panel-add-big-btn" onClick={() => {
-                    update('about.stats', [...(draft.about?.stats ?? []), { value: '', label: '' }])
-                  }}>
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                    Kennzahl hinzufügen
-                  </button>
-                </PanelSection>
-              </>
-            )}
-
-            {/* ── NEWS TAB ──────────────────────────────────────────────── */}
-            {activeTab === 'news' && (
-              <div className="panel-products">
-                <div className="panel-product-list">
-                  {(draft.news?.items ?? []).map(n => (
-                    <div key={n.id} className={`panel-product-row ${editingNews === n.id ? 'active' : ''}`} onClick={() => setEditingNews(n.id)}>
-                      <div className="panel-product-info">
-                        <div className="panel-product-name">{n.title}</div>
-                        <div className="panel-product-meta">{n.date}</div>
-                      </div>
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
-                    </div>
-                  ))}
-                </div>
-                <button className="panel-add-big-btn" onClick={addNews}>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  Blogbeitrag hinzufügen
-                </button>
-              </div>
-            )}
-
-            {/* ── CONTACT TAB ───────────────────────────────────────────── */}
-            {activeTab === 'contact' && (
-              <>
-                <PanelSection title="Kontaktdaten">
-                  <Field label="Titel">
-                    <input value={draft.contact?.title ?? ''} onChange={e => update('contact.title', e.target.value)} />
-                  </Field>
-                  <Field label="E-Mail">
-                    <input type="email" value={draft.contact?.email ?? ''} onChange={e => update('contact.email', e.target.value)} />
-                  </Field>
-                  <Field label="Telefon">
-                    <input value={draft.contact?.phone ?? ''} onChange={e => update('contact.phone', e.target.value)} />
-                  </Field>
-                  <Field label="Adresse">
-                    <textarea rows={2} value={draft.contact?.address ?? ''} onChange={e => update('contact.address', e.target.value)} />
-                  </Field>
-                </PanelSection>
-                <PanelSection title="WhatsApp">
-                  <Field label="Nummer (int. Format)">
-                    <input value={draft.whatsapp?.number ?? ''} onChange={e => update('whatsapp.number', e.target.value)} placeholder="+436641234567" />
-                  </Field>
-                  <Field label="Vorausgefüllte Nachricht">
-                    <textarea rows={2} value={draft.whatsapp?.message ?? ''} onChange={e => update('whatsapp.message', e.target.value)} />
-                  </Field>
-                  <Field label="">
-                    <label className="panel-checkbox">
-                      <input type="checkbox" checked={draft.whatsapp?.enabled ?? false} onChange={e => update('whatsapp.enabled', e.target.checked)} />
-                      WhatsApp-Button anzeigen
-                    </label>
-                  </Field>
-                </PanelSection>
-                <PanelSection title="Karte">
-                  <Field label="Google Maps Embed-URL">
-                    <textarea rows={2} value={draft.contact?.mapSrc ?? ''} onChange={e => update('contact.mapSrc', e.target.value)} placeholder="https://maps.google.com/maps?q=…&output=embed" />
-                  </Field>
-                  <Field label="">
-                    <label className="panel-checkbox">
-                      <input type="checkbox" checked={draft.contact?.formEnabled ?? false} onChange={e => update('contact.formEnabled', e.target.checked)} />
-                      Kontaktformular anzeigen
-                    </label>
-                  </Field>
-                </PanelSection>
-              </>
-            )}
-
-            {/* ── STYLE TAB ─────────────────────────────────────────────── */}
-            {activeTab === 'style' && (
-              <>
-                <PanelSection title="Farben">
-                  <ColorRow label="Primärfarbe" value={draft.meta?.primaryColor ?? '#0099CC'} onChange={v => update('meta.primaryColor', v)} />
-                  <ColorRow label="Akzentfarbe" value={draft.meta?.accentColor ?? '#B3E600'} onChange={v => update('meta.accentColor', v)} />
-                </PanelSection>
-                <PanelSection title="Schrift">
-                  <div className="panel-field">
-                    <select value={draft.meta?.font ?? ''} onChange={e => update('meta.font', e.target.value)}>
-                      <option value="system-ui, -apple-system, sans-serif">System Standard</option>
-                      <option value="'Inter', sans-serif">Inter</option>
-                      <option value="'Georgia', serif">Georgia</option>
-                      <option value="'Roboto', sans-serif">Roboto</option>
-                      <option value="'Helvetica Neue', Helvetica, sans-serif">Helvetica Neue</option>
-                    </select>
-                  </div>
-                </PanelSection>
-                <PanelSection title="SEO / Meta">
-                  <Field label="Seitentitel">
-                    <input value={draft.meta?.title ?? ''} onChange={e => update('meta.title', e.target.value)} />
-                  </Field>
-                  <Field label="Beschreibung">
-                    <textarea rows={2} value={draft.meta?.description ?? ''} onChange={e => update('meta.description', e.target.value)} />
-                  </Field>
-                </PanelSection>
-                <PanelSection title="Footer">
-                  <Field label="Copyright">
-                    <input value={draft.footer?.copyright ?? ''} onChange={e => update('footer.copyright', e.target.value)} />
-                  </Field>
-                  <Field label="Tagline">
-                    <input value={draft.footer?.tagline ?? ''} onChange={e => update('footer.tagline', e.target.value)} />
-                  </Field>
-                </PanelSection>
-              </>
-            )}
-
-            {/* ── STUDENTS TAB (Admin Panel) ────────────────────────────── */}
-            {adminSection === 'students' && adminMode && (
+            {/* ── STUDENTS ─────────────────────────────────────────────── */}
+            {adminSection === 'students' && (
               <div className="panel-students">
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                   <span style={{ fontSize: 12, color: 'var(--panel-muted, #888)', fontWeight: 600 }}>{students.length} Schüler</span>
@@ -787,9 +492,314 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
             )}
 
           </div>
+        </div>
 
-          {/* SAVE FOOTER — only in builder mode (admin changes auto-save via GitHub) */}
-          {!adminMode && (
+      ) : (
+
+        /* ── BUILDER BODY ───────────────────────────────────────────────── */
+        <div className="builder-body">
+
+          {/* LEFT: Canvas editor OR device preview */}
+          {device === 'edit' ? (
+            <div className="builder-canvas-pane" ref={previewRef} onClick={handleCanvasClick}>
+              {/* 1:1 edit layer: the REAL public site, inline-editable (no separate
+                  draggable-box canvas). Click any text to edit, images to swap. */}
+              <PublicSite
+                content={draft}
+                editMode={true}
+                initPositions={initPositions}
+                onTextChange={(field, value) => update(field, value)}
+                onImageClick={handleImageClick}
+                onUpdate={(field, value) => update(field, value)}
+              />
+            </div>
+          ) : (
+            <div className="builder-device-stage">
+              <div className="device-frame-wrap">
+                <div className={`device-frame device-${device}`}>
+                  <PublicSite content={draft} />
+                </div>
+                <div className="device-frame-label">
+                  {device === 'desktop' ? 'Web · 1280 px' : device === 'tablet' ? 'Tablet · 834 px' : 'Mobil · 390 px'}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* RIGHT: Panel (drag the left edge to resize) */}
+          <aside className="builder-panel" style={{ width: panelWidth }}>
+            <div className="builder-panel-resize" onMouseDown={startPanelResize} title="Breite ziehen" />
+            <div className="builder-tabs">
+              {tabs.map(t => (
+                <button key={t.id} className={`builder-tab ${activeTab === t.id ? 'active' : ''}`} onClick={() => setActiveTab(t.id)}>
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Panel content */}
+            <div className="builder-panel-body">
+
+              {/* ── PRODUCTS TAB ──────────────────────────────────────────── */}
+              {activeTab === 'products' && (
+                <div className="panel-products">
+                  <div className="panel-product-list">
+                    {(draft.products?.items ?? []).map(p => (
+                      <div key={p.id} className={`panel-product-row ${editingProduct === p.id ? 'active' : ''}`} onClick={() => setEditingProduct(p.id)}>
+                        <div className="panel-product-thumb">
+                          {p.image ? <img src={p.image} alt={p.name} /> : <div className="panel-product-thumb-empty" />}
+                        </div>
+                        <div className="panel-product-info">
+                          <div className="panel-product-name">{p.name}</div>
+                          <div className="panel-product-meta">{p.category} &nbsp;·&nbsp; {p.price}</div>
+                        </div>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                      </div>
+                    ))}
+                  </div>
+                  <button className="panel-add-big-btn" onClick={addProduct}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Session hinzufügen
+                  </button>
+                </div>
+              )}
+
+              {/* ── HERO TAB ──────────────────────────────────────────────── */}
+              {activeTab === 'hero' && (
+                <>
+                  <PanelSection title="Hintergrundbild">
+                    <UploadRow src={draft.hero?.image ?? ''} onUpload={() => handleImageClick('hero.image')} uploading={uploading && uploadTarget === 'hero.image'} />
+                  </PanelSection>
+                  <PanelSection title="Tag (oben)">
+                    <Field label="Tag-Text">
+                      <input value={draft.hero?.tag ?? ''} onChange={e => update('hero.tag', e.target.value)} placeholder="Direktimporteur · Graz · Österreich" />
+                    </Field>
+                  </PanelSection>
+                  <PanelSection title="Überschrift">
+                    <Field label="H1">
+                      <input value={draft.hero?.headline ?? ''} onChange={e => update('hero.headline', e.target.value)} placeholder="Elektromobilität. Jetzt." />
+                    </Field>
+                    <Field label="Unterzeile">
+                      <textarea rows={2} value={draft.hero?.subheadline ?? ''} onChange={e => update('hero.subheadline', e.target.value)} />
+                    </Field>
+                  </PanelSection>
+                  <PanelSection title="Buttons">
+                    <Field label="Button 1 Text">
+                      <input value={draft.hero?.ctaLabel ?? ''} onChange={e => update('hero.ctaLabel', e.target.value)} />
+                    </Field>
+                    <Field label="Button 1 Link">
+                      <input value={draft.hero?.ctaHref ?? ''} onChange={e => update('hero.ctaHref', e.target.value)} placeholder="#products" />
+                    </Field>
+                    <Field label="Button 2 Text">
+                      <input value={draft.hero?.ctaSecLabel ?? ''} onChange={e => update('hero.ctaSecLabel', e.target.value)} placeholder="optional" />
+                    </Field>
+                  </PanelSection>
+                  <PanelSection title="Logo">
+                    <UploadRow src={draft.nav?.logo ?? ''} onUpload={() => handleImageClick('nav.logo')} uploading={uploading && uploadTarget === 'nav.logo'} />
+                  </PanelSection>
+                  <PanelSection title="Telefon (Nav)">
+                    <Field label="Nummer">
+                      <input value={draft.nav?.phone ?? ''} onChange={e => update('nav.phone', e.target.value)} />
+                    </Field>
+                  </PanelSection>
+                </>
+              )}
+
+              {/* ── USP / MEIN ANSATZ TAB ─────────────────────────────────── */}
+              {activeTab === 'usp' && (
+                <>
+                  <PanelSection title="Abschnitts-Beschriftung">
+                    <Field label="Eyebrow (Akzent-Text)">
+                      <input value={draft.usp?.eyebrow ?? ''} onChange={e => update('usp.eyebrow', e.target.value)} placeholder="My approach" />
+                    </Field>
+                    <Field label="Überschrift">
+                      <input value={draft.usp?.title ?? ''} onChange={e => update('usp.title', e.target.value)} placeholder="Why this works" />
+                    </Field>
+                  </PanelSection>
+                  <PanelSection title="Karten">
+                    {(draft.usp?.items ?? []).map((u, i) => (
+                      <div key={u.id} style={{ background: 'var(--panel-surface,#f8f8f8)', borderRadius: 10, padding: 12, marginBottom: 10, border: '1px solid var(--panel-border,#e8e8e8)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                          <span style={{ fontWeight: 600, fontSize: 12 }}>Karte {i + 1}</span>
+                          <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--panel-danger,#d44)', fontSize: 12, padding: '2px 6px' }}
+                            onClick={() => update('usp.items', (draft.usp?.items ?? []).filter((_, j) => j !== i))}>
+                            Löschen
+                          </button>
+                        </div>
+                        <Field label="Titel">
+                          <input value={u.title ?? ''} onChange={e => {
+                            const items = [...(draft.usp?.items ?? [])]
+                            items[i] = { ...items[i], title: e.target.value }
+                            update('usp.items', items)
+                          }} placeholder="Conversation First" />
+                        </Field>
+                        <Field label="Beschreibung">
+                          <textarea rows={3} value={u.description ?? ''} onChange={e => {
+                            const items = [...(draft.usp?.items ?? [])]
+                            items[i] = { ...items[i], description: e.target.value }
+                            update('usp.items', items)
+                          }} placeholder="Beschreibe diesen Punkt..." />
+                        </Field>
+                      </div>
+                    ))}
+                    <button className="panel-add-big-btn" onClick={() => {
+                      const items = [...(draft.usp?.items ?? []), { id: `u${Date.now()}`, title: 'Neue Karte', description: '' }]
+                      update('usp.items', items)
+                    }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      Karte hinzufügen
+                    </button>
+                  </PanelSection>
+                </>
+              )}
+
+              {/* ── ÜBER MICH TAB ─────────────────────────────────────────── */}
+              {activeTab === 'about' && (
+                <>
+                  <PanelSection title="Text">
+                    <Field label="Eyebrow (klein, oben)">
+                      <input value={draft.about?.eyebrow ?? ''} onChange={e => update('about.eyebrow', e.target.value)} placeholder="About me" />
+                    </Field>
+                    <Field label="Überschrift">
+                      <input value={draft.about?.headline ?? ''} onChange={e => update('about.headline', e.target.value)} placeholder="Hello, I'm Niki." />
+                    </Field>
+                    <Field label="Bio-Text">
+                      <textarea rows={5} value={draft.about?.bio ?? ''} onChange={e => update('about.bio', e.target.value)} placeholder="A few warm, honest sentences about you..." />
+                    </Field>
+                  </PanelSection>
+                  <PanelSection title="Kennzahlen">
+                    {(draft.about?.stats ?? []).map((s, i) => (
+                      <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'center', marginBottom: 8 }}>
+                        <input style={{ width: 80, flexShrink: 0 }} value={s.value} placeholder="10+" onChange={e => {
+                          const stats = [...(draft.about?.stats ?? [])]
+                          stats[i] = { ...stats[i], value: e.target.value }
+                          update('about.stats', stats)
+                        }} />
+                        <input style={{ flex: 1 }} value={s.label} placeholder="years active" onChange={e => {
+                          const stats = [...(draft.about?.stats ?? [])]
+                          stats[i] = { ...stats[i], label: e.target.value }
+                          update('about.stats', stats)
+                        }} />
+                        <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#d44', padding: '0 4px', fontSize: 18, lineHeight: 1 }}
+                          onClick={() => update('about.stats', (draft.about?.stats ?? []).filter((_, j) => j !== i))}>×</button>
+                      </div>
+                    ))}
+                    <button className="panel-add-big-btn" onClick={() => {
+                      update('about.stats', [...(draft.about?.stats ?? []), { value: '', label: '' }])
+                    }}>
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      Kennzahl hinzufügen
+                    </button>
+                  </PanelSection>
+                </>
+              )}
+
+              {/* ── NEWS TAB ──────────────────────────────────────────────── */}
+              {activeTab === 'news' && (
+                <div className="panel-products">
+                  <div className="panel-product-list">
+                    {(draft.news?.items ?? []).map(n => (
+                      <div key={n.id} className={`panel-product-row ${editingNews === n.id ? 'active' : ''}`} onClick={() => setEditingNews(n.id)}>
+                        <div className="panel-product-info">
+                          <div className="panel-product-name">{n.title}</div>
+                          <div className="panel-product-meta">{n.date}</div>
+                        </div>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                      </div>
+                    ))}
+                  </div>
+                  <button className="panel-add-big-btn" onClick={addNews}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                    Blogbeitrag hinzufügen
+                  </button>
+                </div>
+              )}
+
+              {/* ── CONTACT TAB ───────────────────────────────────────────── */}
+              {activeTab === 'contact' && (
+                <>
+                  <PanelSection title="Kontaktdaten">
+                    <Field label="Titel">
+                      <input value={draft.contact?.title ?? ''} onChange={e => update('contact.title', e.target.value)} />
+                    </Field>
+                    <Field label="E-Mail">
+                      <input type="email" value={draft.contact?.email ?? ''} onChange={e => update('contact.email', e.target.value)} />
+                    </Field>
+                    <Field label="Telefon">
+                      <input value={draft.contact?.phone ?? ''} onChange={e => update('contact.phone', e.target.value)} />
+                    </Field>
+                    <Field label="Adresse">
+                      <textarea rows={2} value={draft.contact?.address ?? ''} onChange={e => update('contact.address', e.target.value)} />
+                    </Field>
+                  </PanelSection>
+                  <PanelSection title="WhatsApp">
+                    <Field label="Nummer (int. Format)">
+                      <input value={draft.whatsapp?.number ?? ''} onChange={e => update('whatsapp.number', e.target.value)} placeholder="+436641234567" />
+                    </Field>
+                    <Field label="Vorausgefüllte Nachricht">
+                      <textarea rows={2} value={draft.whatsapp?.message ?? ''} onChange={e => update('whatsapp.message', e.target.value)} />
+                    </Field>
+                    <Field label="">
+                      <label className="panel-checkbox">
+                        <input type="checkbox" checked={draft.whatsapp?.enabled ?? false} onChange={e => update('whatsapp.enabled', e.target.checked)} />
+                        WhatsApp-Button anzeigen
+                      </label>
+                    </Field>
+                  </PanelSection>
+                  <PanelSection title="Karte">
+                    <Field label="Google Maps Embed-URL">
+                      <textarea rows={2} value={draft.contact?.mapSrc ?? ''} onChange={e => update('contact.mapSrc', e.target.value)} placeholder="https://maps.google.com/maps?q=…&output=embed" />
+                    </Field>
+                    <Field label="">
+                      <label className="panel-checkbox">
+                        <input type="checkbox" checked={draft.contact?.formEnabled ?? false} onChange={e => update('contact.formEnabled', e.target.checked)} />
+                        Kontaktformular anzeigen
+                      </label>
+                    </Field>
+                  </PanelSection>
+                </>
+              )}
+
+              {/* ── STYLE TAB ─────────────────────────────────────────────── */}
+              {activeTab === 'style' && (
+                <>
+                  <PanelSection title="Farben">
+                    <ColorRow label="Primärfarbe" value={draft.meta?.primaryColor ?? '#0099CC'} onChange={v => update('meta.primaryColor', v)} />
+                    <ColorRow label="Akzentfarbe" value={draft.meta?.accentColor ?? '#B3E600'} onChange={v => update('meta.accentColor', v)} />
+                  </PanelSection>
+                  <PanelSection title="Schrift">
+                    <div className="panel-field">
+                      <select value={draft.meta?.font ?? ''} onChange={e => update('meta.font', e.target.value)}>
+                        <option value="system-ui, -apple-system, sans-serif">System Standard</option>
+                        <option value="'Inter', sans-serif">Inter</option>
+                        <option value="'Georgia', serif">Georgia</option>
+                        <option value="'Roboto', sans-serif">Roboto</option>
+                        <option value="'Helvetica Neue', Helvetica, sans-serif">Helvetica Neue</option>
+                      </select>
+                    </div>
+                  </PanelSection>
+                  <PanelSection title="SEO / Meta">
+                    <Field label="Seitentitel">
+                      <input value={draft.meta?.title ?? ''} onChange={e => update('meta.title', e.target.value)} />
+                    </Field>
+                    <Field label="Beschreibung">
+                      <textarea rows={2} value={draft.meta?.description ?? ''} onChange={e => update('meta.description', e.target.value)} />
+                    </Field>
+                  </PanelSection>
+                  <PanelSection title="Footer">
+                    <Field label="Copyright">
+                      <input value={draft.footer?.copyright ?? ''} onChange={e => update('footer.copyright', e.target.value)} />
+                    </Field>
+                    <Field label="Tagline">
+                      <input value={draft.footer?.tagline ?? ''} onChange={e => update('footer.tagline', e.target.value)} />
+                    </Field>
+                  </PanelSection>
+                </>
+              )}
+
+            </div>
+
+            {/* SAVE FOOTER — admin changes auto-save via GitHub */}
             <div className="builder-panel-foot">
               <button
                 className={`builder-save-btn ${saving ? 'loading' : ''} ${saved ? 'done' : ''}`}
@@ -799,9 +809,10 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
                 {saving ? 'Speichern…' : saved ? 'Gespeichert!' : 'Speichern'}
               </button>
             </div>
-          )}
-        </aside>
-      </div>
+          </aside>
+        </div>
+
+      )}
 
       {/* ── SESSION EDIT MODAL ─────────────────────────────────────────── */}
       {editingProd && (
