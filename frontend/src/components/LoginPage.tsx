@@ -1,14 +1,23 @@
 import { useState } from 'react'
 
-interface Props { onLogin: (pw: string) => boolean }
+const PAT_KEY = 'rfi_gh_pat'
+
+interface Props { onLogin: (pw: string, pat?: string) => Promise<boolean> }
 
 export function LoginPage({ onLogin }: Props) {
   const [pw, setPw] = useState('')
+  const [pat, setPat] = useState('')
   const [error, setError] = useState(false)
+  const [busy, setBusy] = useState(false)
 
-  const submit = (e: React.FormEvent) => {
+  const hasPat = !!localStorage.getItem(PAT_KEY)
+
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!onLogin(pw)) {
+    setBusy(true)
+    const ok = await onLogin(pw, hasPat ? undefined : pat || undefined)
+    setBusy(false)
+    if (!ok) {
       setError(true)
       setPw('')
     }
@@ -34,9 +43,25 @@ export function LoginPage({ onLogin }: Props) {
             autoFocus
             className="login-pw-input"
           />
+          {!hasPat && (
+            <input
+              type="password"
+              value={pat}
+              onChange={e => setPat(e.target.value)}
+              placeholder="GitHub Token (PAT) — nur beim ersten Mal"
+              className="login-pw-input"
+            />
+          )}
           {error && <p className="login-error">Falsches Passwort. Bitte nochmal.</p>}
-          <button type="submit" className="login-submit-btn">Anmelden</button>
+          <button type="submit" disabled={busy} className="login-submit-btn">
+            {busy ? 'Anmelden…' : 'Anmelden'}
+          </button>
         </form>
+        {!hasPat && (
+          <p className="login-hint" style={{marginTop:'12px',fontSize:'12px',color:'var(--text-muted,#888)',textAlign:'center'}}>
+            Das GitHub Token wird lokal gespeichert und nur einmal benötigt.
+          </p>
+        )}
       </div>
     </div>
   )
