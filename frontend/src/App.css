@@ -554,13 +554,13 @@ button { cursor: pointer; font-family: inherit; }
 .site-review-card {
   background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
   padding: 26px 24px; display: flex; flex-direction: column; gap: 12px;
-  box-shadow: 0 2px 10px var(--shadow);
+  box-shadow: 0 2px 10px var(--shadow); min-width: 0;
 }
 .site-review-stars { display: flex; gap: 3px; }
 .site-review-star { width: 18px; height: 18px; }
 .site-review-star.filled { fill: #f59e0b; stroke: #f59e0b; }
 .site-review-star.interactive { cursor: pointer; transition: fill .1s, stroke .1s; }
-.site-review-text { font-size: 14px; line-height: 1.75; color: var(--text-soft); flex: 1; font-style: italic; }
+.site-review-text { font-size: 14px; line-height: 1.75; color: var(--text-soft); flex: 1; font-style: italic; overflow-wrap: break-word; word-break: break-word; min-width: 0; }
 .site-review-footer { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
 .site-review-name { font-weight: 700; font-size: 13px; color: var(--text); }
 .site-review-lang { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--primary); background: var(--surface-sunken); padding: 2px 8px; border-radius: 20px; }

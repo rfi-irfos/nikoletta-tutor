@@ -4,6 +4,21 @@ import type { Testimonial } from '../types/testimonials'
 import { useTheme, type Theme } from '../hooks/useTheme'
 import { useLang, type Lang } from '../hooks/useLang'
 
+// ── Language name i18n (stored canonical = English, displayed per UI lang) ───
+const LANG_NAMES: Record<string, Record<Lang, string>> = {
+  english:    { en: 'English',    de: 'Englisch',    hu: 'Angol' },
+  german:     { en: 'German',     de: 'Deutsch',     hu: 'Német' },
+  hungarian:  { en: 'Hungarian',  de: 'Ungarisch',   hu: 'Magyar' },
+  french:     { en: 'French',     de: 'Französisch', hu: 'Francia' },
+  spanish:    { en: 'Spanish',    de: 'Spanisch',    hu: 'Spanyol' },
+  italian:    { en: 'Italian',    de: 'Italienisch', hu: 'Olasz' },
+  dutch:      { en: 'Dutch',      de: 'Niederländisch', hu: 'Holland' },
+  portuguese: { en: 'Portuguese', de: 'Portugiesisch',  hu: 'Portugál' },
+}
+function localizedLang(raw: string, lang: Lang): string {
+  return LANG_NAMES[raw.toLowerCase().trim()]?.[lang] ?? raw
+}
+
 // ── Edit context ─────────────────────────────────────────────────────────────
 
 interface EditCtx {
@@ -452,7 +467,7 @@ function ReviewsSection({ contactEmail, editMode }: { contactEmail: string; edit
             <p className="site-review-text">"{r.text}"</p>
             <div className="site-review-footer">
               <span className="site-review-name">{r.name}</span>
-              {r.language && <span className="site-review-lang">{r.language}</span>}
+              {r.language && <span className="site-review-lang">{localizedLang(r.language, lang)}</span>}
             </div>
           </div>
         ))}
