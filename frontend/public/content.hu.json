@@ -266,5 +266,25 @@
       }
     ],
     "copyright": "© 2026 Nikoletta Csonka · Nyelvi coaching · Graz"
+  },
+  "about": {
+    "eyebrow": "Rólam",
+    "headline": "Szia, én vagyok Niki.",
+    "bio": "2014 óta a nyelvoktatás a mindennapi életem. Az angol, a német és a magyar számomra nem csupán tantárgyak — ezekben a nyelvekben élek: a piacon, állásinterjúkon, megbeszéléseken és kávézás közben barátokkal. Eddig több mint 50 tanítvánnyal dolgoztam — gyerekekkel és felnőttekkel egyaránt — és ma már valódi magabiztossággal beszélnek.",
+    "photo": "uploads/niki-photo.jpg",
+    "stats": [
+      {
+        "value": "10+",
+        "label": "év tapasztalat"
+      },
+      {
+        "value": "3",
+        "label": "nyelv"
+      },
+      {
+        "value": "50+",
+        "label": "diák, aki elérte célját"
+      }
+    ]
   }
 }

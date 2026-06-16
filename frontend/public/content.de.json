@@ -265,5 +265,25 @@
       }
     ],
     "copyright": "© 2026 Nikoletta Csonka · Sprachcoaching · Graz"
+  },
+  "about": {
+    "eyebrow": "Über mich",
+    "headline": "Hallo, ich bin Niki.",
+    "bio": "Seit 2014 ist Sprachcoaching mein Alltag. Englisch, Deutsch und Ungarisch sind für mich keine Fächer, die ich unterrichte — es sind die Sprachen, in denen ich lebe: auf dem Markt, in Bewerbungsgesprächen, in Meetings und beim Kaffee mit Freunden. Ich habe bisher mit über 50 Schülerinnen und Schülern gearbeitet — Kinder wie Erwachsene — und sie sprechen heute mit echter Sicherheit.",
+    "photo": "uploads/niki-photo.jpg",
+    "stats": [
+      {
+        "value": "10+",
+        "label": "Jahre aktiv"
+      },
+      {
+        "value": "3",
+        "label": "Sprachen"
+      },
+      {
+        "value": "50+",
+        "label": "Schüler, die ihr Ziel erreicht haben"
+      }
+    ]
   }
 }
