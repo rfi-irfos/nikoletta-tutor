@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import type { SiteContent, ProductItem, NewsItem } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
@@ -7,6 +7,20 @@ import { useTestimonials } from '../lib/useTestimonials'
 import type { Student } from '../types/students'
 import type { Testimonial } from '../types/testimonials'
 import { useLang } from '../hooks/useLang'
+
+interface PendingReview {
+  id: string
+  name: string
+  email: string
+  language: string
+  rating: number
+  text: string
+  submittedAt: string
+}
+
+function loadPending(): PendingReview[] {
+  try { return JSON.parse(localStorage.getItem('niki_pending_reviews') || '[]') } catch { return [] }
+}
 
 interface Props {
   content: SiteContent
@@ -42,7 +56,7 @@ const DEVICE_OPTS: { id: DeviceView; label: string; icon: React.ReactNode }[] = 
   { id: 'mobile', label: 'Mobil', icon: <IconMobile /> },
 ]
 
-export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }: Props) {
+export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onLogout }: Props) {
   const [draft, setDraft] = useState<SiteContent>(content)
   const [activeTab, setActiveTab] = useState<PanelTab>('products')
   const { students, saving: studentsSaving, add: addStudent, update: updateStudent, remove: removeStudent } = useStudents()
@@ -68,6 +82,15 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
   const [device, setDevice] = useState<DeviceView>('edit')
   const [adminMode, setAdminMode] = useState(false)
   const [adminSection, setAdminSection] = useState<'reviews' | 'students'>('reviews')
+  const [pendingReviews, setPendingReviews] = useState<PendingReview[]>(loadPending)
+
+  const removePending = useCallback((id: string) => {
+    setPendingReviews(prev => {
+      const next = prev.filter(r => r.id !== id)
+      localStorage.setItem('niki_pending_reviews', JSON.stringify(next))
+      return next
+    })
+  }, [])
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
 
@@ -281,12 +304,11 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
           ))}
         </div>
         <div className="builder-topbar-right">
-          <span className="builder-user">{(user.name || user.email || '').slice(0, 12)}</span>
           <button
             className={`builder-btn-ghost ${adminMode ? 'active' : ''}`}
-            onClick={() => setAdminMode(m => !m)}
+            onClick={() => { setAdminMode(m => !m); setPendingReviews(loadPending()) }}
             title="Verwaltung: CRM & Bewertungen"
-          >Admin</button>
+          >Verwaltung{pendingReviews.length > 0 ? ` (${pendingReviews.length})` : ''}</button>
           <button
             className={`builder-save-btn-top ${saving ? 'loading' : ''} ${saved ? 'done' : ''}`}
             onClick={handleSave}
@@ -322,8 +344,46 @@ export function AdminPanel({ content, user, saving, onSave, onUpload, onLogout }
             {/* ── REVIEWS ──────────────────────────────────────────────── */}
             {adminSection === 'reviews' && (
               <div className="panel-products">
+
+                {/* Pending (eingegangen via Formular) */}
+                {pendingReviews.length > 0 && (
+                  <div style={{ marginBottom: 24 }}>
+                    <div style={{ fontWeight: 700, fontSize: 13, marginBottom: 10, color: '#0099CC' }}>
+                      Eingegangen ({pendingReviews.length})
+                    </div>
+                    {pendingReviews.map(r => (
+                      <div key={r.id} style={{ background: '#f0f8ff', borderRadius: 10, padding: 14, marginBottom: 10, border: '1px solid #bee3f8' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <div>
+                            <span style={{ fontWeight: 700, fontSize: 13 }}>{r.name}</span>
+                            <span style={{ fontSize: 12, color: '#555', marginLeft: 8 }}>{r.rating}/5</span>
+                            {r.language && <span style={{ fontSize: 11, color: '#888', marginLeft: 8 }}>{r.language}</span>}
+                          </div>
+                          <span style={{ fontSize: 10, color: '#999' }}>{new Date(r.submittedAt).toLocaleDateString('de')}</span>
+                        </div>
+                        <p style={{ fontSize: 13, margin: '8px 0 4px', color: '#333', lineHeight: 1.5 }}>{r.text}</p>
+                        <div style={{ fontSize: 11, color: '#777', marginBottom: 10 }}>{r.email}</div>
+                        <div style={{ display: 'flex', gap: 8 }}>
+                          <button
+                            onClick={() => {
+                              addReview({ name: r.name, language: r.language, rating: r.rating, text: r.text, date: r.submittedAt.split('T')[0] })
+                              removePending(r.id)
+                            }}
+                            style={{ background: '#0099CC', color: '#fff', border: 'none', borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                          >Genehmigen</button>
+                          <button
+                            onClick={() => removePending(r.id)}
+                            style={{ background: 'none', border: '1px solid #d44', color: '#d44', borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}
+                          >Ablehnen</button>
+                        </div>
+                      </div>
+                    ))}
+                    <hr style={{ border: 'none', borderTop: '1px solid var(--panel-border,#e8e8e8)', margin: '0 0 16px' }} />
+                  </div>
+                )}
+
                 <div style={{ fontSize: 11, color: 'var(--panel-muted,#888)', marginBottom: 10, lineHeight: 1.5 }}>
-                  Wenn eine Bewertung per E-Mail eingeht, hier manuell hinzufügen. Nur genehmigte erscheinen auf der Website.
+                  Genehmigte Bewertungen erscheinen auf der Website.
                 </div>
 
                 {/* New review form */}

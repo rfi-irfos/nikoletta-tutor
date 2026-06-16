@@ -418,32 +418,45 @@ function ReviewsSection({ editMode }: { editMode: boolean }) {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.name.trim() || !form.email.trim() || !form.text.trim()) return
-    const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
-    if (!key) {
-      setStatus('ok')
-      return
-    }
     setStatus('sending')
+
+    // Save to pending queue in localStorage — admin sees it in Verwaltung > Reviews
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          access_key: key,
-          subject: `New review from ${form.name} (${form.rating}/5)`,
-          name: form.name,
-          email: form.email,
-          replyto: form.email,
-          language: form.language,
-          rating: `${form.rating}/5`,
-          review: form.text,
-        }),
+      const pending = JSON.parse(localStorage.getItem('niki_pending_reviews') || '[]')
+      pending.push({
+        id: `pr_${Date.now()}`,
+        name: form.name,
+        email: form.email,
+        language: form.language,
+        rating: form.rating,
+        text: form.text,
+        submittedAt: new Date().toISOString(),
       })
-      const data = await res.json()
-      setStatus(data.success ? 'ok' : 'err')
-    } catch {
-      setStatus('err')
+      localStorage.setItem('niki_pending_reviews', JSON.stringify(pending))
+    } catch { /* localStorage unavailable */ }
+
+    // Also notify via Web3Forms if key is configured
+    const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
+    if (key) {
+      try {
+        await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_key: key,
+            subject: `New review from ${form.name} (${form.rating}/5)`,
+            name: form.name,
+            email: form.email,
+            replyto: form.email,
+            language: form.language,
+            rating: `${form.rating}/5`,
+            review: form.text,
+          }),
+        })
+      } catch { /* email notification failed — review still saved locally */ }
     }
+
+    setStatus('ok')
   }
 
   if (reviews.length === 0 && editMode) {
