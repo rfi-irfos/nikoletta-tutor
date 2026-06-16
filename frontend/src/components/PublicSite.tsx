@@ -239,26 +239,38 @@ function ContactForm({ email }: { email: string }) {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
-    if (!key) {
-      // Fallback: open mailto pre-filled
-      const body = encodeURIComponent(`Name: ${form.name}\nPhone: ${form.phone}\n\n${form.message}`)
-      window.location.href = `mailto:${to}?subject=${encodeURIComponent(`${t.mailSubject} ${form.name}`)}&body=${body}`
-      return
-    }
     setStatus('sending')
+    const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          access_key: key,
-          subject: `${t.mailSubject} ${form.name}`,
-          ...form,
-        }),
-      })
-      const data = await res.json()
-      setStatus(data.success ? 'ok' : 'err')
+      if (key) {
+        // Web3Forms: cc Niki so she receives it directly
+        const res = await fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_key: key,
+            subject: `${t.mailSubject} ${form.name}`,
+            cc: to,
+            ...form,
+          }),
+        })
+        const data = await res.json()
+        setStatus(data.success ? 'ok' : 'err')
+      } else {
+        // No key: send directly to Niki via formsubmit.co
+        const res = await fetch(`https://formsubmit.co/ajax/${to}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            _subject: `${t.mailSubject} ${form.name}`,
+            _replyto: form.email,
+            _captcha: 'false',
+            ...form,
+          }),
+        })
+        const data = await res.json()
+        setStatus(data.success ? 'ok' : 'err')
+      }
     } catch {
       setStatus('err')
     }
