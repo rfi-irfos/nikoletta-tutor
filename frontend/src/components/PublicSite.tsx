@@ -250,35 +250,31 @@ function ContactForm({ email }: { email: string }) {
 
     const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
     try {
-      if (key) {
-        // Web3Forms: cc Niki so she receives it directly
-        const res = await fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_key: key,
-            subject: `${t.mailSubject} ${form.name}`,
-            cc: to,
-            ...form,
-          }),
-        })
-        const data = await res.json()
-        setStatus(data.success ? 'ok' : 'err')
-      } else {
-        // No key: send directly to Niki via formsubmit.co
-        const res = await fetch(`https://formsubmit.co/ajax/${to}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({
-            _subject: `${t.mailSubject} ${form.name}`,
-            _replyto: form.email,
-            _captcha: 'false',
-            ...form,
-          }),
-        })
-        const data = await res.json()
-        setStatus(data.success ? 'ok' : 'err')
-      }
+      // Always notify Niki directly via formsubmit.co
+      const fsPromise = fetch(`https://formsubmit.co/ajax/${to}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: `${t.mailSubject} ${form.name}`,
+          _replyto: form.email,
+          _captcha: 'false',
+          ...form,
+        }),
+      }).catch(() => null)
+
+      // Also send via Web3Forms (goes to key-owner) when configured
+      const w3Promise = key ? fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: key,
+          subject: `${t.mailSubject} ${form.name}`,
+          ...form,
+        }),
+      }).catch(() => null) : Promise.resolve(null)
+
+      await Promise.all([fsPromise, w3Promise])
+      setStatus('ok')
     } catch {
       setStatus('err')
     }
