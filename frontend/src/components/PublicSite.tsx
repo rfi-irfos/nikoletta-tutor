@@ -435,6 +435,24 @@ function ReviewsSection({ editMode }: { editMode: boolean }) {
       localStorage.setItem('niki_pending_reviews', JSON.stringify(pending))
     } catch { /* localStorage unavailable */ }
 
+    // Notify Niki via formsubmit.co (no API key needed; first submission triggers one-time activation email)
+    try {
+      await fetch('https://formsubmit.co/ajax/nikoletta.tutor@gmail.com', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          _subject: `New review from ${form.name} (${form.rating}/5 stars)`,
+          name: form.name,
+          email: form.email,
+          language: form.language || '—',
+          rating: `${form.rating}/5`,
+          review: form.text,
+          _replyto: form.email,
+          _captcha: 'false',
+        }),
+      })
+    } catch { /* best-effort — review is already saved locally */ }
+
     // Also notify via Web3Forms if key is configured
     const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
     if (key) {
