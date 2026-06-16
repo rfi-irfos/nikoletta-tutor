@@ -41,7 +41,7 @@
   },
   "products": {
     "title": "Sessions & Packages",
-    "tabs": ["All", "English", "Deutsch", "Exam Prep", "Hungarian", "Kids"],
+    "tabs": ["All", "English", "German", "Exam Prep", "Hungarian", "Kids"],
     "items": [
       {
         "id": "p1",
@@ -68,7 +68,7 @@
         "description": "Whether you are a student or an adult — we work on exactly what is holding you back. For exams, for everyday fluency, or anything in between.",
         "price": "On request",
         "image": "uploads/img-deutsch.svg",
-        "category": "Deutsch",
+        "category": "German",
         "specs": ["All school levels", "Exam preparation available", "Native-level feedback"]
       },
       {
