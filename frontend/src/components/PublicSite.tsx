@@ -404,7 +404,7 @@ function ReviewsSection({ contactEmail, editMode }: { contactEmail: string; edit
   const { t } = useLang()
   const [reviews, setReviews] = useState<Testimonial[]>([])
   const [showForm, setShowForm] = useState(false)
-  const [form, setForm] = useState({ name: '', language: '', rating: 5, text: '' })
+  const [form, setForm] = useState({ name: '', email: '', language: '', rating: 5, text: '' })
   const [status, setStatus] = useState<'idle' | 'sending' | 'ok' | 'err'>('idle')
 
   useEffect(() => {
@@ -417,7 +417,7 @@ function ReviewsSection({ contactEmail, editMode }: { contactEmail: string; edit
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.name.trim() || !form.text.trim()) return
+    if (!form.name.trim() || !form.email.trim() || !form.text.trim()) return
     const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
     if (!key) {
       setStatus('ok')
@@ -432,10 +432,11 @@ function ReviewsSection({ contactEmail, editMode }: { contactEmail: string; edit
           access_key: key,
           subject: `New review from ${form.name} (${form.rating}/5)`,
           name: form.name,
+          email: form.email,
+          replyto: form.email,
           language: form.language,
           rating: `${form.rating}/5`,
           review: form.text,
-          replyto: contactEmail,
         }),
       })
       const data = await res.json()
@@ -487,9 +488,13 @@ function ReviewsSection({ contactEmail, editMode }: { contactEmail: string; edit
               <input required value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} placeholder={t.reviewNameHint} />
             </div>
             <div className="site-review-form-field">
-              <label>{t.reviewLanguage}</label>
-              <input value={form.language} onChange={e => setForm(p => ({ ...p, language: e.target.value }))} placeholder="English" />
+              <label>{t.reviewEmail}</label>
+              <input required type="email" value={form.email} onChange={e => setForm(p => ({ ...p, email: e.target.value }))} placeholder={t.reviewEmailHint} />
             </div>
+          </div>
+          <div className="site-review-form-field">
+            <label>{t.reviewLanguage}</label>
+            <input value={form.language} onChange={e => setForm(p => ({ ...p, language: e.target.value }))} placeholder="English" />
           </div>
           <div className="site-review-form-field">
             <label>{t.reviewRating}</label>
