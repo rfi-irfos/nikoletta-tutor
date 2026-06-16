@@ -72,6 +72,7 @@ function E({ field, value, as, className, style, href, title }: EProps) {
     suppressContentEditableWarning: true,
     dangerouslySetInnerHTML: htmlRef.current,
     onFocus: (e: React.FocusEvent<HTMLElement>) => { isEditingRef.current = true; setFocusedEl(e.currentTarget) },
+    onInput: (e: React.FormEvent<HTMLElement>) => { onTextChange(field, e.currentTarget.innerHTML) },
     onBlur: (e: React.FocusEvent<HTMLElement>) => {
       isEditingRef.current = false
       setFocusedEl(null)
