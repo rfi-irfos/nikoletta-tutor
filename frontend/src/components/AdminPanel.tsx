@@ -79,7 +79,12 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   const [editingNews, setEditingNews] = useState<string | null>(null)
   const [specsInput, setSpecsInput] = useState('')
   const [panelWidth, setPanelWidth] = useState(380)
-  const [device, setDevice] = useState<DeviceView>('edit')
+  const [device, setDevice] = useState<DeviceView>(() => {
+    const p = new URLSearchParams(window.location.search)
+    const v = p.get('view')
+    if (v === 'mobile' || v === 'tablet' || v === 'desktop' || v === 'edit') return v as DeviceView
+    return 'edit'
+  })
   const [adminMode, setAdminMode] = useState(false)
   const [adminSection, setAdminSection] = useState<'reviews' | 'students'>('reviews')
   const [pendingReviews, setPendingReviews] = useState<PendingReview[]>(loadPending)
