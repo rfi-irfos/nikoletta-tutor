@@ -41,6 +41,7 @@ export const UI = {
     whatsIncluded: "What's included",
     close: 'Close',
     back: 'Back',
+    readMore: 'Read article',
   },
   de: {
     namePlaceholder: 'Dein Name',
@@ -64,6 +65,7 @@ export const UI = {
     whatsIncluded: 'Das ist dabei',
     close: 'Schließen',
     back: 'Zurück',
+    readMore: 'Artikel lesen',
   },
   hu: {
     namePlaceholder: 'A neved',
@@ -87,6 +89,7 @@ export const UI = {
     whatsIncluded: 'Mit tartalmaz',
     close: 'Bezárás',
     back: 'Vissza',
+    readMore: 'Cikk elolvasása',
   },
 } as const
 

@@ -129,6 +129,9 @@ button { cursor: pointer; font-family: inherit; }
 }
 .site-nav-burger:hover { border-color: var(--primary); color: var(--primary); }
 
+/* Compact lang toggle — shown next to burger on mobile, hidden on desktop */
+.site-nav-lang-topbar { display: none; }
+
 /* ── HERO ────────────────────────────────────────────────────────────────── */
 .site-hero {
   margin-top: 70px;
@@ -312,7 +315,8 @@ button { cursor: pointer; font-family: inherit; }
   padding: 3px 9px; border-radius: 3px;
 }
 .site-pcard-body { padding: 22px; flex: 1; display: flex; flex-direction: column; }
-.site-pcard-brand { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--primary); margin-bottom: 5px; }
+.site-pcard-brand { font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--primary); margin-bottom: 5px; display: flex; align-items: center; gap: 5px; }
+.site-cat-icon { width: 14px; height: 14px; flex-shrink: 0; stroke: var(--primary); }
 .site-pcard-name { font-size: 17px; font-weight: 800; margin-bottom: 10px; }
 .site-pcard-specs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
 .site-spec { background: var(--surface-sunken); border: 1px solid var(--border); font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 4px; color: var(--text-soft); }
@@ -354,6 +358,9 @@ button { cursor: pointer; font-family: inherit; }
 .site-news-date { font-size: 12px; font-weight: 600; color: var(--primary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: .06em; }
 .site-news-title { font-size: 17px; font-weight: 800; margin-bottom: 10px; line-height: 1.4; color: var(--text); }
 .site-news-text { font-size: 14px; color: var(--text-soft); line-height: 1.7; }
+.site-news-read-more { display: inline-block; margin-top: 12px; font-size: 12px; font-weight: 700; color: var(--primary); letter-spacing: .04em; }
+.site-news-card.clickable { cursor: pointer; }
+.site-news-card.clickable:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
 
 /* ── CONTACT (warm, soft, single centered card — no map) ──────────────────── */
 .site-location { display: grid; grid-template-columns: 1fr 1fr; min-height: 440px; }
@@ -535,6 +542,8 @@ button { cursor: pointer; font-family: inherit; }
 .site-modal-price { font-size: 18px; font-weight: 800; color: var(--text); }
 .site[data-theme="hc"] .site-modal { border: 2px solid #fff; }
 .site[data-theme="hc"] .site-modal-close { background: #ffd400; color: #000; }
+.site-modal-article { max-width: 680px; }
+.site-modal-article-body { font-size: 15px; line-height: 1.8; color: var(--text-soft); white-space: pre-line; }
 @media (max-width: 560px) {
   .site-modal-img { height: 170px; }
   .site-modal-body { padding: 22px 20px 24px; }
@@ -1035,6 +1044,7 @@ button { cursor: pointer; font-family: inherit; }
 @media (max-width: 680px) {
   .site-main-nav, .site-nav-desktop { display: none; }
   .site-nav-burger { display: flex; }
+  .site-nav-lang-topbar { display: flex; align-items: center; }
   .site-nav { padding: 0 18px; height: 62px; }
   .site-logo-img { height: 40px; }
 

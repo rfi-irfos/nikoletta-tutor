@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react'
-import type { SiteContent, SectionId, CanvasPos, ProductItem } from '../types/content'
+import type { SiteContent, SectionId, CanvasPos, ProductItem, NewsItem } from '../types/content'
 import { useTheme, type Theme } from '../hooks/useTheme'
 import { useLang, type Lang } from '../hooks/useLang'
 
@@ -360,6 +360,24 @@ function LanguageToggle() {
   )
 }
 
+// ── Category icons ────────────────────────────────────────────────────────────
+
+function CategoryIcon({ category }: { category: string }) {
+  const c = (category ?? '').toLowerCase()
+  const cls = "site-cat-icon"
+  if (c === 'english')
+    return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  if (c === 'german' || c === 'deutsch')
+    return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+  if (c === 'exam prep' || c === 'prüfung' || c === 'vizsga')
+    return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+  if (c === 'hungarian' || c === 'ungarisch' || c === 'magyar' || c === 'gyerekek')
+    return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+  if (c === 'kids' || c === 'kinder' || c === 'kinder & jugendliche')
+    return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+  return <svg className={cls} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+}
+
 // ── Public Site ───────────────────────────────────────────────────────────────
 
 interface Props {
@@ -383,6 +401,7 @@ export function PublicSite({
   const [activeTab, setActiveTab] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
   const [modalProduct, setModalProduct] = useState<ProductItem | null>(null)
+  const [modalArticle, setModalArticle] = useState<NewsItem | null>(null)
   const [browseCatIdx, setBrowseCatIdx] = useState<number | null>(null)
   const { theme, setTheme } = useTheme()
   const { t } = useLang()
@@ -402,13 +421,20 @@ export function PublicSite({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content.products?.items])
 
-  // Close the session detail modal on Escape
+  // Close modals on Escape
   useEffect(() => {
     if (!modalProduct) return
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setModalProduct(null) }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [modalProduct])
+
+  useEffect(() => {
+    if (!modalArticle) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setModalArticle(null) }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [modalArticle])
   const [heroBgPos, setHeroBgPos] = useState({ x: hero.bgX ?? 50, y: hero.bgY ?? 50 })
   const [heroHeight, setHeroHeight] = useState(hero.minHeight ?? 680)
   const heroDragRef  = useRef<{ startX: number; startY: number; startBgX: number; startBgY: number } | null>(null)
@@ -692,6 +718,10 @@ export function PublicSite({
                   <E field="nav.ctaLabel" value={nav.ctaLabel} as="a" href={nav.ctaHref ?? '#'} className="site-nav-cta" />
                 )}
               </div>
+              {/* compact lang toggle — always visible on mobile, hidden on desktop (desktop has it in site-nav-desktop) */}
+              <div className="site-nav-lang-topbar">
+                <LanguageToggle />
+              </div>
               <button className="site-nav-burger" aria-label={t.openMenu} aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}>
                 <IconMenu />
               </button>
@@ -714,12 +744,6 @@ export function PublicSite({
             ))}
           </nav>
           <div className="site-mobile-actions">
-            <div>
-              <div className="site-mobile-theme-label">{t.language}</div>
-              <div className="site-mobile-theme-row">
-                <LanguageToggle />
-              </div>
-            </div>
             <div>
               <div className="site-mobile-theme-label">{t.colorScheme}</div>
               <div className="site-mobile-theme-row">
@@ -781,12 +805,12 @@ export function PublicSite({
         {/* ── TRUST STRIP ──────────────────────────────────────────────── */}
         {(trust?.items?.length ?? 0) > 0 && (
           <div className="site-trust" id="trust">
-            {trust.items.map((t) => (
+            {trust.items.map((t, ti) => (
               <div key={t.id} className="site-trust-item">
                 <TrustIcon icon={t.icon} />
                 <span>
-                  <strong dangerouslySetInnerHTML={{ __html: t.bold }} />
-                  {' '}<span dangerouslySetInnerHTML={{ __html: t.text }} />
+                  <E field={`trust.items.${ti}.bold`} value={t.bold} as="strong" />
+                  {' '}<E field={`trust.items.${ti}.text`} value={t.text} as="span" />
                 </span>
               </div>
             ))}
@@ -853,7 +877,7 @@ export function PublicSite({
                           {p.image ? <img src={p.image} alt={p.name} className="site-pcard-photo" /> : null}
                         </div>
                         <div className="site-pcard-body">
-                          <div className="site-pcard-brand">{p.category}</div>
+                          <div className="site-pcard-brand"><CategoryIcon category={p.category} />{p.category}</div>
                           <div className="site-pcard-name" dangerouslySetInnerHTML={{ __html: p.name }} />
                           {(p.specs?.length ?? 0) > 0 && (
                             <div className="site-pcard-specs">{p.specs!.slice(0, 3).map((s, si) => <span key={si} className="site-spec">{s}</span>)}</div>
@@ -908,7 +932,7 @@ export function PublicSite({
                     <EImg field={`products.items.${i}.image`} src={p.image} alt={p.name} className="site-pcard-photo" />
                   </div>
                   <div className="site-pcard-body">
-                    <div className="site-pcard-brand">{p.category}</div>
+                    <div className="site-pcard-brand">{!editMode && <CategoryIcon category={p.category} />}{p.category}</div>
                     <E field={`products.items.${i}.name`} value={p.name} as="div" className="site-pcard-name" />
                     {(p.specs?.length ?? 0) > 0 && (
                       <div className="site-pcard-specs">
@@ -950,12 +974,22 @@ export function PublicSite({
             <E field="news.title" value={news.title} as="h2" className="site-section-title" />
             <div className="site-news-grid">
               {news.items.map((n, i) => (
-                <div key={n.id} className="site-news-card">
+                <div
+                  key={n.id}
+                  className={`site-news-card ${!editMode ? 'clickable' : ''}`}
+                  {...(!editMode ? {
+                    role: 'button',
+                    tabIndex: 0,
+                    onClick: () => setModalArticle(n),
+                    onKeyDown: (e: React.KeyboardEvent) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setModalArticle(n) } },
+                  } : {})}
+                >
                   {n.image && <img src={n.image} alt={n.title} className="site-news-img" />}
                   <div className="site-news-body">
                     <div className="site-news-date">{new Date(n.date).toLocaleDateString('de-AT', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
                     <E field={`news.items.${i}.title`} value={n.title} as="h3" className="site-news-title" />
                     <E field={`news.items.${i}.body`} value={n.body} as="p" className="site-news-text" />
+                    {!editMode && <span className="site-news-read-more">{t.readMore} →</span>}
                   </div>
                 </div>
               ))}
@@ -1057,6 +1091,23 @@ export function PublicSite({
                   <div className="site-modal-price" dangerouslySetInnerHTML={{ __html: modalProduct.price }} />
                   <a href={`mailto:${contact?.email ?? ''}?subject=${encodeURIComponent(`${t.mailSubject}`)}`} className="site-btn-lime-lg" onClick={() => setModalProduct(null)}>{t.bookTrial}</a>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── ARTICLE MODAL ────────────────────────────────────────────── */}
+        {modalArticle && !editMode && (
+          <div className="site-modal-scrim" onClick={() => setModalArticle(null)} role="dialog" aria-modal="true" aria-label={modalArticle.title}>
+            <div className="site-modal site-modal-article" onClick={e => e.stopPropagation()}>
+              <button className="site-modal-close" aria-label={t.close} onClick={() => setModalArticle(null)}><IconClose /></button>
+              {modalArticle.image && (
+                <div className="site-modal-img"><img src={modalArticle.image} alt={modalArticle.title} /></div>
+              )}
+              <div className="site-modal-body">
+                <div className="site-news-date">{new Date(modalArticle.date).toLocaleDateString('de-AT', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                <h3 className="site-modal-title" dangerouslySetInnerHTML={{ __html: modalArticle.title }} />
+                <div className="site-modal-article-body" dangerouslySetInnerHTML={{ __html: modalArticle.body }} />
               </div>
             </div>
           </div>
