@@ -143,9 +143,11 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   // ── Canvas click → sidebar auto-navigate ─────────────────────────────────
 
   const handleCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Don't intercept clicks on editable text — let them focus for inline editing
+    // Double-click = text selection intent, never navigate
+    if (e.detail >= 2) return
+    // Don't intercept clicks when already actively editing an element
     const target = e.target as HTMLElement
-    if (target.isContentEditable || target.closest('.editable-text')) return
+    if (target.isContentEditable && document.activeElement === target) return
     const el = target.closest('[data-cid]') as HTMLElement | null
     if (!el) return
     const cid = el.dataset.cid ?? ''
