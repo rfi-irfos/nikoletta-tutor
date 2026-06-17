@@ -153,14 +153,13 @@
       {
         "id": "p6",
         "name": "Angol gyerekeknek és tiniknek",
-        "description": "Játékos, türelmes, bátorító. Az köré épül, ami a gyerekeket tényleg érdekli: játékok, történetek, kedvenc témák. Hogy a nyelv megragadjon.",
+        "description": "Játékos, türelmes, bátorító. A köré épül, ami a gyerekeket tényleg érdekli: játékok, történetek, kedvenc témák. Hogy a nyelv ténylegesen megragadjon.",
         "price": "Igény szerint",
         "image": "uploads/img-kids.svg",
         "category": "Gyerekek",
         "specs": [
           "6-18 éves kor",
-          "Játékok és mesélés",
-          "Szülői visszajelzés minden óra után"
+          "Játékok és mesélés"
         ]
       }
     ]
