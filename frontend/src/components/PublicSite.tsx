@@ -368,27 +368,8 @@ function ReviewsSection({ editMode }: { editMode: boolean }) {
     if (!form.name.trim() || !form.email.trim() || !form.text.trim()) return
     setStatus('sending')
 
-    // Notify Niki via formsubmit.co — submission arrives in her email inbox,
-    // she approves it via admin panel "Neue Bewertung". No localStorage: reviews
-    // submitted on a student's browser are never visible on Niki's browser.
-    try {
-      await fetch('https://formsubmit.co/ajax/nikoletta.tutor@gmail.com', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          _subject: `New review from ${form.name} (${form.rating}/5 stars)`,
-          name: form.name,
-          email: form.email,
-          language: form.language || '—',
-          rating: `${form.rating}/5`,
-          review: form.text,
-          _replyto: form.email,
-          _captcha: 'false',
-        }),
-      })
-    } catch { /* best-effort — review is already saved locally */ }
-
-    // Also notify via Web3Forms if key is configured
+    // Notify Niki via Web3Forms (no activation step required).
+    // Review arrives in her inbox; she adds it via admin → Neue Bewertung.
     const key = import.meta.env.VITE_WEB3FORMS_KEY as string | undefined
     if (key) {
       try {
@@ -401,12 +382,12 @@ function ReviewsSection({ editMode }: { editMode: boolean }) {
             name: form.name,
             email: form.email,
             replyto: form.email,
-            language: form.language,
+            language: form.language || '—',
             rating: `${form.rating}/5`,
             review: form.text,
           }),
         })
-      } catch { /* email notification failed — review still saved locally */ }
+      } catch { /* best-effort */ }
     }
 
     setStatus('ok')
