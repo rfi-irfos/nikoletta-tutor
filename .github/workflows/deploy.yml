@@ -41,7 +41,7 @@ jobs:
           VITE_GH_UPLOADS_DIR:  ${{ vars.VITE_GH_UPLOADS_DIR  || 'public/uploads' }}
           VITE_ADMIN_HASH:      ${{ secrets.VITE_ADMIN_HASH }}
           VITE_WEB3FORMS_KEY:   ${{ secrets.VITE_WEB3FORMS_KEY }}
-          VITE_BASE_URL:        ${{ vars.VITE_BASE_URL || '/' }}
+          VITE_BASE_URL:        '/nikoletta-tutor/'
 
       - uses: actions/upload-pages-artifact@v3.0.1
         with:

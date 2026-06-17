@@ -2,12 +2,12 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>e-techbike.at</title>
+<title>Niki Csonka — Language Coaching</title>
 <script>
-  // SPA redirect: GitHub Pages serves this for unknown paths.
-  // Preserve the hash so /#admin still works.
+  // SPA redirect: GitHub Pages serves this for unknown paths under the repo subpath.
+  // Always redirect to the repo root so the React router can handle the URL.
   var l = window.location;
-  l.replace(l.origin + l.pathname.split('/').slice(0, 1).join('/') + '/' + (l.hash || ''));
+  l.replace('https://rfi-irfos.github.io/nikoletta-tutor/' + (l.hash || ''));
 </script>
 </head>
 </html>
