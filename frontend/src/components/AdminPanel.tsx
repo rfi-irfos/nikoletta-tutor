@@ -459,8 +459,8 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                   </div>
                 )}
 
-                <div style={{ fontSize: 11, color: 'var(--panel-muted,#888)', marginBottom: 10, lineHeight: 1.5 }}>
-                  Genehmigte Bewertungen erscheinen auf der Website.
+                <div style={{ fontSize: 11, color: 'var(--panel-muted,#888)', marginBottom: 10, lineHeight: 1.5, background: 'var(--panel-surface,#f8f8f8)', borderRadius: 8, padding: '10px 12px', border: '1px solid var(--panel-border,#e8e8e8)' }}>
+                  Neue Bewertungen kommen per E-Mail an <strong>nikoletta.tutor@gmail.com</strong>. Klick auf <strong>+ Bewertung hinzufugen</strong> und trag sie hier ein — dann erscheinen sie sofort auf der Website.
                 </div>
 
                 {/* New review form */}

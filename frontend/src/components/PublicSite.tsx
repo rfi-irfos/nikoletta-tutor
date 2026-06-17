@@ -368,22 +368,9 @@ function ReviewsSection({ editMode }: { editMode: boolean }) {
     if (!form.name.trim() || !form.email.trim() || !form.text.trim()) return
     setStatus('sending')
 
-    // Save to pending queue in localStorage — admin sees it in Verwaltung > Reviews
-    try {
-      const pending = JSON.parse(localStorage.getItem('niki_pending_reviews') || '[]')
-      pending.push({
-        id: `pr_${Date.now()}`,
-        name: form.name,
-        email: form.email,
-        language: form.language,
-        rating: form.rating,
-        text: form.text,
-        submittedAt: new Date().toISOString(),
-      })
-      localStorage.setItem('niki_pending_reviews', JSON.stringify(pending))
-    } catch { /* localStorage unavailable */ }
-
-    // Notify Niki via formsubmit.co (no API key needed; first submission triggers one-time activation email)
+    // Notify Niki via formsubmit.co — submission arrives in her email inbox,
+    // she approves it via admin panel "Neue Bewertung". No localStorage: reviews
+    // submitted on a student's browser are never visible on Niki's browser.
     try {
       await fetch('https://formsubmit.co/ajax/nikoletta.tutor@gmail.com', {
         method: 'POST',
