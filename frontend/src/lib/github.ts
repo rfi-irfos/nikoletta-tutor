@@ -11,13 +11,13 @@ export { CONTENT_PATH, UPLOADS_DIR }
 
 // Runtime-only token. NEVER baked into the build — a baked PAT ends up in the
 // public JS bundle and grants write access to anyone who opens the site. The
-// admin pastes a fine-grained PAT at login; kept in sessionStorage so it
-// survives a refresh but is gone when the tab closes.
+// admin pastes a fine-grained PAT once; kept in localStorage so it sticks on
+// that machine (paste once, never again). Cleared on logout.
 const TOKEN_KEY = 'gh_pat'
 let _runtimeToken = ''
-try { _runtimeToken = sessionStorage.getItem(TOKEN_KEY) || '' } catch { /* no storage */ }
-export function setGhToken(t: string) { _runtimeToken = t.trim(); try { sessionStorage.setItem(TOKEN_KEY, _runtimeToken) } catch { /* ignore */ } }
-export function clearGhToken() { _runtimeToken = ''; try { sessionStorage.removeItem(TOKEN_KEY) } catch { /* ignore */ } }
+try { _runtimeToken = localStorage.getItem(TOKEN_KEY) || '' } catch { /* no storage */ }
+export function setGhToken(t: string) { _runtimeToken = t.trim(); try { localStorage.setItem(TOKEN_KEY, _runtimeToken) } catch { /* ignore */ } }
+export function clearGhToken() { _runtimeToken = ''; try { localStorage.removeItem(TOKEN_KEY) } catch { /* ignore */ } }
 export function hasGhToken() { return !!_runtimeToken }
 
 // content.json (en) -> content.de.json / content.hu.json. Languages side by side.
