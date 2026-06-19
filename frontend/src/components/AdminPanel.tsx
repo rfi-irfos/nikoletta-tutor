@@ -44,7 +44,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'about' | 'usp' | 'news' | 'contact' | 'style' | 'students' | 'reviews'
+type PanelTab = 'products' | 'hero' | 'about' | 'usp' | 'news' | 'contact' | 'style' | 'students' | 'reviews' | 'pricing'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
 // ── Device preview switch (Edit / Desktop / Tablet / Mobile) ──────────────────
@@ -275,6 +275,9 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
       } else if (uploadTarget.startsWith('news:')) {
         const nid = uploadTarget.replace('news:', '')
         updateNews(nid, 'image', url)
+      } else if (uploadTarget.startsWith('cert:')) {
+        const cid = uploadTarget.replace('cert:', '')
+        update('certificates.items', (draft.certificates?.items ?? []).map(c => c.id === cid ? { ...c, file: url } : c))
       } else {
         update(uploadTarget, url)
       }
@@ -295,6 +298,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     { id: 'about',    label: 'Über mich' },
     { id: 'usp',      label: 'Mein Ansatz' },
     { id: 'news',     label: 'Blog' },
+    { id: 'pricing',  label: 'Preise & Zertifikate' },
     { id: 'contact',  label: 'Kontakt' },
     { id: 'style',    label: 'Stil' },
   ]
@@ -853,6 +857,39 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
               )}
 
               {/* ── CONTACT TAB ───────────────────────────────────────────── */}
+              {/* ── PRICING & CERTIFICATES TAB ─────────────────────────── */}
+              {activeTab === 'pricing' && (
+                <>
+                  <PanelSection title="Preise">
+                    <Field label="Abschnittstitel">
+                      <input value={(draft as any).pricing?.title ?? ''} onChange={e => update('pricing.title', e.target.value)} />
+                    </Field>
+                    <Field label="Text (Absätze durch Leerzeile trennen)">
+                      <textarea rows={8} value={(draft as any).pricing?.body ?? ''} onChange={e => update('pricing.body', e.target.value)} />
+                    </Field>
+                  </PanelSection>
+                  <PanelSection title="Zertifikate">
+                    {((draft as any).certificates?.items ?? []).map((cert: { id: string; title: string; subtitle: string; file: string }, i: number) => (
+                      <div key={cert.id} className="panel-cert-row">
+                        <Field label={`Zertifikat ${i + 1} — Titel`}>
+                          <input value={cert.title} onChange={e => update('certificates.items', (draft as any).certificates.items.map((c: { id: string }) => c.id === cert.id ? { ...c, title: e.target.value } : c))} />
+                        </Field>
+                        <Field label="Untertitel">
+                          <input value={cert.subtitle} onChange={e => update('certificates.items', (draft as any).certificates.items.map((c: { id: string }) => c.id === cert.id ? { ...c, subtitle: e.target.value } : c))} />
+                        </Field>
+                        <Field label="Datei">
+                          <UploadRow
+                            src={cert.file}
+                            onUpload={() => { setUploadTarget(`cert:${cert.id}`); fileRef.current?.click() }}
+                            uploading={uploading}
+                          />
+                        </Field>
+                      </div>
+                    ))}
+                  </PanelSection>
+                </>
+              )}
+
               {activeTab === 'contact' && (
                 <>
                   <PanelSection title="Kontaktdaten">

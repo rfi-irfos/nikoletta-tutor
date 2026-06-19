@@ -23,6 +23,10 @@
         "href": "#news"
       },
       {
+        "label": "Árak",
+        "href": "#pricing"
+      },
+      {
         "label": "Kapcsolat",
         "href": "#location"
       }
@@ -269,6 +273,17 @@
       }
     ],
     "copyright": "© 2026 Nikoletta Csonka · Nyelvi coaching · Graz"
+  },
+  "pricing": {
+    "title": "Árak",
+    "body": "Az egyéni órák ára 25 és 40 euró között változik, a formátumtól, a gyakorisától és az egyéni igényektől függően.\n\nÓracsomagok is elérhetők, saját árakkal.\n\nMivel minden helyzet egyedi, a legjobb, ha egyszerűen megkeresed és elmondod, mire van szükséged. A többit együtt kitaláljuk."
+  },
+  "certificates": {
+    "title": "Bizonyítványok",
+    "items": [
+      { "id": "cert1", "title": "TEFL-bizonyítvány", "subtitle": "Teaching English as a Foreign Language — nemzetközileg elismert", "file": "" },
+      { "id": "cert2", "title": "Nyelvvizsga-bizonyítvány", "subtitle": "Hivatalos képesítés — Nyelvvizsgaközpont", "file": "" }
+    ]
   },
   "about": {
     "eyebrow": "Rólam",

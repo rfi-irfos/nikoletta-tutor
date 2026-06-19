@@ -36,6 +36,13 @@ export interface TrustItem {
   text: string
 }
 
+export interface CertificateItem {
+  id: string
+  title: string
+  subtitle: string
+  file: string
+}
+
 export type SectionId = 'trust' | 'categories' | 'products' | 'usp' | 'news' | 'location'
 export const DEFAULT_SECTION_ORDER: SectionId[] = ['trust', 'categories', 'products', 'usp', 'news', 'location']
 
@@ -98,6 +105,8 @@ export interface SiteContent {
     formEnabled?: boolean
   }
   whatsapp: { enabled: boolean; number: string; message: string }
+  pricing?: { title: string; body: string }
+  certificates?: { title?: string; items: CertificateItem[] }
   footer: {
     brand: string
     tagline: string

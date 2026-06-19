@@ -57,6 +57,9 @@ export const UI = {
     reviewSuccess: 'Thank you! Niki will review and publish your testimonial.',
     reviewError: 'Something went wrong. Please try again.',
     reviewRating: 'Rating',
+    viewCertificate: 'View certificate',
+    closeCertificate: 'Close',
+    noCertificateYet: 'Certificate coming soon.',
   },
   de: {
     namePlaceholder: 'Dein Name',
@@ -96,6 +99,9 @@ export const UI = {
     reviewSuccess: 'Danke! Niki prüft deine Bewertung und veröffentlicht sie.',
     reviewError: 'Etwas ist schiefgelaufen. Bitte erneut versuchen.',
     reviewRating: 'Bewertung',
+    viewCertificate: 'Zertifikat ansehen',
+    closeCertificate: 'Schließen',
+    noCertificateYet: 'Zertifikat folgt in Kürze.',
   },
   hu: {
     namePlaceholder: 'A neved',
@@ -135,6 +141,9 @@ export const UI = {
     reviewSuccess: 'Köszönöm! Niki átnézi a véleményed, és közzéteszi.',
     reviewError: 'Valami hiba történt. Kérlek, próbáld újra.',
     reviewRating: 'Értékelés',
+    viewCertificate: 'Tanúsítvány megtekintése',
+    closeCertificate: 'Bezárás',
+    noCertificateYet: 'A tanúsítvány hamarosan elérhető.',
   },
 } as const
 

@@ -503,13 +503,14 @@ export function PublicSite({
   content, editMode = false, rearrangeMode = false, initPositions = {},
   onTextChange, onImageClick, onUpdate,
 }: Props) {
-  const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer } = content
+  const { meta, nav, hero, trust, categories, products, usp, news, contact, whatsapp, footer, pricing, certificates } = content as typeof content & { pricing?: { title: string; body: string }; certificates?: { title?: string; items: Array<{ id: string; title: string; subtitle: string; file: string }> } }
 
   const [focusedEl, setFocusedEl] = useState<HTMLElement | null>(null)
   const [activeTab, setActiveTab] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
   const [modalProduct, setModalProduct] = useState<ProductItem | null>(null)
   const [modalArticle, setModalArticle] = useState<NewsItem | null>(null)
+  const [modalCert, setModalCert] = useState<{ title: string; file: string } | null>(null)
   const [browseCatIdx, setBrowseCatIdx] = useState<number | null>(null)
   const { theme, setTheme } = useTheme()
   const { t } = useLang()
@@ -536,6 +537,13 @@ export function PublicSite({
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
   }, [modalProduct])
+
+  useEffect(() => {
+    if (!modalCert) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setModalCert(null) }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [modalCert])
 
   useEffect(() => {
     if (!modalArticle) return
@@ -1130,6 +1138,18 @@ export function PublicSite({
           </section>
         )}
 
+        {/* ── PRICING ──────────────────────────────────────────────────── */}
+        {pricing?.body && (
+          <section className="site-section site-pricing" id="pricing">
+            <h2 className="site-section-title">{pricing.title}</h2>
+            <div className="site-pricing-body">
+              {pricing.body.split('\n\n').map((para, i) => (
+                <p key={i}>{para}</p>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* ── LOCATION ─────────────────────────────────────────────────── */}
         <section className="site-location" id="location">
           {contact?.mapSrc && (
@@ -1196,6 +1216,37 @@ export function PublicSite({
             )}
           </div>
         </section>
+
+        {/* ── CERTIFICATES ─────────────────────────────────────────────── */}
+        {(certificates?.items?.length ?? 0) > 0 && (
+          <section className="site-section site-certificates" id="certificates">
+            {certificates!.title && <h2 className="site-section-title">{certificates!.title}</h2>}
+            <div className="site-cert-grid">
+              {certificates!.items.map(cert => (
+                <button
+                  key={cert.id}
+                  className="site-cert-card"
+                  onClick={() => !editMode && setModalCert({ title: cert.title, file: cert.file })}
+                  aria-label={`${t.viewCertificate}: ${cert.title}`}
+                >
+                  <div className="site-cert-icon">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14 2 14 8 20 8"/>
+                      <circle cx="12" cy="14" r="3"/>
+                      <path d="M9.5 17.5 9 20l3-1 3 1-.5-2.5"/>
+                    </svg>
+                  </div>
+                  <div className="site-cert-info">
+                    <strong className="site-cert-title">{cert.title}</strong>
+                    {cert.subtitle && <span className="site-cert-subtitle">{cert.subtitle}</span>}
+                  </div>
+                  <span className="site-cert-cta">{t.viewCertificate} →</span>
+                </button>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* ── FOOTER ───────────────────────────────────────────────────── */}
         <footer className="site-footer">
@@ -1274,6 +1325,25 @@ export function PublicSite({
                 <div className="site-news-date">{new Date(modalArticle.date).toLocaleDateString('de-AT', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
                 <h3 className="site-modal-title" dangerouslySetInnerHTML={{ __html: modalArticle.title }} />
                 <div className="site-modal-article-body" dangerouslySetInnerHTML={{ __html: modalArticle.body }} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── CERTIFICATE MODAL ────────────────────────────────────────── */}
+        {modalCert && !editMode && (
+          <div className="site-modal-scrim" onClick={() => setModalCert(null)} role="dialog" aria-modal="true" aria-label={modalCert.title}>
+            <div className="site-modal site-modal-cert" onClick={e => e.stopPropagation()}>
+              <button className="site-modal-close" aria-label={t.closeCertificate} onClick={() => setModalCert(null)}><IconClose /></button>
+              <div className="site-modal-body">
+                <h3 className="site-modal-title">{modalCert.title}</h3>
+                {modalCert.file ? (
+                  modalCert.file.match(/\.pdf$/i)
+                    ? <iframe src={modalCert.file} className="site-cert-viewer-pdf" title={modalCert.title} />
+                    : <img src={modalCert.file} alt={modalCert.title} className="site-cert-viewer-img" />
+                ) : (
+                  <p className="site-cert-placeholder">{t.noCertificateYet}</p>
+                )}
               </div>
             </div>
           </div>

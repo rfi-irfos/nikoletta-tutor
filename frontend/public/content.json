@@ -23,6 +23,10 @@
         "href": "#news"
       },
       {
+        "label": "Pricing",
+        "href": "#pricing"
+      },
+      {
         "label": "Contact",
         "href": "#location"
       }
@@ -270,6 +274,17 @@
       }
     ],
     "copyright": "© 2026 Nikoletta Csonka · Language Coaching · Graz"
+  },
+  "pricing": {
+    "title": "Pricing",
+    "body": "Sessions are priced between €25 and €40, depending on the format, frequency, and your individual needs.\n\nPackage bookings are available and come with their own rates.\n\nEvery situation is different, so the best way to find the right fit is to simply get in touch. Tell me what you are working towards and we will figure out the rest together."
+  },
+  "certificates": {
+    "title": "Certificates",
+    "items": [
+      { "id": "cert1", "title": "TEFL Certificate", "subtitle": "Teaching English as a Foreign Language — internationally recognised", "file": "" },
+      { "id": "cert2", "title": "Language Exam Certificate", "subtitle": "Official qualification — Language Exam Centre", "file": "" }
+    ]
   },
   "about": {
     "eyebrow": "About me",

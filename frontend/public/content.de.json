@@ -23,6 +23,10 @@
         "href": "#news"
       },
       {
+        "label": "Preise",
+        "href": "#pricing"
+      },
+      {
         "label": "Kontakt",
         "href": "#location"
       }
@@ -269,6 +273,17 @@
       }
     ],
     "copyright": "© 2026 Nikoletta Csonka · Sprachcoaching · Graz"
+  },
+  "pricing": {
+    "title": "Preise",
+    "body": "Einzelstunden liegen zwischen 25 € und 40 €, abhängig von Format, Häufigkeit und deinen individuellen Bedürfnissen.\n\nStundenpakete sind ebenfalls buchbar und haben eigene Konditionen.\n\nDa jede Situation anders ist, ist der einfachste Weg, sich zu melden und kurz zu erzählen, was du dir vorstellst. Den Rest klären wir gemeinsam."
+  },
+  "certificates": {
+    "title": "Zertifikate",
+    "items": [
+      { "id": "cert1", "title": "TEFL-Zertifikat", "subtitle": "Teaching English as a Foreign Language — international anerkannt", "file": "" },
+      { "id": "cert2", "title": "Sprachprüfungszertifikat", "subtitle": "Offizielle Qualifikation — Sprachprüfungszentrum", "file": "" }
+    ]
   },
   "about": {
     "eyebrow": "Über mich",
