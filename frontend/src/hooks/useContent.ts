@@ -81,7 +81,7 @@ export function useContent(lang: Lang) {
           const filename = `${Date.now()}-${safe}`
           const path = `${UPLOADS_DIR}/${filename}`
           await ghWrite(path, b64, null, `upload: ${filename}`)
-          resolve(`uploads/${filename}`)
+          resolve(`https://raw.githubusercontent.com/${OWNER}/${REPO}/main/${path}`)
         } catch (e) {
           console.error('Upload failed:', e)
           resolve(null)

@@ -8,6 +8,7 @@ export function useTestimonials() {
   const [testimonials, setTestimonials] = useState<Testimonial[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState(false)
   const [sha, setSha] = useState<string | null>(null)
 
   useEffect(() => { load() }, [])
@@ -32,11 +33,15 @@ export function useTestimonials() {
 
   async function persist(next: Testimonial[]) {
     setSaving(true)
+    setSaveError(false)
     try {
       const encoded = b64Encode(JSON.stringify(next, null, 2))
       const file = await ghWrite(TESTIMONIALS_PATH, encoded, sha, 'update: testimonials')
       setSha(file.sha)
       setTestimonials(next)
+    } catch (e) {
+      console.error('Testimonials save failed:', e)
+      setSaveError(true)
     } finally {
       setSaving(false)
     }
@@ -54,5 +59,5 @@ export function useTestimonials() {
     persist(testimonials.filter(t => t.id !== id))
   }
 
-  return { testimonials, loading, saving, add, update, remove }
+  return { testimonials, loading, saving, saveError, add, update, remove }
 }

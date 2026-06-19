@@ -138,8 +138,8 @@ const DEVICE_OPTS: { id: DeviceView; label: string; icon: React.ReactNode }[] = 
 export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onLogout }: Props) {
   const [draft, setDraft] = useState<SiteContent>(content)
   const [activeTab, setActiveTab] = useState<PanelTab>('products')
-  const { students, saving: studentsSaving, add: addStudent, update: updateStudent, remove: removeStudent } = useStudents()
-  const { testimonials, saving: reviewsSaving, add: addReview, update: updateReview, remove: removeReview } = useTestimonials()
+  const { students, saving: studentsSaving, saveError: studentsSaveError, add: addStudent, update: updateStudent, remove: removeStudent } = useStudents()
+  const { testimonials, saving: reviewsSaving, saveError: reviewsSaveError, add: addReview, update: updateReview, remove: removeReview } = useTestimonials()
   const [editingReview, setEditingReview] = useState<Testimonial | null>(null)
   const [newReviewForm, setNewReviewForm] = useState(false)
   const [reviewDraft, setReviewDraft] = useState<Partial<Testimonial>>({})
@@ -616,7 +616,11 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
             {/* ── REVIEWS ──────────────────────────────────────────────── */}
             {adminSection === 'reviews' && (
               <div className="panel-products">
-
+                {reviewsSaveError && (
+                  <div style={{ color: '#c53030', fontSize: 12, fontWeight: 600, padding: '8px 12px', background: '#fff5f5', borderRadius: 8, border: '1px solid #feb2b2', marginBottom: 12 }}>
+                    Fehler beim Speichern. Bitte Seite neu laden und nochmal versuchen.
+                  </div>
+                )}
                 {/* Pending (eingegangen via Formular) */}
                 {pendingReviews.length > 0 && (
                   <div style={{ marginBottom: 24 }}>
@@ -744,6 +748,11 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
             {/* ── STUDENTS ─────────────────────────────────────────────── */}
             {adminSection === 'students' && (
               <div className="panel-students">
+                {studentsSaveError && (
+                  <div style={{ color: '#c53030', fontSize: 12, fontWeight: 600, padding: '8px 12px', background: '#fff5f5', borderRadius: 8, border: '1px solid #feb2b2', marginBottom: 12 }}>
+                    Fehler beim Speichern. Bitte Seite neu laden und nochmal versuchen.
+                  </div>
+                )}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                   <span style={{ fontSize: 12, color: 'var(--panel-muted, #888)', fontWeight: 600 }}>{students.length} Schüler</span>
                   <button className="panel-add-btn" onClick={() => { setNewStudentForm(true); setStudentDraft({ status: 'active', language: 'Englisch', level: 'B1', sessions: 0, goal: '', notes: '' }) }}>

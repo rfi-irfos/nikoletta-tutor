@@ -34,6 +34,9 @@ jobs:
 
       - run: npm ci
 
+      - name: Inject Web3Forms key into research portal
+        run: sed -i "s/__WEB3_KEY__/${{ secrets.VITE_WEB3FORMS_KEY }}/g" public/research.html
+
       - name: Build
         run: npm run build
         env:

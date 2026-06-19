@@ -8,6 +8,7 @@ export function useStudents() {
   const [students, setStudents] = useState<Student[]>([])
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [saveError, setSaveError] = useState(false)
   const [sha, setSha] = useState<string | null>(null)
 
   useEffect(() => {
@@ -34,11 +35,15 @@ export function useStudents() {
 
   async function save(next: Student[]) {
     setSaving(true)
+    setSaveError(false)
     try {
       const encoded = b64Encode(JSON.stringify(next, null, 2))
       const file = await ghWrite(STUDENTS_PATH, encoded, sha, 'update: student list')
       setSha(file.sha)
       setStudents(next)
+    } catch (e) {
+      console.error('Student save failed:', e)
+      setSaveError(true)
     } finally {
       setSaving(false)
     }
@@ -58,5 +63,5 @@ export function useStudents() {
     save(students.filter(s => s.id !== id))
   }
 
-  return { students, loading, saving, add, update, remove }
+  return { students, loading, saving, saveError, add, update, remove }
 }

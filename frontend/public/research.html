@@ -813,6 +813,7 @@ textarea::placeholder,input::placeholder{color:var(--light)}
 
 
 <script>
+const WEB3_KEY = '__WEB3_KEY__'
 // ── STATE ────────────────────────────────────────────────────
 const S = {
   cur:1, teacherName:'', experience:'', languages:'',
@@ -993,6 +994,19 @@ async function doSubmit(){
     const existing=JSON.parse(localStorage.getItem('ssp_reflections')||'[]')
     existing.push(payload)
     localStorage.setItem('ssp_reflections',JSON.stringify(existing))
+    // Also send via Web3Forms so Niki receives every reflection by email
+    if(WEB3_KEY && WEB3_KEY!=='__WEB3_KEY__'){
+      fetch('https://api.web3forms.com/submit',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({
+          access_key:WEB3_KEY,
+          subject:'SSP Reflexion — '+(S.teacherName||'Anonym'),
+          from_name:S.teacherName||'Anonym',
+          message:JSON.stringify(payload,null,2)
+        })
+      }).catch(()=>{})
+    }
     showSuccess()
   }catch(e){
     console.error(e)
