@@ -17,7 +17,7 @@ function getLockUntil(): number { return parseInt(sessionStorage.getItem(LOCK_KE
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(() =>
-    sessionStorage.getItem(SESSION_KEY) ? { name: 'Admin', email: '', picture: '' } : null
+    localStorage.getItem(SESSION_KEY) ? { name: 'Admin', email: '', picture: '' } : null
   )
 
   const login = async (password: string): Promise<boolean | 'locked'> => {
@@ -31,7 +31,6 @@ export function useAuth() {
     if (hash !== ADMIN_HASH) {
       const fails = getFailCount() + 1
       sessionStorage.setItem(FAIL_KEY, String(fails))
-      // exponential backoff: lock for 2^(fails-1) seconds, capped at 5 minutes
       const lockSecs = Math.min(300, Math.pow(2, fails - 1))
       sessionStorage.setItem(LOCK_KEY, String(Date.now() + lockSecs * 1000))
       return false
@@ -39,13 +38,13 @@ export function useAuth() {
 
     sessionStorage.removeItem(FAIL_KEY)
     sessionStorage.removeItem(LOCK_KEY)
-    sessionStorage.setItem(SESSION_KEY, '1')
+    localStorage.setItem(SESSION_KEY, '1')
     setUser({ name: 'Admin', email: '', picture: '' })
     return true
   }
 
   const logout = () => {
-    sessionStorage.removeItem(SESSION_KEY)
+    localStorage.removeItem(SESSION_KEY)
     setUser(null)
     window.location.hash = ''
     window.location.href = import.meta.env.BASE_URL || '/'

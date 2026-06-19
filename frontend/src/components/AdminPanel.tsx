@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
-import type { SiteContent, ProductItem, NewsItem } from '../types/content'
+import type { SiteContent, ProductItem, NewsItem, PageItem, SectionId } from '../types/content'
 import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
 import { useStudents } from '../lib/useStudents'
@@ -110,7 +110,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'about' | 'usp' | 'news' | 'contact' | 'style' | 'students' | 'reviews' | 'pricing' | 'ssp'
+type PanelTab = 'products' | 'hero' | 'about' | 'usp' | 'news' | 'contact' | 'style' | 'students' | 'reviews' | 'pricing' | 'ssp' | 'pages'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
 // ── Device preview switch (Edit / Desktop / Tablet / Mobile) ──────────────────
@@ -157,6 +157,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   const [uploading, setUploading] = useState(false)
   const [editingProduct, setEditingProduct] = useState<string | null>(null)
   const [editingNews, setEditingNews] = useState<string | null>(null)
+  const [editingPage, setEditingPage] = useState<string | null>(null)
   const [specsInput, setSpecsInput] = useState('')
   const [panelWidth, setPanelWidth] = useState(380)
   const [device, setDevice] = useState<DeviceView>(() => {
@@ -414,12 +415,29 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     fileRef.current?.click()
   }
 
+  // ── Page helpers ──────────────────────────────────────────────────────────
+  const addPage = () => {
+    const id = `pg${Date.now()}`
+    const newPage: PageItem = { id, title: 'Neue Seite', slug: `neue-seite-${id.slice(-4)}`, body: '<p>Seiteninhalt hier eingeben.</p>', showInNav: false }
+    update('pages', [...(draft.pages ?? []), newPage])
+    setEditingPage(id)
+    setActiveTab('pages')
+  }
+  const deletePage = (id: string) => {
+    update('pages', (draft.pages ?? []).filter(p => p.id !== id))
+    if (editingPage === id) setEditingPage(null)
+  }
+  const updatePage = (id: string, field: keyof PageItem, value: unknown) => {
+    update('pages', (draft.pages ?? []).map(p => p.id === id ? { ...p, [field]: value } : p))
+  }
+
   const tabs: Array<{ id: PanelTab; label: string }> = [
     { id: 'products', label: 'Sessions' },
     { id: 'hero',     label: 'Hero' },
     { id: 'about',    label: 'Über mich' },
     { id: 'usp',      label: 'Mein Ansatz' },
     { id: 'news',     label: 'Blog' },
+    { id: 'pages',    label: 'Seiten' },
     { id: 'pricing',  label: 'Preise & Zertifikate' },
     { id: 'ssp',      label: 'Forschungsportal' },
     { id: 'contact',  label: 'Kontakt' },
@@ -1475,12 +1493,111 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                 </>
               )}
 
+              {/* ── PAGES TAB ─────────────────────────────────────────────── */}
+              {activeTab === 'pages' && (() => {
+                const editingPageItem = editingPage ? (draft.pages ?? []).find(p => p.id === editingPage) : null
+                return (
+                  <div className="panel-products">
+                    <div style={{ padding: '8px 14px' }}>
+                      <button className="panel-add-btn" onClick={addPage}>+ Neue Seite</button>
+                    </div>
+                    {editingPageItem ? (
+                      <div className="panel-product-form" style={{ padding: 14 }}>
+                        <button className="panel-back-btn" onClick={() => setEditingPage(null)}>
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+                          Zur Liste
+                        </button>
+                        <Field label="Titel">
+                          <input value={editingPageItem.title} onChange={e => updatePage(editingPageItem.id, 'title', e.target.value)} />
+                        </Field>
+                        <Field label="URL (nach #p/)">
+                          <input value={editingPageItem.slug} onChange={e => updatePage(editingPageItem.id, 'slug', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))} placeholder="meine-seite" />
+                        </Field>
+                        <Field label="">
+                          <div style={{ padding: '6px 10px', background: '#f0f7ff', borderRadius: 6, fontSize: 12, color: '#0099CC', fontFamily: 'monospace' }}>
+                            Link: <strong>#p/{editingPageItem.slug}</strong>
+                          </div>
+                        </Field>
+                        <Field label="">
+                          <label className="panel-checkbox">
+                            <input type="checkbox" checked={editingPageItem.showInNav ?? false} onChange={e => updatePage(editingPageItem.id, 'showInNav', e.target.checked)} />
+                            In Navigation anzeigen
+                          </label>
+                        </Field>
+                        <Field label="Seiteninhalt">
+                          <div className="rte-wrap">
+                            <div className="rte-toolbar">
+                              {[{ cmd: 'bold', label: 'B' }, { cmd: 'italic', label: 'I' }, { cmd: 'insertUnorderedList', label: '• Liste' }].map(({ cmd, label }) => (
+                                <button key={cmd} type="button" onMouseDown={e => { e.preventDefault(); document.execCommand(cmd, false) }}>{label}</button>
+                              ))}
+                            </div>
+                            <div
+                              className="rte-body"
+                              contentEditable
+                              suppressContentEditableWarning
+                              dangerouslySetInnerHTML={{ __html: editingPageItem.body }}
+                              onBlur={e => updatePage(editingPageItem.id, 'body', e.currentTarget.innerHTML)}
+                            />
+                          </div>
+                        </Field>
+                        <button className="panel-delete-btn" style={{ marginTop: 12 }} onClick={() => deletePage(editingPageItem.id)}>
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                          Seite löschen
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="panel-product-list">
+                        {(draft.pages ?? []).length === 0 && (
+                          <div style={{ padding: '20px 16px', color: '#aaa', fontSize: 13, textAlign: 'center' }}>
+                            Noch keine Seiten. Klicke auf "+ Neue Seite".
+                          </div>
+                        )}
+                        {(draft.pages ?? []).map(p => (
+                          <div key={p.id} className="panel-product-row" onClick={() => setEditingPage(p.id)}>
+                            <div style={{ flex: 1, padding: '8px 12px' }}>
+                              <div style={{ fontWeight: 600, fontSize: 13 }}>{p.title}</div>
+                              <div style={{ fontSize: 11, color: '#888', fontFamily: 'monospace' }}>#p/{p.slug}</div>
+                            </div>
+                            {p.showInNav && <span style={{ fontSize: 10, background: '#e8f4ff', color: '#0099CC', borderRadius: 4, padding: '2px 6px', margin: '0 8px', fontWeight: 700 }}>NAV</span>}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )
+              })()}
+
               {/* ── STYLE TAB ─────────────────────────────────────────────── */}
               {activeTab === 'style' && (
                 <>
                   <PanelSection title="Farben">
                     <ColorRow label="Primärfarbe" value={draft.meta?.primaryColor ?? '#0099CC'} onChange={v => update('meta.primaryColor', v)} />
                     <ColorRow label="Akzentfarbe" value={draft.meta?.accentColor ?? '#B3E600'} onChange={v => update('meta.accentColor', v)} />
+                  </PanelSection>
+                  <PanelSection title="Sektionen ein-/ausblenden">
+                    {([
+                      { id: 'trust' as SectionId, label: 'Vertrauensleiste' },
+                      { id: 'categories' as SectionId, label: 'Zielgruppen' },
+                      { id: 'products' as SectionId, label: 'Sessions' },
+                      { id: 'usp' as SectionId, label: 'Mein Ansatz' },
+                      { id: 'news' as SectionId, label: 'Blog' },
+                      { id: 'location' as SectionId, label: 'Kontakt & Standort' },
+                    ]).map(s => {
+                      const hidden = (draft.hiddenSections ?? []).includes(s.id)
+                      return (
+                        <label key={s.id} className="panel-checkbox" style={{ justifyContent: 'space-between' }}>
+                          <span>{s.label}</span>
+                          <input
+                            type="checkbox"
+                            checked={!hidden}
+                            onChange={e => {
+                              const cur = draft.hiddenSections ?? []
+                              update('hiddenSections', e.target.checked ? cur.filter(x => x !== s.id) : [...cur, s.id])
+                            }}
+                          />
+                        </label>
+                      )
+                    })}
                   </PanelSection>
                   <PanelSection title="Schrift">
                     <div className="panel-field">

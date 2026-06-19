@@ -7,11 +7,18 @@ import { PublicSite } from './components/PublicSite'
 import { AdminPanel } from './components/AdminPanel'
 import { LoginPage } from './components/LoginPage'
 import { LegalPage } from './components/LegalPage'
+import { DynamicPage } from './components/DynamicPage'
+
+const LEGAL_SLUGS = ['impressum', 'datenschutz', 'agb']
 
 function getRoute(hash: string) {
-  if (hash === '#admin' || hash.startsWith('#admin/')) return { isAdmin: true, legalSlug: null }
-  if (hash.startsWith('#p/')) return { isAdmin: false, legalSlug: hash.slice(3) }
-  return { isAdmin: false, legalSlug: null }
+  if (hash === '#admin' || hash.startsWith('#admin/')) return { isAdmin: true, legalSlug: null, pageSlug: null }
+  if (hash.startsWith('#p/')) {
+    const slug = hash.slice(3)
+    if (LEGAL_SLUGS.includes(slug)) return { isAdmin: false, legalSlug: slug, pageSlug: null }
+    return { isAdmin: false, legalSlug: null, pageSlug: slug }
+  }
+  return { isAdmin: false, legalSlug: null, pageSlug: null }
 }
 
 export default function App() {
@@ -62,6 +69,11 @@ export default function App() {
         address={content.contact?.address}
       />
     )
+  }
+
+  if (route.pageSlug) {
+    const page = (content.pages ?? []).find(p => p.slug === route.pageSlug)
+    if (page) return <DynamicPage page={page} content={content} />
   }
 
   return <PublicSite content={content} />

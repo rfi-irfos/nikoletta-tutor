@@ -7,9 +7,19 @@ export interface ProductItem {
   description: string
   price: string
   image: string
+  images?: string[]
   badge?: string
   category: string
   specs?: string[]
+}
+
+export interface PageItem {
+  id: string
+  title: string
+  slug: string
+  body: string
+  showInNav?: boolean
+  metaTitle?: string
 }
 
 export interface CategoryItem {
@@ -52,6 +62,8 @@ export interface AboutStat { value: string; label: string }
 
 export interface SiteContent {
   sectionOrder?: SectionId[]
+  hiddenSections?: SectionId[]
+  pages?: PageItem[]
   positions?: Record<string, CanvasPos>
   about?: {
     eyebrow?: string
