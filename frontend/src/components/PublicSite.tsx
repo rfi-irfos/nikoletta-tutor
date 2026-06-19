@@ -836,9 +836,9 @@ export function PublicSite({
                 <E key={i} field={`nav.links.${i}.label`} value={l.label} as="a" href={l.href} />
               ))}
               <button
-                className="site-nav-research-btn"
+                className="site-nav-cta"
                 onClick={() => setShowSSPLogin(true)}
-                style={{ background: 'var(--accent,#B3E600)', color: '#111', border: 'none', borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', letterSpacing: '.01em' }}
+                style={{ border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
               >
                 Forschung
               </button>
