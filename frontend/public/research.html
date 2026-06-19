@@ -314,7 +314,7 @@ textarea::placeholder,input::placeholder{color:var(--light)}
     document.getElementById('authLock').style.display='flex'
     document.body.style.overflow='hidden'
   } else {
-    document.addEventListener('DOMContentLoaded', function(){ showForm() })
+    document.addEventListener('DOMContentLoaded', function(){ showLanding() })
   }
 })()
 </script>
@@ -856,7 +856,7 @@ function checkCode(){
     localStorage.setItem('ssp_session','valid_'+Date.now())
     document.getElementById('authLock').style.display='none'
     document.body.style.overflow=''
-    showForm()
+    showLanding()
   } else {
     document.getElementById('codeError').style.display='block'
     inp.focus()
