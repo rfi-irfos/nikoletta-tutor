@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { clearGhToken } from '../lib/github'
 
 export interface User { name: string; email: string; picture: string }
 
@@ -45,6 +46,7 @@ export function useAuth() {
 
   const logout = () => {
     localStorage.removeItem(SESSION_KEY)
+    clearGhToken()
     setUser(null)
     window.location.hash = ''
     window.location.href = import.meta.env.BASE_URL || '/'

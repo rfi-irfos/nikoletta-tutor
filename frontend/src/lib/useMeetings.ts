@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { ghRead, ghWrite, b64Encode, b64Decode, isConfigured } from './github'
 import type { Meeting } from '../types/meetings'
 
-const MEETINGS_PATH = 'frontend/public/meetings.json'
+// Out of the deployed public/ dir on purpose — CRM PII must not be served on Pages.
+const MEETINGS_PATH = 'data/meetings.json'
 
 export function useMeetings() {
   const [meetings, setMeetings] = useState<Meeting[]>([])

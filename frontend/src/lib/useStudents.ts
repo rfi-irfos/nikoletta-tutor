@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { ghRead, ghWrite, b64Encode, b64Decode, isConfigured } from './github'
 import type { Student } from '../types/students'
 
-const STUDENTS_PATH = 'frontend/public/students.json'
+// Out of the deployed public/ dir on purpose — CRM PII must not be served on Pages.
+const STUDENTS_PATH = 'data/students.json'
 
 export function useStudents() {
   const [students, setStudents] = useState<Student[]>([])

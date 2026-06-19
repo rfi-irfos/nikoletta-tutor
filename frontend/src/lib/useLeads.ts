@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import { ghRead, ghWrite, b64Encode, b64Decode, isConfigured } from './github'
 import type { Lead } from '../types/leads'
 
-const LEADS_PATH = 'frontend/public/leads.json'
+// Out of the deployed public/ dir on purpose — CRM PII must not be served on Pages.
+const LEADS_PATH = 'data/leads.json'
 
 export function useLeads() {
   const [leads, setLeads] = useState<Lead[]>([])

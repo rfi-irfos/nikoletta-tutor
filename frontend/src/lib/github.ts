@@ -6,14 +6,19 @@ export const OWNER   = import.meta.env.VITE_GH_OWNER   as string
 export const REPO    = import.meta.env.VITE_GH_REPO    as string
 const CONTENT_PATH  = (import.meta.env.VITE_GH_CONTENT_PATH  as string) || 'public/content.json'
 const UPLOADS_DIR   = (import.meta.env.VITE_GH_UPLOADS_DIR   as string) || 'public/uploads'
-const TOKEN         = import.meta.env.VITE_GH_TOKEN as string
 
 export { CONTENT_PATH, UPLOADS_DIR }
 
-// Runtime token takes priority over build-time TOKEN (falls back to baked-in TOKEN)
+// Runtime-only token. NEVER baked into the build — a baked PAT ends up in the
+// public JS bundle and grants write access to anyone who opens the site. The
+// admin pastes a fine-grained PAT at login; kept in sessionStorage so it
+// survives a refresh but is gone when the tab closes.
+const TOKEN_KEY = 'gh_pat'
 let _runtimeToken = ''
-export function setGhToken(t: string) { _runtimeToken = t }
-export function clearGhToken() { _runtimeToken = '' }
+try { _runtimeToken = sessionStorage.getItem(TOKEN_KEY) || '' } catch { /* no storage */ }
+export function setGhToken(t: string) { _runtimeToken = t.trim(); try { sessionStorage.setItem(TOKEN_KEY, _runtimeToken) } catch { /* ignore */ } }
+export function clearGhToken() { _runtimeToken = ''; try { sessionStorage.removeItem(TOKEN_KEY) } catch { /* ignore */ } }
+export function hasGhToken() { return !!_runtimeToken }
 
 // content.json (en) -> content.de.json / content.hu.json. Languages side by side.
 export function contentPathFor(lang: string): string {
@@ -22,7 +27,7 @@ export function contentPathFor(lang: string): string {
 
 function headers() {
   return {
-    'Authorization': `Bearer ${_runtimeToken || TOKEN}`,
+    'Authorization': `Bearer ${_runtimeToken}`,
     'Accept': 'application/vnd.github+json',
     'X-GitHub-Api-Version': '2022-11-28',
     'Content-Type': 'application/json',
@@ -62,7 +67,7 @@ export function b64Decode(b64: string): string {
 }
 
 export function isConfigured(): boolean {
-  return !!(OWNER && REPO && (_runtimeToken || TOKEN))
+  return !!(OWNER && REPO && _runtimeToken)
 }
 
 export async function ghTraffic(endpoint: string): Promise<unknown> {

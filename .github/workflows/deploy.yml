@@ -42,7 +42,8 @@ jobs:
         env:
           VITE_GH_OWNER:        ${{ secrets.VITE_GH_OWNER }}
           VITE_GH_REPO:         ${{ secrets.VITE_GH_REPO }}
-          VITE_GH_TOKEN:        ${{ secrets.VITE_GH_TOKEN }}
+          # VITE_GH_TOKEN intentionally NOT passed: a baked PAT leaks into the
+          # public bundle. The admin supplies a fine-grained PAT at login instead.
           VITE_GH_CONTENT_PATH: ${{ vars.VITE_GH_CONTENT_PATH || 'public/content.json' }}
           VITE_GH_UPLOADS_DIR:  ${{ vars.VITE_GH_UPLOADS_DIR  || 'public/uploads' }}
           VITE_ADMIN_HASH:      ${{ secrets.VITE_ADMIN_HASH }}
