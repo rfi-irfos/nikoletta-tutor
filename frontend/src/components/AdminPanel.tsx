@@ -110,7 +110,7 @@ interface Props {
   onLogout: () => void
 }
 
-type PanelTab = 'products' | 'hero' | 'about' | 'usp' | 'news' | 'contact' | 'style' | 'students' | 'reviews' | 'pricing'
+type PanelTab = 'products' | 'hero' | 'about' | 'usp' | 'news' | 'contact' | 'style' | 'students' | 'reviews' | 'pricing' | 'ssp'
 type DeviceView = 'edit' | 'desktop' | 'tablet' | 'mobile'
 
 // ── Device preview switch (Edit / Desktop / Tablet / Mobile) ──────────────────
@@ -241,6 +241,8 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
       setActiveTab('usp')
     } else if (cid.startsWith('pricing.') || cid.startsWith('certificates.')) {
       setActiveTab('pricing')
+    } else if (cid.startsWith('ssp.')) {
+      setActiveTab('ssp')
     } else if (cid.startsWith('meta.') || cid.startsWith('footer.')) {
       setActiveTab('style')
     }
@@ -373,6 +375,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     { id: 'usp',      label: 'Mein Ansatz' },
     { id: 'news',     label: 'Blog' },
     { id: 'pricing',  label: 'Preise & Zertifikate' },
+    { id: 'ssp',      label: 'Forschungsportal' },
     { id: 'contact',  label: 'Kontakt' },
     { id: 'style',    label: 'Stil' },
   ]
@@ -1167,6 +1170,29 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                         </Field>
                       </div>
                     ))}
+                  </PanelSection>
+                </>
+              )}
+
+              {activeTab === 'ssp' && (
+                <>
+                  <PanelSection title="Silent Student Project">
+                    <Field label="Badge-Text">
+                      <input data-cid="ssp.badge" value={draft.ssp?.badge ?? ''} onChange={e => update('ssp.badge', e.target.value)} placeholder="Research Portal" />
+                    </Field>
+                    <Field label="Titel">
+                      <input data-cid="ssp.title" value={draft.ssp?.title ?? ''} onChange={e => update('ssp.title', e.target.value)} placeholder="The Silent Student Project" />
+                    </Field>
+                    <Field label="Beschreibungstext">
+                      <textarea rows={4} data-cid="ssp.sub" value={draft.ssp?.sub ?? ''} onChange={e => update('ssp.sub', e.target.value)} placeholder="Exploring the half of language learning..." style={{ resize: 'vertical' }} />
+                    </Field>
+                    <Field label="Button-Text">
+                      <input data-cid="ssp.button" value={draft.ssp?.button ?? ''} onChange={e => update('ssp.button', e.target.value)} placeholder="Member login →" />
+                    </Field>
+                    <div style={{ marginTop: 12, padding: '10px 12px', background: '#F8F5F0', borderRadius: 8, fontSize: 12, color: '#888', lineHeight: 1.5 }}>
+                      Teilnehmer-Code: <strong style={{ color: '#3D4A40' }}>ssp2026</strong><br />
+                      Reflexionen im Verwaltung → Forschung-Tab ansehen.
+                    </div>
                   </PanelSection>
                 </>
               )}

@@ -304,5 +304,11 @@
         "label": "diák, aki elérte célját"
       }
     ]
+  },
+  "ssp": {
+    "badge": "Kutatási portál",
+    "title": "A Csendes Diák Projekt",
+    "sub": "A nyelvtanulás azon fele, amelyet senki nem tanított. Ha te is Nikoletta korai hozzáférésű kutatásának résztvevője vagy, jelentkezz be a reflekciós portálra.",
+    "button": "Tagok belépése →"
   }
 }

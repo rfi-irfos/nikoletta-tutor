@@ -1264,13 +1264,13 @@ export function PublicSite({
         )}
 
         {/* ── SILENT STUDENT PROJECT CTA ───────────────────────────────── */}
-        <section className="site-ssp-cta">
+        <section className="site-ssp-cta" data-cid="ssp.title">
           <div className="site-ssp-inner">
-            <span className="site-ssp-badge">Research Portal</span>
-            <h2 className="site-ssp-title">The Silent Student Project</h2>
-            <p className="site-ssp-sub">Exploring the half of language learning nobody taught. If you are a language teacher and part of Nikoletta's early-access research, log in to access the reflection portal and your session data.</p>
-            <button className="site-btn-ssp" onClick={() => { setShowSSPLogin(true); setSspError(false); setSspCode('') }}>
-              Member login →
+            <span className="site-ssp-badge" data-cid="ssp.badge">{content.ssp?.badge ?? 'Research Portal'}</span>
+            <h2 className="site-ssp-title" data-cid="ssp.title">{content.ssp?.title ?? 'The Silent Student Project'}</h2>
+            <p className="site-ssp-sub" data-cid="ssp.sub">{content.ssp?.sub ?? 'Exploring the half of language learning nobody taught. If you are a language teacher and part of Nikoletta\'s early-access research, log in to access the reflection portal and your session data.'}</p>
+            <button className="site-btn-ssp" data-cid="ssp.button" onClick={() => { setShowSSPLogin(true); setSspError(false); setSspCode('') }}>
+              {content.ssp?.button ?? 'Member login →'}
             </button>
           </div>
         </section>

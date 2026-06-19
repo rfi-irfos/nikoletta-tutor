@@ -304,5 +304,11 @@
         "label": "Schüler, die ihr Ziel erreicht haben"
       }
     ]
+  },
+  "ssp": {
+    "badge": "Forschungsportal",
+    "title": "Das Silent Student Project",
+    "sub": "Die Hälfte des Sprachenlernens, die niemand gelehrt hat. Wenn du Sprachlehrerin bist und an Nikolettas Early-Access-Forschung teilnimmst, melde dich an, um auf das Reflexionsportal zuzugreifen.",
+    "button": "Mitglieder-Login →"
   }
 }

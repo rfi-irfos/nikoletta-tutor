@@ -305,5 +305,11 @@
         "label": "students who reached their goals"
       }
     ]
+  },
+  "ssp": {
+    "badge": "Research Portal",
+    "title": "The Silent Student Project",
+    "sub": "Exploring the half of language learning nobody taught. If you are a language teacher and part of Nikoletta's early-access research, log in to access the reflection portal and your session data.",
+    "button": "Member login →"
   }
 }

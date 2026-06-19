@@ -107,6 +107,12 @@ export interface SiteContent {
   whatsapp: { enabled: boolean; number: string; message: string }
   pricing?: { title: string; body: string }
   certificates?: { title?: string; items: CertificateItem[] }
+  ssp?: {
+    badge?: string
+    title?: string
+    sub?: string
+    button?: string
+  }
   footer: {
     brand: string
     tagline: string
