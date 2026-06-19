@@ -835,6 +835,13 @@ export function PublicSite({
               {nav.links.map((l, i) => (
                 <E key={i} field={`nav.links.${i}.label`} value={l.label} as="a" href={l.href} />
               ))}
+              <button
+                className="site-nav-research-btn"
+                onClick={() => setShowSSPLogin(true)}
+                style={{ background: 'var(--accent,#B3E600)', color: '#111', border: 'none', borderRadius: 20, padding: '5px 14px', fontSize: 13, fontWeight: 700, cursor: 'pointer', letterSpacing: '.01em' }}
+              >
+                Forschung
+              </button>
             </nav>
             <div className="site-nav-right">
               <div className="site-nav-desktop">
@@ -874,6 +881,13 @@ export function PublicSite({
             {nav.links.map((l, i) => (
               <a key={i} href={l.href} onClick={() => setMenuOpen(false)}>{l.label}</a>
             ))}
+            <button
+              className="site-mobile-research-link"
+              onClick={() => { setMenuOpen(false); setShowSSPLogin(true) }}
+              style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '13px 24px', fontSize: 16, fontWeight: 700, color: 'var(--accent,#B3E600)', cursor: 'pointer', borderTop: '1px solid var(--border,rgba(0,0,0,.08))' }}
+            >
+              Forschung
+            </button>
           </nav>
           <div className="site-mobile-actions">
             <div>

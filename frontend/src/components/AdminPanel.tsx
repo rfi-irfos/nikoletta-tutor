@@ -461,6 +461,19 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
         </div>
         <div className="builder-topbar-right">
           <button
+            className="builder-btn-ghost"
+            onClick={() => { setAdminMode(true); setSspReflections(loadSSP()); setAdminSection('research') }}
+            title="Forschungsportal: SSP-Reflexionen"
+            style={{ position: 'relative' }}
+          >
+            Forschung
+            {sspReflections.length > 0 && (
+              <span style={{ position: 'absolute', top: -4, right: -6, background: '#B8975A', color: '#fff', borderRadius: '50%', fontSize: 10, fontWeight: 700, minWidth: 16, height: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 3px' }}>
+                {sspReflections.length}
+              </span>
+            )}
+          </button>
+          <button
             className={`builder-btn-ghost ${adminMode ? 'active' : ''}`}
             onClick={() => { setAdminMode(m => !m); setPendingReviews(loadPending()); setContactInbox(loadContactInbox()) }}
             title="Verwaltung: Anfragen, Bewertungen & Schüler"

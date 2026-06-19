@@ -17,7 +17,7 @@ function getRoute(hash: string) {
 export default function App() {
   const { lang } = useLang()
   const { content, loading, saving, save, uploadImage } = useContent(lang)
-  const { user, login, logout } = useAuth()
+  const { user, login, logout, lockSecondsRemaining } = useAuth()
   const [route, setRoute] = useState(() => getRoute(window.location.hash))
 
   useEffect(() => {
@@ -39,7 +39,7 @@ export default function App() {
   }
 
   if (route.isAdmin) {
-    if (!user) return <LoginPage onLogin={login} />
+    if (!user) return <LoginPage onLogin={login} lockSecondsRemaining={lockSecondsRemaining} />
     return (
       <AdminPanel
         content={content}

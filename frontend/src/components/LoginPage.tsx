@@ -1,22 +1,38 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-interface Props { onLogin: (pw: string) => Promise<boolean> }
+interface Props { onLogin: (pw: string) => Promise<boolean | 'locked'>; lockSecondsRemaining: () => number }
 
-export function LoginPage({ onLogin }: Props) {
+export function LoginPage({ onLogin, lockSecondsRemaining }: Props) {
   const [pw, setPw] = useState('')
   const [error, setError] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [lockSecs, setLockSecs] = useState(() => lockSecondsRemaining())
+
+  useEffect(() => {
+    if (lockSecs <= 0) return
+    const id = setInterval(() => {
+      const rem = lockSecondsRemaining()
+      setLockSecs(rem)
+      if (rem <= 0) clearInterval(id)
+    }, 1000)
+    return () => clearInterval(id)
+  }, [lockSecs > 0])
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const rem = lockSecondsRemaining()
+    if (rem > 0) { setLockSecs(rem); return }
     setBusy(true)
     const ok = await onLogin(pw)
     setBusy(false)
-    if (!ok) {
+    if (ok === 'locked' || !ok) {
       setError(true)
+      setLockSecs(lockSecondsRemaining())
       setPw('')
     }
   }
+
+  const isLocked = lockSecs > 0
 
   return (
     <div className="login-page">
@@ -36,11 +52,17 @@ export function LoginPage({ onLogin }: Props) {
             onChange={e => { setPw(e.target.value); setError(false) }}
             placeholder="Passwort"
             autoFocus
+            disabled={isLocked || busy}
             className="login-pw-input"
           />
-          {error && <p className="login-error">Falsches Passwort. Bitte nochmal.</p>}
-          <button type="submit" disabled={busy} className="login-submit-btn">
-            {busy ? 'Anmelden…' : 'Anmelden'}
+          {isLocked && (
+            <p className="login-error">
+              Zu viele Fehlversuche. Bitte warten: {lockSecs}s
+            </p>
+          )}
+          {error && !isLocked && <p className="login-error">Falsches Passwort. Bitte nochmal.</p>}
+          <button type="submit" disabled={busy || isLocked} className="login-submit-btn">
+            {isLocked ? `Gesperrt (${lockSecs}s)` : busy ? 'Anmelden…' : 'Anmelden'}
           </button>
         </form>
       </div>
