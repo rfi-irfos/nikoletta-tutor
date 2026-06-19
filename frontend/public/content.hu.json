@@ -281,8 +281,18 @@
   "certificates": {
     "title": "Bizonyítványok",
     "items": [
-      { "id": "cert1", "title": "Teaching Business English bizonyítvány", "subtitle": "30 óra — nemzetközileg elismert", "file": "uploads/cert-business-english.pdf" },
-      { "id": "cert2", "title": "Level 3 bizonyítvány", "subtitle": "Hivatalos képesítés átirattal", "file": "uploads/cert-level3.pdf" }
+      {
+        "id": "cert1",
+        "title": "Teaching Business English bizonyítvány",
+        "subtitle": "30 óra — nemzetközileg elismert",
+        "file": "uploads/cert-business-english.pdf"
+      },
+      {
+        "id": "cert2",
+        "title": "Level 3 bizonyítvány",
+        "subtitle": "Hivatalos képesítés átirattal",
+        "file": "uploads/cert-level3.pdf"
+      }
     ]
   },
   "about": {
@@ -307,8 +317,8 @@
   },
   "ssp": {
     "badge": "Kutatási portál",
-    "title": "A Csendes Diák Projekt",
-    "sub": "A nyelvtanulás azon fele, amelyet senki nem tanított. Ha te is Nikoletta korai hozzáférésű kutatásának résztvevője vagy, jelentkezz be a reflekciós portálra.",
+    "title": "A Silent Student Projekt",
+    "sub": "A Silent Student Project egy kísérleti módszertan nyelvtanárok és nyelv coachok számára, akik olyan tanulókkal dolgoznak, akik értik a nyelvet, mégis nehezen szólalnak meg magabiztosan. A megközelítés szerint a beszédet gátló nehézségek sok esetben nem a tudás hiányából fakadnak, hanem a szorongásból, a megítéléstől való félelemből és az idegrendszer olyan reakcióiból, amelyek megnehezítik a már meglévő nyelvtudás előhívását. A módszer olyan gyakorlati pedagógiai elveket kínál, amelyek a pszichológiai biztonságot, a személyesen jelentős tartalmakat és a valódi kommunikációt helyezik előtérbe a formális hibajavítással szemben. Nyelvelsajátítási, pszichológiai és pedagógiai elméletekre építve segíti a tanárokat abban, hogy tanulóik bátrabban és könnyebben használják a célnyelvet. A résztvevők ingyenes korai hozzáférést kapnak a teljes módszertanhoz még a nyilvános bevezetés előtt, azonnal alkalmazhatják annak eszközeit saját munkájukban, visszajelzéseikkel alakíthatják a fejlesztést és olyan erőforráshoz juthatnak hozzá, amely később kizárólagosan fizetős programként lesz elérhető.",
     "button": "Tagok belépése →"
   }
 }
