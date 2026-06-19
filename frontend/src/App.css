@@ -1478,3 +1478,22 @@ button { cursor: pointer; font-family: inherit; }
 .rte-toolbar button:hover { background: var(--panel-border, #e8e8e8); }
 .rte-body { min-height: 160px; padding: 10px 12px; font-size: 13px; line-height: 1.6; outline: none; color: var(--text, #333); }
 .rte-body:focus { background: #fafeff; }
+
+/* ── Static pages (DynamicPage / LegalPage) ──────────────────────────────── */
+.static-page { min-height: 100vh; display: flex; flex-direction: column; background: var(--surface, #fff); color: var(--text, #222); }
+.static-page-nav { display: flex; align-items: center; gap: 16px; padding: 16px 28px; border-bottom: 1px solid var(--border, rgba(0,0,0,.08)); background: var(--surface, #fff); }
+.static-page-brand { font-weight: 700; font-size: 16px; color: var(--text, #222); text-decoration: none; margin-right: auto; }
+.static-page-back { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--primary, #0099CC); text-decoration: none; }
+.static-page-back:hover { text-decoration: underline; }
+.static-page-edit-btn { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--primary, #0099CC); text-decoration: none; background: rgba(0,153,204,.08); border: 1px solid rgba(0,153,204,.2); border-radius: 6px; padding: 5px 12px; }
+.static-page-edit-btn:hover { background: rgba(0,153,204,.14); }
+.static-page-main { flex: 1; display: flex; flex-direction: column; }
+.static-page-content { max-width: 760px; width: 100%; margin: 0 auto; padding: 48px 24px 80px; }
+.static-page-content h1 { font-size: 28px; font-weight: 800; margin-bottom: 24px; color: var(--text, #222); }
+.dynamic-page-body { font-size: 16px; line-height: 1.75; color: var(--text-soft, #444); }
+.dynamic-page-body h2 { font-size: 20px; font-weight: 700; margin: 28px 0 10px; color: var(--text, #222); }
+.dynamic-page-body h3 { font-size: 17px; font-weight: 700; margin: 20px 0 8px; color: var(--text, #222); }
+.dynamic-page-body p { margin: 0 0 14px; }
+.dynamic-page-body a { color: var(--primary, #0099CC); }
+.dynamic-page-body ul, .dynamic-page-body ol { padding-left: 22px; margin-bottom: 14px; }
+.dynamic-page-body li { margin-bottom: 6px; }

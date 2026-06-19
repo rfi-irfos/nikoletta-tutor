@@ -1282,14 +1282,18 @@ export function PublicSite({
         )}
 
         {/* ── SILENT STUDENT PROJECT CTA ───────────────────────────────── */}
-        <section className="site-ssp-cta" data-cid="ssp.title">
+        <section className="site-ssp-cta" id="ssp" data-cid="ssp.title">
           <div className="site-ssp-inner">
-            <span className="site-ssp-badge" data-cid="ssp.badge">{content.ssp?.badge ?? 'Research Portal'}</span>
-            <h2 className="site-ssp-title" data-cid="ssp.title">{content.ssp?.title ?? 'The Silent Student Project'}</h2>
-            <p className="site-ssp-sub" data-cid="ssp.sub">{content.ssp?.sub ?? 'Exploring the half of language learning nobody taught. If you are a language teacher and part of Nikoletta\'s early-access research, log in to access the reflection portal and your session data.'}</p>
-            <button className="site-btn-ssp" data-cid="ssp.button" onClick={() => { setShowSSPLogin(true); setSspError(false); setSspCode('') }}>
-              {content.ssp?.button ?? 'Member login →'}
-            </button>
+            <E field="ssp.badge" value={content.ssp?.badge ?? 'Research Portal'} as="span" className="site-ssp-badge" />
+            <E field="ssp.title" value={content.ssp?.title ?? 'The Silent Student Project'} as="h2" className="site-ssp-title" />
+            <E field="ssp.sub" value={content.ssp?.sub ?? "Exploring the half of language learning nobody taught. If you are a language teacher and part of Nikoletta's early-access research, log in to access the reflection portal and your session data."} as="p" className="site-ssp-sub" />
+            {editMode ? (
+              <E field="ssp.button" value={content.ssp?.button ?? 'Member login →'} as="span" className="site-btn-ssp" />
+            ) : (
+              <button className="site-btn-ssp" onClick={() => { setShowSSPLogin(true); setSspError(false); setSspCode('') }}>
+                {content.ssp?.button ?? 'Member login →'}
+              </button>
+            )}
           </div>
         </section>
 
@@ -1411,19 +1415,19 @@ export function PublicSite({
 
         {/* ── SSP LOGIN MODAL ──────────────────────────────────────────── */}
         {showSSPLogin && (
-          <div className="site-modal-scrim" onClick={() => setShowSSPLogin(false)} role="dialog" aria-modal="true" aria-label="Research Portal Login">
+          <div className="site-modal-scrim" onClick={() => setShowSSPLogin(false)} role="dialog" aria-modal="true" aria-label={t.sspModalBadge}>
             <div className="site-modal site-ssp-modal" onClick={e => e.stopPropagation()}>
-              <button className="site-modal-close" aria-label="Close" onClick={() => setShowSSPLogin(false)}><IconClose /></button>
+              <button className="site-modal-close" aria-label={t.close} onClick={() => setShowSSPLogin(false)}><IconClose /></button>
               <div className="site-modal-body">
-                <div className="site-ssp-modal-badge">Research Portal</div>
-                <h3 className="site-modal-title">Member Access</h3>
+                <div className="site-ssp-modal-badge">{t.sspModalBadge}</div>
+                <h3 className="site-modal-title">{t.sspModalTitle}</h3>
                 <p style={{ fontSize: 14, color: 'var(--text-soft)', marginBottom: 20, lineHeight: 1.6 }}>
-                  Enter your participant code to access the Silent Student Project reflection portal.
+                  {t.sspModalSub}
                 </p>
                 <input
                   type="password"
                   className="site-ssp-code-input"
-                  placeholder="Participant code"
+                  placeholder={t.sspCodePlaceholder}
                   value={sspCode}
                   onChange={e => { setSspCode(e.target.value); setSspError(false) }}
                   onKeyDown={e => e.key === 'Enter' && handleSSPLogin()}
@@ -1431,14 +1435,14 @@ export function PublicSite({
                 />
                 {sspError && (
                   <p style={{ fontSize: 13, color: '#C0392B', marginTop: 8, marginBottom: 0 }}>
-                    Invalid code. Please check your participant code and try again.
+                    {t.sspInvalidCode}
                   </p>
                 )}
                 <button className="site-btn-ssp-submit" onClick={handleSSPLogin} style={{ marginTop: 16 }}>
-                  Continue →
+                  {t.sspContinue}
                 </button>
                 <p style={{ fontSize: 12, color: 'var(--text-soft)', marginTop: 14, textAlign: 'center' }}>
-                  Not a participant yet? <a href="mailto:nikoletta.tutor@gmail.com" style={{ color: 'var(--primary)' }}>Reach out to Nikoletta.</a>
+                  {t.sspNotParticipant} <a href="mailto:nikoletta.tutor@gmail.com" style={{ color: 'var(--primary)' }}>{t.sspReachOut}</a>
                 </p>
               </div>
             </div>
