@@ -1611,13 +1611,13 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
             <div className="builder-canvas-pane" style={{ display: 'flex', flexDirection: 'column', background: '#fff' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', borderBottom: '1px solid var(--panel-border, #e8e8e8)', fontSize: 12, color: '#666', background: 'var(--panel-surface, #f8f8f8)' }}>
                 <span style={{ fontWeight: 700, color: '#3D4A40' }}>Vorschau: research.html</span>
-                <span style={{ color: '#999' }}>Sprache im Seitenkopf umschaltbar (EN/DE/HU)</span>
+                <span style={{ color: '#999' }}>Sprache oben umschalten ({lang.toUpperCase()}) — Editor und Vorschau wechseln gemeinsam</span>
                 <button onClick={() => setSspPreviewKey(k => k + 1)} className="panel-add-btn" style={{ marginLeft: 'auto' }} title="Nach dem Speichern klicken, um die Vorschau zu aktualisieren">↻ Aktualisieren</button>
-                <a href={`${import.meta.env.BASE_URL}research.html`} target="_blank" rel="noreferrer" className="panel-back-btn" style={{ textDecoration: 'none' }}>↗ Neuer Tab</a>
+                <a href={`${import.meta.env.BASE_URL}research.html?lang=${lang}`} target="_blank" rel="noreferrer" className="panel-back-btn" style={{ textDecoration: 'none' }}>↗ Neuer Tab</a>
               </div>
               <iframe
-                key={sspPreviewKey}
-                src={`${import.meta.env.BASE_URL}research.html?preview=${sspPreviewKey}`}
+                key={`${sspPreviewKey}-${lang}`}
+                src={`${import.meta.env.BASE_URL}research.html?preview=${sspPreviewKey}&lang=${lang}&embed=1`}
                 title="research.html Vorschau"
                 style={{ flex: 1, width: '100%', border: 'none', background: '#fff' }}
               />

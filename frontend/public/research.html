@@ -1576,6 +1576,8 @@ async function _applyLangRC(lang){
 }
 window._applyLang=_applyLangRC // lang-switch buttons route through the overlay
 function _detectLang(){
+  // URL ?lang= wins (the builder preview sets it) so editor + preview stay in sync.
+  try{var u=new URLSearchParams(location.search).get('lang');if(u==='en'||u==='de'||u==='hu')return u}catch(e){}
   try{var s=localStorage.getItem('ssp_lang');if(s==='en'||s==='de'||s==='hu')return s}catch(e){}
   var n=(navigator.language||'').toLowerCase()
   if(n.indexOf('de')===0)return 'de'
@@ -1583,6 +1585,14 @@ function _detectLang(){
   return 'en'
 }
 document.addEventListener('DOMContentLoaded',function(){
+  // Embedded as the builder preview: the builder's top language switch is the
+  // single source of truth, so hide this page's own switcher to avoid two
+  // competing controls (the bug Niki hit: preview HU, editor still on DE).
+  try{
+    if(new URLSearchParams(location.search).get('embed')==='1'){
+      document.querySelectorAll('.lang-switcher').forEach(function(s){s.style.display='none'})
+    }
+  }catch(e){}
   _applyLangRC(_detectLang())
 })
 })()
