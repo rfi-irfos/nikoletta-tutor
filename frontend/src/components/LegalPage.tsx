@@ -13,7 +13,7 @@ export function LegalPage({ slug, brand, email, phone, address }: LegalPageProps
     <div className="static-page">
       <header className="static-page-nav">
         <a href="#" className="static-page-brand">{displayBrand}</a>
-        <a href="#" className="static-page-back">
+        <a href="#" onClick={e => { e.preventDefault(); window.history.back() }} className="static-page-back">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
           Zurück
         </a>
