@@ -7,6 +7,13 @@ import { useTestimonials } from '../lib/useTestimonials'
 import type { Student } from '../types/students'
 import type { Testimonial } from '../types/testimonials'
 import { useLang } from '../hooks/useLang'
+import { ghTraffic } from '../lib/github'
+
+interface GhTrafficData {
+  views: { count: number; uniques: number; views: { timestamp: string; count: number; uniques: number }[] }
+  referrers: { referrer: string; count: number; uniques: number }[]
+  paths: { path: string; title: string; count: number; uniques: number }[]
+}
 
 interface PendingReview {
   id: string
@@ -167,7 +174,22 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     return 'edit'
   })
   const [adminMode, setAdminMode] = useState(false)
-  const [adminSection, setAdminSection] = useState<'reviews' | 'students' | 'inbox' | 'research' | 'fragebogen'>('inbox')
+  const [adminSection, setAdminSection] = useState<'reviews' | 'students' | 'inbox' | 'research' | 'fragebogen' | 'analytics'>('inbox')
+  const [ghTrafficData, setGhTrafficData] = useState<GhTrafficData | null>(null)
+  const [ghTrafficLoading, setGhTrafficLoading] = useState(false)
+
+  useEffect(() => {
+    if (adminSection !== 'analytics') return
+    setGhTrafficLoading(true)
+    Promise.all([
+      ghTraffic('views'),
+      ghTraffic('referrers'),
+      ghTraffic('popular/paths'),
+    ]).then(([views, referrers, paths]) => {
+      setGhTrafficData({ views: views as GhTrafficData['views'], referrers: referrers as GhTrafficData['referrers'], paths: paths as GhTrafficData['paths'] })
+      setGhTrafficLoading(false)
+    }).catch(() => setGhTrafficLoading(false))
+  }, [adminSection])
   const [sspReflections, setSspReflections] = useState<SSPReflection[]>(() => loadSSP())
   const [sspExpanded, setSspExpanded] = useState<string | null>(null)
   const [sspFormVersions, setSspFormVersions] = useState<{id:number|string,ts:string,label:string,notes:string,steps?:{title:string,questions:string[]}[]}[]>(() => {
@@ -569,6 +591,10 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                 Fragebogen
                 <span className="crm-badge teal">{sspFormVersions.length > 0 ? `v${sspFormVersions.length}` : 'v1'}</span>
               </button>
+              <button className={`crm-nav-item ${adminSection === 'analytics' ? 'active' : ''}`} onClick={() => setAdminSection('analytics')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>
+                Analytics
+              </button>
             </nav>
 
             <div className="crm-sidebar-stats">
@@ -599,7 +625,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
           <div className="crm-main">
             <div className="crm-topbar">
               <div className="crm-topbar-title">
-                {adminSection === 'inbox' ? 'Anfragen' : adminSection === 'students' ? 'Schüler' : adminSection === 'reviews' ? 'Reviews' : adminSection === 'fragebogen' ? 'Fragebogen' : 'Forschung'}
+                {adminSection === 'inbox' ? 'Anfragen' : adminSection === 'students' ? 'Schüler' : adminSection === 'reviews' ? 'Reviews' : adminSection === 'fragebogen' ? 'Fragebogen' : adminSection === 'analytics' ? 'Analytics' : 'Forschung'}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 {adminSection === 'inbox' && contactInbox.length > 0 && <span style={{ fontSize: 12, color: '#888' }}>{contactInbox.length} Nachricht{contactInbox.length !== 1 ? 'en' : ''}</span>}
@@ -1164,6 +1190,80 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                     ))}
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* ── ANALYTICS ────────────────────────────────────────── */}
+            {adminSection === 'analytics' && (
+              <div style={{ padding: 20 }}>
+                {ghTrafficLoading && (
+                  <div style={{ textAlign: 'center', color: '#aaa', padding: '40px 0', fontSize: 13 }}>Lade GitHub-Daten…</div>
+                )}
+                {!ghTrafficLoading && !ghTrafficData && (
+                  <div style={{ textAlign: 'center', color: '#aaa', padding: '40px 0', fontSize: 13 }}>
+                    Keine Daten. Prüfe ob der GitHub-Token "push"-Rechte hat.
+                  </div>
+                )}
+                {ghTrafficData && (() => {
+                  const maxDay = Math.max(...(ghTrafficData.views.views ?? []).map(d => d.count), 1)
+                  const maxRef = Math.max(...(ghTrafficData.referrers ?? []).map(r => r.count), 1)
+                  return (
+                    <>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 20 }}>
+                        <div className="crm-stat-box" style={{ borderRadius: 10, border: '1px solid var(--panel-border,#e8e8e8)', padding: '14px 16px', textAlign: 'center' }}>
+                          <span className="crm-stat-num" style={{ color: '#0099CC', fontSize: 28 }}>{ghTrafficData.views.count}</span>
+                          <span className="crm-stat-lbl">Aufrufe (14 T.)</span>
+                        </div>
+                        <div className="crm-stat-box" style={{ borderRadius: 10, border: '1px solid var(--panel-border,#e8e8e8)', padding: '14px 16px', textAlign: 'center' }}>
+                          <span className="crm-stat-num" style={{ color: '#3A7A3A', fontSize: 28 }}>{ghTrafficData.views.uniques}</span>
+                          <span className="crm-stat-lbl">Unique Besucher</span>
+                        </div>
+                      </div>
+
+                      {(ghTrafficData.views.views ?? []).length > 0 && (
+                        <div style={{ marginBottom: 20 }}>
+                          <div style={{ fontSize: 11, fontWeight: 700, color: '#555', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Täglich (14 Tage)</div>
+                          <div style={{ display: 'flex', alignItems: 'flex-end', gap: 3, height: 64 }}>
+                            {ghTrafficData.views.views.map(d => (
+                              <div key={d.timestamp} title={`${d.timestamp.slice(0,10)}: ${d.count} Aufrufe`} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, height: '100%', justifyContent: 'flex-end' }}>
+                                <div style={{ width: '100%', height: `${Math.max((d.count / maxDay) * 52, 2)}px`, background: '#0099CC', borderRadius: '3px 3px 0 0' }} />
+                                <span style={{ fontSize: 7, color: '#aaa' }}>{d.timestamp.slice(5, 10)}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {(ghTrafficData.referrers ?? []).length > 0 && (
+                        <div style={{ marginBottom: 20 }}>
+                          <div style={{ fontSize: 11, fontWeight: 700, color: '#555', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Traffic-Quellen</div>
+                          {ghTrafficData.referrers.map(r => (
+                            <div key={r.referrer} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+                              <span style={{ width: 90, fontSize: 11, color: '#555', fontWeight: 500, flexShrink: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{r.referrer || 'direkt'}</span>
+                              <div style={{ flex: 1, background: '#f0f0f0', borderRadius: 4, height: 8 }}>
+                                <div style={{ width: `${(r.count / maxRef) * 100}%`, height: '100%', background: '#0099CC', borderRadius: 4 }} />
+                              </div>
+                              <span style={{ fontSize: 11, fontWeight: 700, color: '#0099CC', minWidth: 24, textAlign: 'right' }}>{r.count}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {(ghTrafficData.paths ?? []).length > 0 && (
+                        <div>
+                          <div style={{ fontSize: 11, fontWeight: 700, color: '#555', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.5px' }}>Beliebteste Seiten</div>
+                          {ghTrafficData.paths.map((p, i) => (
+                            <div key={p.path} style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
+                              <span style={{ width: 18, fontSize: 10, color: '#aaa', fontWeight: 700 }}>#{i + 1}</span>
+                              <span style={{ flex: 1, fontSize: 11, color: '#444', fontFamily: 'monospace', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.path}</span>
+                              <span style={{ fontSize: 11, fontWeight: 700, color: '#555', flexShrink: 0 }}>{p.count}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  )
+                })()}
               </div>
             )}
 

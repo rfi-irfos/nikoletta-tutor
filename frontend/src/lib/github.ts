@@ -64,3 +64,9 @@ export function b64Decode(b64: string): string {
 export function isConfigured(): boolean {
   return !!(OWNER && REPO && (_runtimeToken || TOKEN))
 }
+
+export async function ghTraffic(endpoint: string): Promise<unknown> {
+  const res = await fetch(`${BASE}/repos/${OWNER}/${REPO}/traffic/${endpoint}`, { headers: headers() })
+  if (!res.ok) throw new Error(`GH Traffic ${res.status}`)
+  return res.json()
+}
