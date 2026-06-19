@@ -121,6 +121,8 @@ h2.sh{font-family:'Playfair Display',serif;font-size:29px;font-weight:600;color:
 .back-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .topbar-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
 .lang-switcher{display:flex;gap:4px}
+.landing-lang{position:absolute;top:18px;right:24px;z-index:50}
+@media(max-width:520px){.landing-lang{top:12px;right:14px}}
 .lang-btn{background:none;border:1px solid #4E5E51;color:#8A9E8D;font-size:10px;font-weight:600;letter-spacing:.08em;padding:4px 9px;border-radius:4px;cursor:pointer;transition:all .15s;font-family:inherit}
 .lang-btn:hover{border-color:#8A9E8D;color:#fff}
 .lang-btn.active{background:var(--gold);border-color:var(--gold);color:#fff}
@@ -328,6 +330,11 @@ textarea::placeholder,input::placeholder{color:var(--light)}
 <div id="landing">
 
 <header class="hero">
+  <div class="lang-switcher landing-lang">
+    <button class="lang-btn active" data-lang="en" onclick="_applyLang('en')">EN</button>
+    <button class="lang-btn" data-lang="de" onclick="_applyLang('de')">DE</button>
+    <button class="lang-btn" data-lang="hu" onclick="_applyLang('hu')">HU</button>
+  </div>
   <div class="hero-in">
     <div class="proj-label" data-rk="heroLabel">The Silent Student Project</div>
     <h1 data-rk="heroTitle">Your quietest students<br>know more than<br>they can <em>say.</em></h1>
@@ -1568,8 +1575,15 @@ async function _applyLangRC(lang){
   _overlayLanding(rc)     // overlay landing prose
 }
 window._applyLang=_applyLangRC // lang-switch buttons route through the overlay
+function _detectLang(){
+  try{var s=localStorage.getItem('ssp_lang');if(s==='en'||s==='de'||s==='hu')return s}catch(e){}
+  var n=(navigator.language||'').toLowerCase()
+  if(n.indexOf('de')===0)return 'de'
+  if(n.indexOf('hu')===0)return 'hu'
+  return 'en'
+}
 document.addEventListener('DOMContentLoaded',function(){
-  _applyLangRC(localStorage.getItem('ssp_lang')||'en')
+  _applyLangRC(_detectLang())
 })
 })()
 </script>
