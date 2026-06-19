@@ -120,6 +120,10 @@ h2.sh{font-family:'Playfair Display',serif;font-size:29px;font-weight:600;color:
 .back-btn:hover{color:var(--white)}
 .back-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .topbar-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.lang-switcher{display:flex;gap:4px}
+.lang-btn{background:none;border:1px solid #4E5E51;color:#8A9E8D;font-size:10px;font-weight:600;letter-spacing:.08em;padding:4px 9px;border-radius:4px;cursor:pointer;transition:all .15s;font-family:inherit}
+.lang-btn:hover{border-color:#8A9E8D;color:#fff}
+.lang-btn.active{background:var(--gold);border-color:var(--gold);color:#fff}
 .prog-wrap{background:var(--green-mid);height:3px;position:sticky;top:55px;z-index:99}
 .prog-bar{height:100%;background:var(--gold);transition:width .5s cubic-bezier(.4,0,.2,1)}
 .steps-row{max-width:600px;margin:36px auto 0;padding:0 32px;display:flex;align-items:center}
@@ -283,6 +287,8 @@ textarea::placeholder,input::placeholder{color:var(--light)}
   if(!sess || !sess.startsWith('valid_')){
     document.getElementById('authLock').style.display='flex'
     document.body.style.overflow='hidden'
+  } else {
+    document.addEventListener('DOMContentLoaded', function(){ showForm() })
   }
 })()
 </script>
@@ -486,9 +492,14 @@ textarea::placeholder,input::placeholder{color:var(--light)}
 <div class="topbar">
   <button class="back-btn" onclick="showLanding()">
     <svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg>
-    Back to the project
+    <span id="t-back">Back to the project</span>
   </button>
-  <span class="topbar-title">Your Teaching Reflection</span>
+  <span class="topbar-title" id="t-title">Your Teaching Reflection</span>
+  <div class="lang-switcher">
+    <button class="lang-btn active" data-lang="en" onclick="_applyLang('en')">EN</button>
+    <button class="lang-btn" data-lang="de" onclick="_applyLang('de')">DE</button>
+    <button class="lang-btn" data-lang="hu" onclick="_applyLang('hu')">HU</button>
+  </div>
 </div>
 
 <div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
@@ -955,30 +966,95 @@ function launchConfetti(){
   setTimeout(()=>{cancelAnimationFrame(raf);c.remove()},8000)
 }
 
-// ── DOWNLOAD ─────────────────────────────────────────────────
+// ── DOWNLOAD (PDF certificate) ────────────────────────────────
 function downloadReflection(){
   const date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})
+  const name=S.teacherName||'Anonymous'
   const scoreRows=S.scores.map((v,i)=>{
     const h=Math.round(200-(v-1)/4*155),s=Math.round(45+(v-1)/4*25)
-    return `<span style="background:hsl(${h},${s}%,48%);color:white;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;font-family:sans-serif;margin:4px;display:inline-block">${SCORE_FULL[i]}: ${v}/5</span>`
+    const pct=Math.round((v-1)/4*100)
+    return `<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px"><span style="font-size:12px;color:#3D4A40;width:160px;flex-shrink:0">${SCORE_FULL[i]}</span><div style="flex:1;height:6px;background:#EDE4D8;border-radius:3px;overflow:hidden"><div style="height:100%;width:${pct}%;background:hsl(${h},${s}%,42%);border-radius:3px"></div></div><span style="font-size:12px;font-weight:600;color:#3D4A40;width:28px;text-align:right">${v}/5</span></div>`
   }).join('')
-  const qrow=(lbl,t)=>t?`<div style="margin-bottom:22px"><p style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#B8975A;font-family:sans-serif;margin-bottom:8px">${lbl}</p><div style="background:#F5EFE6;padding:14px 18px;border-left:3px solid #B8975A;border-radius:4px;font-style:italic;font-size:14.5px;color:#555;line-height:1.7">${t}</div></div>`:''
-  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Teaching Reflection — ${S.teacherName||'Anonymous'}</title></head>
-<body style="font-family:Georgia,serif;max-width:640px;margin:52px auto;padding:24px;color:#2C3830;line-height:1.7">
-<h1 style="font-size:30px;margin-bottom:4px">Teaching Reflection</h1>
-<p style="font-size:13px;color:#8A9E8D;margin-bottom:36px;font-family:sans-serif">The Silent Student Project &nbsp;·&nbsp; ${date} &nbsp;·&nbsp; ${S.teacherName||'Anonymous'}</p>
-<hr style="border:none;border-top:1px solid #EDE4D8;margin-bottom:32px">
-<div style="margin-bottom:24px"><p style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#B8975A;font-family:sans-serif;margin-bottom:8px">About you</p><p style="font-size:14.5px">${S.experience||'—'} teaching experience &nbsp;·&nbsp; ${S.languages||'—'}</p></div>
-<div style="margin-bottom:24px"><p style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#B8975A;font-family:sans-serif;margin-bottom:8px">Session setting</p><p style="font-size:14.5px">${SETTING_NAMES[S.setting]||'—'} &nbsp;·&nbsp; ${(Array.isArray(S.ageGroup)?S.ageGroup:[S.ageGroup]).join(', ')||'—'}</p></div>
-<div style="margin-bottom:24px"><p style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#B8975A;font-family:sans-serif;margin-bottom:10px">Your scores</p>${scoreRows}</div>
-${qrow('Notable moment',S.notable)}${qrow('What surprised you',S.surprise)}${qrow('What did not work',S.nowork)}
-<hr style="border:none;border-top:1px solid #EDE4D8;margin-top:40px;margin-bottom:16px">
-<p style="font-size:11px;color:#8A9E8D;font-family:sans-serif">The Silent Student Project &nbsp;·&nbsp; Nikoletta Csonka &nbsp;·&nbsp; nikoletta.tutor@gmail.com</p>
+  const qrow=(lbl,t)=>t?`<div style="margin-bottom:24px"><p style="font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#B8975A;margin-bottom:10px;font-weight:500">${lbl}</p><blockquote style="font-style:italic;font-size:13.5px;color:#555;line-height:1.8;padding:14px 18px;background:#F9F6F1;border-left:3px solid #B8975A;border-radius:0 4px 4px 0;margin:0">${t}</blockquote></div>`:''
+  const tasks=S.tasks.map(t=>TASK_NAMES[t]).filter(Boolean)
+  const taskPills=tasks.length?`<div style="margin-bottom:28px"><p style="font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#B8975A;margin-bottom:10px;font-weight:500">Methods applied</p><div style="display:flex;flex-wrap:wrap;gap:6px">${tasks.map(t=>`<span style="font-size:11px;background:#EDE4D8;color:#3D4A40;padding:5px 12px;border-radius:20px;font-weight:500">${t}</span>`).join('')}</div></div>`:''
+  const divider=`<div style="display:flex;align-items:center;gap:16px;margin:32px 0"><div style="flex:1;height:1px;background:#EDE4D8"></div><div style="width:6px;height:6px;border-radius:50%;background:#B8975A"></div><div style="flex:1;height:1px;background:#EDE4D8"></div></div>`
+  const cert=`<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<title>Teaching Reflection — ${name}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#fff;color:#2C3830;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{max-width:760px;margin:0 auto;padding:56px 60px;position:relative}
+.border-outer{position:fixed;inset:10px;border:1.5px solid #B8975A;pointer-events:none;z-index:0}
+.border-inner{position:fixed;inset:14px;border:0.5px solid rgba(184,151,90,.35);pointer-events:none;z-index:0}
+@media print{.border-outer,.border-inner{position:fixed}}
+</style>
+</head>
+<body>
+<div class="border-outer"></div>
+<div class="border-inner"></div>
+<div class="page">
+
+<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:40px;padding-bottom:32px;border-bottom:1px solid #EDE4D8">
+  <div>
+    <div style="font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:#2C3830;letter-spacing:-.01em">Nikoletta Csonka</div>
+    <div style="font-size:10px;color:#8A9E8D;letter-spacing:.12em;text-transform:uppercase;margin-top:4px">Language Coach · The Silent Student Project</div>
+  </div>
+  <div style="text-align:right">
+    <div style="font-size:10px;color:#B8975A;letter-spacing:.14em;text-transform:uppercase">Teaching Reflection</div>
+    <div style="font-size:13px;color:#8A9E8D;margin-top:4px">${date}</div>
+  </div>
+</div>
+
+<div style="text-align:center;margin-bottom:44px">
+  <div style="font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:#B8975A;margin-bottom:16px">Silent Student Project — Research Participant</div>
+  <div style="font-family:'Playfair Display',serif;font-size:36px;font-weight:400;color:#2C3830;line-height:1.2;margin-bottom:12px">Teaching Reflection<br><em style="font-style:italic;color:#6B8870">${name}</em></div>
+  <div style="font-size:13px;color:#6B8870;letter-spacing:.04em">Submitted as part of the Silent Student Project methodology study</div>
+</div>
+
+${divider}
+
+<div style="margin-bottom:28px">
+  <p style="font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#B8975A;margin-bottom:10px;font-weight:500">About the teacher</p>
+  <p style="font-size:14px;color:#2C3830;line-height:1.8">${S.experience?S.experience+' years of teaching experience':'—'} &nbsp;·&nbsp; ${S.languages||'—'}</p>
+</div>
+
+<div style="margin-bottom:28px">
+  <p style="font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#B8975A;margin-bottom:10px;font-weight:500">Session setting</p>
+  <p style="font-size:14px;color:#2C3830;line-height:1.8">${SETTING_NAMES[S.setting]||'—'} &nbsp;·&nbsp; ${(Array.isArray(S.ageGroup)?S.ageGroup:[S.ageGroup]).join(', ')||'—'}</p>
+</div>
+
+${taskPills}
+
+<div style="margin-bottom:28px">
+  <p style="font-size:9px;letter-spacing:.16em;text-transform:uppercase;color:#B8975A;margin-bottom:10px;font-weight:500">Observed scores</p>
+  ${scoreRows}
+</div>
+
+${divider}
+
+${qrow('Most notable moment',S.notable)}
+${qrow('What surprised you',S.surprise)}
+${qrow('What did not work',S.nowork)}
+
+<div style="margin-top:48px;padding-top:24px;border-top:1px solid #EDE4D8;display:flex;justify-content:space-between;align-items:flex-end">
+  <div style="font-size:10px;color:#8A9E8D;line-height:1.7">
+    The Silent Student Project · Nikoletta Csonka<br>
+    nikoletta.tutor@gmail.com
+  </div>
+  <div style="text-align:right">
+    <div style="font-family:'Playfair Display',serif;font-size:19px;font-style:italic;color:#3D4A40">Nikoletta Csonka</div>
+    <div style="font-size:9px;color:#8A9E8D;letter-spacing:.12em;text-transform:uppercase;margin-top:3px">Language Coach · Researcher</div>
+  </div>
+</div>
+
+</div>
+<script>window.onload=function(){window.print()}<\/script>
 </body></html>`
-  const blob=new Blob([html],{type:'text/html'})
-  const url=URL.createObjectURL(blob)
-  const a=document.createElement('a'); a.href=url; a.download=`reflection-${(S.teacherName||'anonymous').replace(/\s+/g,'-')}.html`
-  a.click(); URL.revokeObjectURL(url)
+  const w=window.open('','_blank')
+  if(w){w.document.write(cert);w.document.close()}
 }
 
 // ── RESET ────────────────────────────────────────────────────
