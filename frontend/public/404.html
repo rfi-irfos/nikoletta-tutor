@@ -4,10 +4,24 @@
 <meta charset="utf-8">
 <title>Niki Csonka — Language Coaching</title>
 <script>
-  // SPA redirect: GitHub Pages serves this for unknown paths under the repo subpath.
-  // Always redirect to the repo root so the React router can handle the URL.
+  // SPA redirect for GitHub Pages subpath repos.
+  // Encodes the full path+search into a query param so index.html can restore it.
+  var segmentCount = 1; // number of path segments in the repo name (/nikoletta-tutor/ = 1)
   var l = window.location;
-  l.replace('https://rfi-irfos.github.io/nikoletta-tutor/' + (l.hash || ''));
+  var base = l.pathname.split('/').slice(0, 1 + segmentCount).join('/');
+  var rest = '/' + l.pathname.slice(1).split('/').slice(segmentCount).join('/');
+  if (rest === '/') {
+    // Already at base, just go home
+    l.replace(l.protocol + '//' + l.host + base + '/');
+  } else {
+    l.replace(
+      l.protocol + '//' + l.host + base +
+      '/?p=' + rest.replace(/&/g, '~and~') +
+      (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
+      l.hash
+    );
+  }
 </script>
 </head>
+<body></body>
 </html>
