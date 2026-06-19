@@ -1388,7 +1388,7 @@ export function PublicSite({
                   Enter your participant code to access the Silent Student Project reflection portal.
                 </p>
                 <input
-                  type="text"
+                  type="password"
                   className="site-ssp-code-input"
                   placeholder="Participant code"
                   value={sspCode}

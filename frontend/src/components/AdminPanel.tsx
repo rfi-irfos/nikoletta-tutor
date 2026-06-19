@@ -168,11 +168,12 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   const [adminSection, setAdminSection] = useState<'reviews' | 'students' | 'inbox' | 'research' | 'fragebogen'>('inbox')
   const [sspReflections, setSspReflections] = useState<SSPReflection[]>(() => loadSSP())
   const [sspExpanded, setSspExpanded] = useState<string | null>(null)
-  const [sspFormVersions, setSspFormVersions] = useState<{id:string,ts:string,label:string,notes:string}[]>(() => {
+  const [sspFormVersions, setSspFormVersions] = useState<{id:number|string,ts:string,label:string,notes:string,steps?:{title:string,questions:string[]}[]}[]>(() => {
     try { return JSON.parse(localStorage.getItem('ssp_form_versions') || '[]') } catch { return [] }
   })
-  const [fragebogenLabel, setFragebogenLabel] = useState('')
-  const [fragebogenNotes, setFragebogenNotes] = useState('')
+  const [editableSteps, setEditableSteps] = useState<{title:string,questions:string[]}[]>([])
+  const [editVersion, setEditVersion] = useState('')
+  const [editNotes, setEditNotes] = useState('')
   const [sspRaffleEntries, setSspRaffleEntries] = useState<{ts:string,email:string,name:string}[]>(() => {
     try { return JSON.parse(localStorage.getItem('ssp_raffle_entries') || '[]') } catch { return [] }
   })
@@ -197,6 +198,38 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
       return next
     })
   }, [])
+
+  const SSP_DEFAULT_STEPS = [
+    { title: 'Ein bisschen über dich', questions: ['Vorname oder Alias', 'Wie viele Jahre unterrichtest du Sprachen?', 'Welche Sprache(n) unterrichtest du?'] },
+    { title: 'Der Unterrichtsrahmen', questions: ['Setting (Privat 1:1 / Schule 1:1 / Kleingruppe / Klasse / Online 1:1 / Online-Gruppe)', 'Altersgruppe der Schüler:innen'] },
+    { title: 'Der Schüler / die Gruppe', questions: ['Beziehung zur Sprache (Mehrfachauswahl)', 'Gruppenfokus (bei Gruppen)', 'Warum hast du diesen Schüler/diese Gruppe gewählt?'] },
+    { title: 'Was hast du ausprobiert?', questions: ['Methode 1: Schüler fragen wie er lernen möchte', 'Methode 2: Stunde um beiläufige Erwähnung aufbauen', 'Methode 3: Auf Durchbruch mit sichtbarer Begeisterung reagieren', 'Methode 4: Vorbereitetem Schwenk bei Motivationsverlust nutzen', 'Methode 5: Selbstsicherheit & Genauigkeit getrennt tracken'] },
+    { title: 'Beobachtungen bewerten', questions: ['Selbstsicherheit (1–5)', 'Genauigkeit (1–5)', 'Sprachbeziehung (1–5)', 'Lehrer-Schüler-Vertrauen (1–5)', 'Nervensystem / Entspannung (1–5)'] },
+    { title: 'Was ist passiert?', questions: ['Bemerkenswertester Moment', 'Was hat dich überrascht?', 'Was hat nicht funktioniert?', 'Basis- oder Folgestunde?', 'Stundenummer (bei Folgestunden)'] },
+  ]
+
+  useEffect(() => {
+    if (adminSection !== 'fragebogen') return
+    const latest = sspFormVersions.length > 0 ? sspFormVersions[sspFormVersions.length - 1] : null
+    setEditableSteps(latest?.steps ? JSON.parse(JSON.stringify(latest.steps)) : JSON.parse(JSON.stringify(SSP_DEFAULT_STEPS)))
+  }, [adminSection])
+
+  const saveFragebogenVersion = () => {
+    if (!editVersion.trim()) return
+    const versions = JSON.parse(localStorage.getItem('ssp_form_versions') || '[]')
+    versions.push({
+      id: Date.now(),
+      ts: new Date().toISOString(),
+      label: editVersion.trim(),
+      notes: editNotes.trim(),
+      steps: editableSteps,
+    })
+    localStorage.setItem('ssp_form_versions', JSON.stringify(versions))
+    setSspFormVersions(versions)
+    setEditVersion('')
+    setEditNotes('')
+  }
+
   const fileRef = useRef<HTMLInputElement>(null)
   const previewRef = useRef<HTMLDivElement>(null)
 
@@ -979,101 +1012,113 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
             )}
 
             {/* ── FRAGEBOGEN ───────────────────────────────────────── */}
-            {adminSection === 'fragebogen' && (() => {
-              const SSP_STEPS = [
-                { step: 1, title: 'Ein bisschen über dich', questions: ['Vorname oder Alias', 'Wie viele Jahre unterrichtest du Sprachen?', 'Welche Sprache(n) unterrichtest du?'] },
-                { step: 2, title: 'Der Unterrichtsrahmen', questions: ['Setting (Privat 1:1 / Schule 1:1 / Kleingruppe / Klasse / Online 1:1 / Online-Gruppe)', 'Altersgruppe der Schüler:innen'] },
-                { step: 3, title: 'Der Schüler / die Gruppe', questions: ['Beziehung zur Sprache (Mehrfachauswahl)', 'Gruppenfokus (bei Gruppen)', 'Warum hast du diesen Schüler/diese Gruppe gewählt?'] },
-                { step: 4, title: 'Was hast du ausprobiert?', questions: ['Methode 1: Schüler fragen wie er lernen möchte', 'Methode 2: Stunde um beiläufige Erwähnung aufbauen', 'Methode 3: Auf Durchbruch mit sichtbarer Begeisterung reagieren', 'Methode 4: Vorbereitetem Schwenk bei Motivationsverlust nutzen', 'Methode 5: Selbstsicherheit & Genauigkeit getrennt tracken'] },
-                { step: 5, title: 'Beobachtungen bewerten', questions: ['Selbstsicherheit (1–5)', 'Genauigkeit (1–5)', 'Sprachbeziehung (1–5)', 'Lehrer-Schüler-Vertrauen (1–5)', 'Nervensystem / Entspannung (1–5)'] },
-                { step: 6, title: 'Was ist passiert?', questions: ['Bemerkenswertester Moment', 'Was hat dich überrascht?', 'Was hat nicht funktioniert?', 'Basis- oder Folgestunde?', 'Stundenummer (bei Folgestunden)'] },
-              ]
-              const saveVersion = () => {
-                if (!fragebogenLabel.trim()) return
-                const newV = { id: Date.now().toString(), ts: new Date().toISOString(), label: fragebogenLabel.trim(), notes: fragebogenNotes.trim() }
-                const next = [...sspFormVersions, newV]
-                localStorage.setItem('ssp_form_versions', JSON.stringify(next))
-                setSspFormVersions(next)
-                setFragebogenLabel('')
-                setFragebogenNotes('')
-              }
-              return (
-                <div className="panel-products">
-                  {/* Active version info */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#B8975A' }}>Aktive Version</span>
-                    <span style={{ fontSize: 11, background: '#EDE4D8', color: '#3D4A40', padding: '3px 10px', borderRadius: 20, fontWeight: 600 }}>
-                      {sspFormVersions.length > 0 ? `v1.${sspFormVersions.length}` : 'v1.0'} — 6 Schritte, 5 Dimensionen
-                    </span>
-                  </div>
+            {adminSection === 'fragebogen' && (
+              <div className="panel-products">
+                {/* Active version indicator */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#B8975A' }}>Aktive Version</span>
+                  <span style={{ fontSize: 11, background: '#EDE4D8', color: '#3D4A40', padding: '3px 10px', borderRadius: 20, fontWeight: 600 }}>
+                    {sspFormVersions.length > 0 ? `v1.${sspFormVersions.length}` : 'v1.0'} — {editableSteps.length} Schritte
+                  </span>
+                </div>
 
-                  {/* Step cards */}
-                  {SSP_STEPS.map(s => (
-                    <div key={s.step} style={{ background: '#fff', borderRadius: 10, border: '1.5px solid #EDE4D8', marginBottom: 10, overflow: 'hidden' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', borderBottom: '1px solid #F3EDE5' }}>
-                        <span style={{ width: 24, height: 24, borderRadius: '50%', background: '#2C3830', color: '#fff', fontSize: 10, fontWeight: 800, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{s.step}</span>
-                        <span style={{ fontWeight: 700, fontSize: 13, color: '#2C3830' }}>{s.title}</span>
-                        <span style={{ marginLeft: 'auto', fontSize: 10, color: '#aaa' }}>{s.questions.length} Fragen</span>
-                      </div>
-                      <div style={{ padding: '10px 16px 12px' }}>
-                        {s.questions.map((q, i) => (
-                          <div key={i} style={{ fontSize: 12, color: '#555', padding: '4px 0', borderBottom: i < s.questions.length - 1 ? '1px solid #F5F1EC' : 'none', display: 'flex', gap: 8 }}>
-                            <span style={{ color: '#B8975A', fontWeight: 600, fontSize: 11, flexShrink: 0 }}>{i + 1}.</span>
-                            {q}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Create version */}
-                  <div style={{ marginTop: 24, background: 'linear-gradient(135deg,#2C3830,#3D4A40)', borderRadius: 12, padding: '18px 20px' }}>
-                    <div style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: '#B8975A', marginBottom: 14, fontWeight: 700 }}>Version erstellen</div>
-                    <div style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 5 }}>Versionsbezeichnung</div>
+                {/* Editable step cards */}
+                {editableSteps.map((step, si) => (
+                  <div key={si} style={{ background: '#fff', borderRadius: 10, border: '1.5px solid #EDE4D8', marginBottom: 12, overflow: 'hidden' }}>
+                    {/* Step header — editable title */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', borderBottom: '1px solid #F3EDE5', background: '#FAFAF8' }}>
+                      <span style={{ width: 24, height: 24, borderRadius: '50%', background: '#2C3830', color: '#fff', fontSize: 10, fontWeight: 800, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{si + 1}</span>
                       <input
-                        value={fragebogenLabel}
-                        onChange={e => setFragebogenLabel(e.target.value)}
-                        placeholder="z.B. v1.1 — Frage 3 umformuliert"
-                        style={{ width: '100%', background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', borderRadius: 7, padding: '8px 12px', fontSize: 13, color: '#fff', fontFamily: 'inherit' }}
+                        value={step.title}
+                        onChange={e => setEditableSteps(prev => prev.map((s, i) => i === si ? { ...s, title: e.target.value } : s))}
+                        style={{ flex: 1, border: 'none', background: 'transparent', fontSize: 13, fontWeight: 700, color: '#2C3830', outline: 'none', fontFamily: 'inherit' }}
+                        placeholder="Schritt-Titel..."
                       />
+                      <span style={{ fontSize: 10, color: '#aaa', flexShrink: 0 }}>{step.questions.length} Fragen</span>
                     </div>
-                    <div style={{ marginBottom: 14 }}>
-                      <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 5 }}>Was hat sich geändert?</div>
-                      <textarea
-                        value={fragebogenNotes}
-                        onChange={e => setFragebogenNotes(e.target.value)}
-                        placeholder="Beschreibe die Änderungen dieser Version..."
-                        rows={3}
-                        style={{ width: '100%', background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', borderRadius: 7, padding: '8px 12px', fontSize: 13, color: '#fff', fontFamily: 'inherit', resize: 'vertical' }}
-                      />
-                    </div>
-                    <button
-                      onClick={saveVersion}
-                      disabled={!fragebogenLabel.trim()}
-                      style={{ background: fragebogenLabel.trim() ? '#B8975A' : 'rgba(184,151,90,.3)', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 20px', fontSize: 13, fontWeight: 700, cursor: fragebogenLabel.trim() ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}
-                    >
-                      Version speichern (append-only)
-                    </button>
-                  </div>
-
-                  {/* Version history */}
-                  {sspFormVersions.length > 0 && (
-                    <div style={{ marginTop: 20 }}>
-                      <div style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: '#888', marginBottom: 12, fontWeight: 700 }}>Versionshistorie ({sspFormVersions.length})</div>
-                      {[...sspFormVersions].reverse().map((v, i) => (
-                        <div key={v.id} style={{ background: '#fff', borderRadius: 8, border: '1.5px solid #EDE4D8', padding: '12px 16px', marginBottom: 8, position: 'relative' }}>
-                          {i === 0 && <span style={{ position: 'absolute', top: 10, right: 12, fontSize: 9, background: '#3D4A40', color: '#fff', padding: '2px 8px', borderRadius: 10, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase' }}>Neueste</span>}
-                          <div style={{ fontWeight: 700, fontSize: 13, color: '#2C3830', marginBottom: 4 }}>{v.label}</div>
-                          {v.notes && <div style={{ fontSize: 12, color: '#666', lineHeight: 1.5, marginBottom: 6 }}>{v.notes}</div>}
-                          <div style={{ fontSize: 10, color: '#aaa' }}>{new Date(v.ts).toLocaleDateString('de-AT', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                    {/* Questions list — editable */}
+                    <div style={{ padding: '8px 14px 12px' }}>
+                      {step.questions.map((q, qi) => (
+                        <div key={qi} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                          <span style={{ color: '#B8975A', fontWeight: 600, fontSize: 11, flexShrink: 0, width: 18 }}>{qi + 1}.</span>
+                          <input
+                            value={q}
+                            onChange={e => setEditableSteps(prev => prev.map((s, i) => i === si ? { ...s, questions: s.questions.map((qq, j) => j === qi ? e.target.value : qq) } : s))}
+                            style={{ flex: 1, border: '1px solid #EDE4D8', borderRadius: 6, padding: '5px 10px', fontSize: 12, color: '#333', fontFamily: 'inherit', outline: 'none', background: '#FAFAF8' }}
+                            placeholder="Frage..."
+                          />
+                          {step.questions.length > 1 && (
+                            <button
+                              onClick={() => setEditableSteps(prev => prev.map((s, i) => i === si ? { ...s, questions: s.questions.filter((_, j) => j !== qi) } : s))}
+                              style={{ background: 'none', border: 'none', color: '#ccc', cursor: 'pointer', fontSize: 18, lineHeight: 1, padding: '0 3px', flexShrink: 0, fontFamily: 'inherit' }}
+                              title="Frage entfernen"
+                            >×</button>
+                          )}
                         </div>
                       ))}
+                      <button
+                        onClick={() => setEditableSteps(prev => prev.map((s, i) => i === si ? { ...s, questions: [...s.questions, ''] } : s))}
+                        style={{ marginTop: 4, background: 'none', border: '1px dashed #B8975A', color: '#B8975A', borderRadius: 6, padding: '4px 12px', fontSize: 11, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+                      >+ Frage hinzufügen</button>
                     </div>
-                  )}
+                  </div>
+                ))}
+
+                {/* Save as new version */}
+                <div style={{ marginTop: 24, background: 'linear-gradient(135deg,#2C3830,#3D4A40)', borderRadius: 12, padding: '18px 20px' }}>
+                  <div style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: '#B8975A', marginBottom: 14, fontWeight: 700 }}>Version erstellen</div>
+                  <div style={{ marginBottom: 10 }}>
+                    <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 5 }}>Versionsbezeichnung</div>
+                    <input
+                      value={editVersion}
+                      onChange={e => setEditVersion(e.target.value)}
+                      placeholder="z.B. v1.1 — Frage 3 umformuliert"
+                      style={{ width: '100%', background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', borderRadius: 7, padding: '8px 12px', fontSize: 13, color: '#fff', fontFamily: 'inherit', boxSizing: 'border-box' as const }}
+                    />
+                  </div>
+                  <div style={{ marginBottom: 14 }}>
+                    <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 5 }}>Was hat sich geändert?</div>
+                    <textarea
+                      value={editNotes}
+                      onChange={e => setEditNotes(e.target.value)}
+                      placeholder="Beschreibe die Änderungen dieser Version..."
+                      rows={3}
+                      style={{ width: '100%', background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', borderRadius: 7, padding: '8px 12px', fontSize: 13, color: '#fff', fontFamily: 'inherit', resize: 'vertical', boxSizing: 'border-box' as const }}
+                    />
+                  </div>
+                  <button
+                    onClick={saveFragebogenVersion}
+                    disabled={!editVersion.trim()}
+                    style={{ background: editVersion.trim() ? '#B8975A' : 'rgba(184,151,90,.3)', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 20px', fontSize: 13, fontWeight: 700, cursor: editVersion.trim() ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}
+                  >
+                    Version speichern (append-only)
+                  </button>
                 </div>
-              )
-            })()}
+
+                {/* Version history */}
+                {sspFormVersions.length > 0 && (
+                  <div style={{ marginTop: 20 }}>
+                    <div style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: '#888', marginBottom: 12, fontWeight: 700 }}>Versionshistorie ({sspFormVersions.length})</div>
+                    {[...sspFormVersions].reverse().map((v, i) => (
+                      <div key={String(v.id)} style={{ background: '#fff', borderRadius: 8, border: '1.5px solid #EDE4D8', padding: '12px 16px', marginBottom: 8, position: 'relative' }}>
+                        {i === 0 && <span style={{ position: 'absolute', top: 10, right: 12, fontSize: 9, background: '#3D4A40', color: '#fff', padding: '2px 8px', borderRadius: 10, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase' }}>Neueste</span>}
+                        <div style={{ fontWeight: 700, fontSize: 13, color: '#2C3830', marginBottom: 4, paddingRight: i === 0 ? 60 : 0 }}>{v.label}</div>
+                        {v.notes && <div style={{ fontSize: 12, color: '#666', lineHeight: 1.5, marginBottom: 6 }}>{v.notes}</div>}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 6 }}>
+                          <div style={{ fontSize: 10, color: '#aaa' }}>{new Date(v.ts).toLocaleDateString('de-AT', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                          {v.steps && v.steps.length > 0 && (
+                            <button
+                              onClick={() => setEditableSteps(JSON.parse(JSON.stringify(v.steps)))}
+                              style={{ background: '#EDE4D8', color: '#3D4A40', border: 'none', borderRadius: 6, padding: '4px 12px', fontSize: 11, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit' }}
+                            >Laden</button>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
           </div>
           </div>
