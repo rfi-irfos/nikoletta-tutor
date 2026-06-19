@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { SiteContent } from '../types/content'
-import { ghRead, ghWrite, b64Encode, contentPathFor, UPLOADS_DIR } from '../lib/github'
+import { ghRead, ghWrite, b64Encode, contentPathFor, UPLOADS_DIR, OWNER, REPO } from '../lib/github'
 import type { Lang } from './useLang'
 
 export function useContent(lang: Lang) {
@@ -14,21 +14,22 @@ export function useContent(lang: Lang) {
   useEffect(() => {
     let cancelled = false
     shaRef.current = null
-    // Cache-bust so admin edits (and reverts) show immediately instead of a
-    // browser/CDN-cached content.json. content.json is tiny; freshness wins.
+    // Fetch directly from GitHub raw content so admin saves are reflected
+    // immediately without requiring a full GitHub Pages rebuild.
     const bust = `?t=${Date.now()}`
+    const rawBase = `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/`
     ;(async () => {
-      const file = lang === 'en' ? 'content.json' : `content.${lang}.json`
       try {
-        const res = await fetch(`${import.meta.env.BASE_URL}${file}${bust}`, { cache: 'no-store' })
+        const rawUrl = `${rawBase}${contentPathFor(lang)}${bust}`
+        const res = await fetch(rawUrl, { cache: 'no-store' })
         if (!res.ok) throw new Error('missing')
         const data = await res.json()
         if (!cancelled) setContent(data)
       } catch {
-        // Non-EN missing -> fall back to EN file, then to bundled default
+        // Non-EN missing -> fall back to EN raw file, then to bundled default
         if (lang !== 'en') {
           try {
-            const res = await fetch(`${import.meta.env.BASE_URL}content.json${bust}`, { cache: 'no-store' })
+            const res = await fetch(`${rawBase}${contentPathFor('en')}${bust}`, { cache: 'no-store' })
             if (res.ok) { const d = await res.json(); if (!cancelled) setContent(d); return }
           } catch { /* fall through */ }
         }

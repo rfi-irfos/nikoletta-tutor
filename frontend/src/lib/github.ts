@@ -2,8 +2,8 @@
 
 const BASE = 'https://api.github.com'
 
-const OWNER   = import.meta.env.VITE_GH_OWNER   as string
-const REPO    = import.meta.env.VITE_GH_REPO    as string
+export const OWNER   = import.meta.env.VITE_GH_OWNER   as string
+export const REPO    = import.meta.env.VITE_GH_REPO    as string
 const CONTENT_PATH  = (import.meta.env.VITE_GH_CONTENT_PATH  as string) || 'public/content.json'
 const UPLOADS_DIR   = (import.meta.env.VITE_GH_UPLOADS_DIR   as string) || 'public/uploads'
 const TOKEN         = import.meta.env.VITE_GH_TOKEN as string

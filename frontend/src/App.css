@@ -802,6 +802,7 @@ button { cursor: pointer; font-family: inherit; }
 .builder-save-btn-top:hover:not(:disabled) { background: #0080aa; }
 .builder-save-btn-top.done { background: #22c55e; }
 .builder-save-btn-top.loading { opacity: .7; }
+.builder-save-btn-top.err { background: #c53030; }
 
 /* Body */
 .builder-body { display: flex; flex: 1; overflow: hidden; }
