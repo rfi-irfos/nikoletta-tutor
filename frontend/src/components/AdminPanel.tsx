@@ -153,20 +153,26 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     const cid = el.dataset.cid ?? ''
     if (cid.startsWith('about.')) {
       setActiveTab('about')
-    } else if (cid.startsWith('hero.') || cid.startsWith('nav.')) {
+    } else if (cid.startsWith('hero.') || cid.startsWith('nav.') || cid.startsWith('trust.')) {
       setActiveTab('hero')
     } else if (cid.startsWith('products.items.')) {
       const idx = parseInt(cid.split('.')[2])
       const item = draft.products?.items?.[idx]
       if (item) { setActiveTab('products'); setEditingProduct(item.id) }
+    } else if (cid.startsWith('products.') || cid.startsWith('categories.')) {
+      setActiveTab('products')
     } else if (cid.startsWith('news.items.')) {
       const idx = parseInt(cid.split('.')[2])
       const item = draft.news?.items?.[idx]
       if (item) { setActiveTab('news'); setEditingNews(item.id) }
+    } else if (cid.startsWith('news.')) {
+      setActiveTab('news')
     } else if (cid.startsWith('contact.') || cid.startsWith('whatsapp.')) {
       setActiveTab('contact')
     } else if (cid.startsWith('usp.')) {
       setActiveTab('usp')
+    } else if (cid.startsWith('pricing.') || cid.startsWith('certificates.')) {
+      setActiveTab('pricing')
     } else if (cid.startsWith('meta.') || cid.startsWith('footer.')) {
       setActiveTab('style')
     }
