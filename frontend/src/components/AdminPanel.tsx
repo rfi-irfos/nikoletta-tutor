@@ -173,6 +173,12 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   })
   const [fragebogenLabel, setFragebogenLabel] = useState('')
   const [fragebogenNotes, setFragebogenNotes] = useState('')
+  const [sspRaffleEntries, setSspRaffleEntries] = useState<{ts:string,email:string,name:string}[]>(() => {
+    try { return JSON.parse(localStorage.getItem('ssp_raffle_entries') || '[]') } catch { return [] }
+  })
+  const [sspPrizes, setSspPrizes] = useState<{num:string,lbl:string}[]>(() => {
+    try { return JSON.parse(localStorage.getItem('ssp_prizes') || 'null') || [{num:'1',lbl:'Preis bald bekannt'},{num:'2',lbl:'Preis bald bekannt'},{num:'3',lbl:'Preis bald bekannt'}] } catch { return [{num:'1',lbl:'Preis bald bekannt'},{num:'2',lbl:'Preis bald bekannt'},{num:'3',lbl:'Preis bald bekannt'}] }
+  })
   const [pendingReviews, setPendingReviews] = useState<PendingReview[]>(loadPending)
   const [contactInbox, setContactInbox] = useState<ContactInboxItem[]>(loadContactInbox)
 
@@ -908,6 +914,52 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                         </div>
                       )
                     })}
+
+                    {/* Gewinnspiel */}
+                    <div style={{ marginTop: 24, background: 'linear-gradient(135deg,#2C3830,#3D4A40)', borderRadius: 12, padding: '18px 20px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
+                        <div style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: '#B8975A', fontWeight: 700 }}>Gewinnspiel</div>
+                        <button onClick={() => setSspRaffleEntries((() => { try { return JSON.parse(localStorage.getItem('ssp_raffle_entries') || '[]') } catch { return [] } })())}
+                          style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,.4)', fontSize: 11, cursor: 'pointer', fontFamily: 'inherit' }}>↺ Aktualisieren</button>
+                      </div>
+                      {/* Prize editor */}
+                      <div style={{ marginBottom: 16 }}>
+                        <div style={{ fontSize: 10, color: 'rgba(255,255,255,.4)', marginBottom: 8 }}>Preise bearbeiten (sichtbar auf Teilnehmer-Seite)</div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
+                          {sspPrizes.map((p, i) => (
+                            <div key={i} style={{ background: 'rgba(255,255,255,.07)', borderRadius: 8, padding: '10px' }}>
+                              <div style={{ fontSize: 10, color: '#B8975A', fontWeight: 700, marginBottom: 6 }}>Preis {p.num}</div>
+                              <textarea
+                                value={p.lbl}
+                                rows={2}
+                                onChange={e => {
+                                  const next = sspPrizes.map((x, j) => j === i ? { ...x, lbl: e.target.value } : x)
+                                  setSspPrizes(next)
+                                  localStorage.setItem('ssp_prizes', JSON.stringify(next))
+                                }}
+                                style={{ width: '100%', background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', borderRadius: 5, padding: '6px 8px', fontSize: 11, color: '#fff', fontFamily: 'inherit', resize: 'none' }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      {/* Raffle entries */}
+                      <div style={{ fontSize: 10, color: 'rgba(255,255,255,.4)', marginBottom: 8 }}>{sspRaffleEntries.length} Teilnahme{sspRaffleEntries.length !== 1 ? 'n' : ''}</div>
+                      {sspRaffleEntries.length === 0 ? (
+                        <div style={{ fontSize: 12, color: 'rgba(255,255,255,.3)', fontStyle: 'italic' }}>Noch keine Einträge.</div>
+                      ) : (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                          {[...sspRaffleEntries].reverse().map((e, i) => (
+                            <div key={i} style={{ background: 'rgba(255,255,255,.08)', borderRadius: 7, padding: '8px 12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <div>
+                                <div style={{ fontSize: 13, fontWeight: 600, color: '#fff' }}>{e.email}</div>
+                                <div style={{ fontSize: 10, color: 'rgba(255,255,255,.4)' }}>{e.name} · {new Date(e.ts).toLocaleDateString('de-AT', { day: 'numeric', month: 'short', year: 'numeric' })}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
                     {/* Export */}
                     <button

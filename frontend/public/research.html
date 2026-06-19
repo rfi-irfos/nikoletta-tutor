@@ -261,6 +261,25 @@ textarea::placeholder,input::placeholder{color:var(--light)}
 .btn-home{font-size:13px;color:var(--soft);background:none;border:none;cursor:pointer;margin-top:4px;text-decoration:underline;transition:color .15s}
 .btn-home:hover{color:var(--green)}
 .ss-quote{margin:28px auto 0;max-width:380px;font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--green-mid);line-height:1.65;border-top:1px solid var(--sand2);padding-top:24px}
+.raffle-card{margin:32px auto 0;max-width:480px;background:linear-gradient(135deg,#2C3830 0%,#3D4A40 100%);border-radius:16px;padding:28px 30px;text-align:left;border:1px solid rgba(184,151,90,.25)}
+.raffle-eyebrow{font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.raffle-title{font-family:'Playfair Display',serif;font-size:21px;font-weight:600;color:#fff;margin-bottom:8px}
+.raffle-sub{font-size:13px;color:rgba(255,255,255,.6);line-height:1.6;margin-bottom:20px}
+.raffle-prizes{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:22px}
+.raffle-prize{background:rgba(255,255,255,.07);border:1px solid rgba(184,151,90,.2);border-radius:10px;padding:12px 10px;text-align:center}
+.raffle-prize-num{font-size:18px;font-weight:800;color:var(--gold);line-height:1}
+.raffle-prize-lbl{font-size:10px;color:rgba(255,255,255,.45);margin-top:5px;line-height:1.3}
+.raffle-form{display:flex;gap:8px}
+.raffle-input{flex:1;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:10px 14px;font-size:13px;color:#fff;font-family:inherit;outline:none;transition:border-color .15s}
+.raffle-input::placeholder{color:rgba(255,255,255,.35)}
+.raffle-input:focus{border-color:var(--gold)}
+.raffle-btn{background:var(--gold);color:#fff;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;transition:background .15s}
+.raffle-btn:hover{background:#A0833A}
+.raffle-done{text-align:center;padding:8px 0}
+.raffle-done-icon{font-size:28px;color:var(--gold);margin-bottom:8px}
+.raffle-done-txt{font-size:15px;font-weight:700;color:#fff;margin-bottom:4px}
+.raffle-done-sub{font-size:12px;color:rgba(255,255,255,.5)}
+.raffle-legal{font-size:10px;color:rgba(255,255,255,.3);margin-top:14px;line-height:1.5}
 
 @media(max-width:680px){
   .exch{grid-template-columns:1fr}.igrid{grid-template-columns:1fr}
@@ -730,6 +749,26 @@ textarea::placeholder,input::placeholder{color:var(--light)}
       <button class="btn-home" onclick="showLanding()">Back to the project</button>
     </div>
     <p class="ss-quote">"The quietest learner in the room<br>might be the most ready."</p>
+
+    <!-- RAFFLE -->
+    <div class="raffle-card" id="raffleCard">
+      <div class="raffle-eyebrow">Gewinnspiel</div>
+      <h3 class="raffle-title">Mitmachen &amp; gewinnen</h3>
+      <p class="raffle-sub">Als Dankeschön für deine Teilnahme verlosen wir Preise unter allen Einreichungen.</p>
+      <div class="raffle-prizes" id="rafflePrizes">
+        <!-- filled by JS from ssp_prizes or defaults -->
+      </div>
+      <div class="raffle-form" id="raffleForm">
+        <input type="email" id="raffleEmail" class="raffle-input" placeholder="Deine E-Mail-Adresse">
+        <button class="raffle-btn" onclick="enterRaffle()">Teilnehmen</button>
+      </div>
+      <div class="raffle-done" id="raffleDone" style="display:none">
+        <div class="raffle-done-icon">✦</div>
+        <div class="raffle-done-txt">Du bist dabei! Viel Glück.</div>
+        <div class="raffle-done-sub">Wir melden uns per E-Mail, wenn du gewonnen hast.</div>
+      </div>
+      <p class="raffle-legal">Keine Weitergabe an Dritte. Verlosung nach Abschluss der Studie.</p>
+    </div>
   </div>
 
 </div><!-- .fwrap -->
@@ -930,6 +969,35 @@ function showSuccess(){
   document.getElementById('progBar').style.width='100%'
   for(let i=1;i<=6;i++){const d=document.getElementById('d'+i);d.className='sdot done';d.textContent='';const l=document.getElementById('l'+i);if(l)l.className='sline done'}
   launchConfetti()
+  renderRafflePrizes()
+}
+
+// ── RAFFLE ────────────────────────────────────────────────────
+const DEFAULT_PRIZES=[
+  {num:'1',lbl:'Preis bald\nbekannt gegeben'},
+  {num:'2',lbl:'Preis bald\nbekannt gegeben'},
+  {num:'3',lbl:'Preis bald\nbekannt gegeben'},
+]
+function loadPrizes(){
+  try{return JSON.parse(localStorage.getItem('ssp_prizes')||'null')||DEFAULT_PRIZES}catch{return DEFAULT_PRIZES}
+}
+function renderRafflePrizes(){
+  const prizes=loadPrizes()
+  const wrap=document.getElementById('rafflePrizes')
+  if(!wrap)return
+  wrap.innerHTML=prizes.map(p=>`<div class="raffle-prize"><div class="raffle-prize-num">${p.num}</div><div class="raffle-prize-lbl">${p.lbl.replace(/\n/g,'<br>')}</div></div>`).join('')
+}
+function enterRaffle(){
+  const email=document.getElementById('raffleEmail').value.trim()
+  if(!email||!email.includes('@')){document.getElementById('raffleEmail').focus();return}
+  const entry={ts:new Date().toISOString(),email,name:S.teacherName||'Anonymous'}
+  try{
+    const all=JSON.parse(localStorage.getItem('ssp_raffle_entries')||'[]')
+    all.push(entry)
+    localStorage.setItem('ssp_raffle_entries',JSON.stringify(all))
+  }catch(e){console.warn(e)}
+  document.getElementById('raffleForm').style.display='none'
+  document.getElementById('raffleDone').style.display='block'
 }
 
 // ── CONFETTI ─────────────────────────────────────────────────
