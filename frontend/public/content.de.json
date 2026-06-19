@@ -281,8 +281,8 @@
   "certificates": {
     "title": "Zertifikate",
     "items": [
-      { "id": "cert1", "title": "TEFL-Zertifikat", "subtitle": "Teaching English as a Foreign Language — international anerkannt", "file": "" },
-      { "id": "cert2", "title": "Sprachprüfungszertifikat", "subtitle": "Offizielle Qualifikation — Sprachprüfungszentrum", "file": "" }
+      { "id": "cert1", "title": "Teaching Business English Zertifikat", "subtitle": "30 Stunden — international anerkannt", "file": "uploads/cert-business-english.pdf" },
+      { "id": "cert2", "title": "Level 3 Zertifikat", "subtitle": "Offizielle Qualifikation mit Transcript", "file": "uploads/cert-level3.pdf" }
     ]
   },
   "about": {

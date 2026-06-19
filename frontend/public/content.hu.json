@@ -281,8 +281,8 @@
   "certificates": {
     "title": "Bizonyítványok",
     "items": [
-      { "id": "cert1", "title": "TEFL-bizonyítvány", "subtitle": "Teaching English as a Foreign Language — nemzetközileg elismert", "file": "" },
-      { "id": "cert2", "title": "Nyelvvizsga-bizonyítvány", "subtitle": "Hivatalos képesítés — Nyelvvizsgaközpont", "file": "" }
+      { "id": "cert1", "title": "Teaching Business English bizonyítvány", "subtitle": "30 óra — nemzetközileg elismert", "file": "uploads/cert-business-english.pdf" },
+      { "id": "cert2", "title": "Level 3 bizonyítvány", "subtitle": "Hivatalos képesítés átirattal", "file": "uploads/cert-level3.pdf" }
     ]
   },
   "about": {

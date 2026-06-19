@@ -282,8 +282,8 @@
   "certificates": {
     "title": "Certificates",
     "items": [
-      { "id": "cert1", "title": "TEFL Certificate", "subtitle": "Teaching English as a Foreign Language — internationally recognised", "file": "" },
-      { "id": "cert2", "title": "Language Exam Certificate", "subtitle": "Official qualification — Language Exam Centre", "file": "" }
+      { "id": "cert1", "title": "Teaching Business English Certificate", "subtitle": "30 hours — internationally recognised", "file": "uploads/cert-business-english.pdf" },
+      { "id": "cert2", "title": "Level 3 Certificate", "subtitle": "Official qualification with transcript", "file": "uploads/cert-level3.pdf" }
     ]
   },
   "about": {
