@@ -68,6 +68,7 @@ export const UI = {
     sspContinue: 'Continue →',
     sspNotParticipant: 'Not a participant yet?',
     sspReachOut: 'Reach out to Nikoletta.',
+    navResearch: 'Research',
   },
   de: {
     namePlaceholder: 'Dein Name',
@@ -118,6 +119,7 @@ export const UI = {
     sspContinue: 'Weiter →',
     sspNotParticipant: 'Noch kein Teilnehmer?',
     sspReachOut: 'Kontaktiere Nikoletta.',
+    navResearch: 'Forschung',
   },
   hu: {
     namePlaceholder: 'A neved',
@@ -168,6 +170,7 @@ export const UI = {
     sspContinue: 'Tovább →',
     sspNotParticipant: 'Még nem résztvevő?',
     sspReachOut: 'Lépj kapcsolatba Nikolettával.',
+    navResearch: 'Kutatás',
   },
 } as const
 

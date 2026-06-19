@@ -838,12 +838,7 @@ export function PublicSite({
               {nav.links.map((l, i) => (
                 <E key={i} field={`nav.links.${i}.label`} value={l.label} as="a" href={l.href} />
               ))}
-              <button
-                onClick={() => setShowSSPLogin(true)}
-                style={{ background: 'none', border: 'none', padding: 0, margin: 0, font: 'inherit', color: 'inherit', cursor: 'pointer', fontWeight: 'inherit', fontSize: 'inherit' }}
-              >
-                Forschung
-              </button>
+              <a href="#ssp">{t.navResearch}</a>
             </nav>
             <div className="site-nav-right">
               <div className="site-nav-desktop">
@@ -883,13 +878,14 @@ export function PublicSite({
             {nav.links.map((l, i) => (
               <a key={i} href={l.href} onClick={() => setMenuOpen(false)}>{l.label}</a>
             ))}
-            <button
+            <a
               className="site-mobile-research-link"
-              onClick={() => { setMenuOpen(false); setShowSSPLogin(true) }}
-              style={{ display: 'block', width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: '13px 24px', fontSize: 16, fontWeight: 700, color: 'var(--accent,#B3E600)', cursor: 'pointer', borderTop: '1px solid var(--border,rgba(0,0,0,.08))' }}
+              href="#ssp"
+              onClick={() => setMenuOpen(false)}
+              style={{ display: 'block', width: '100%', textAlign: 'left', padding: '13px 24px', fontSize: 16, fontWeight: 700, color: 'var(--accent,#B3E600)', borderTop: '1px solid var(--border,rgba(0,0,0,.08))', textDecoration: 'none' }}
             >
-              Forschung
-            </button>
+              {t.navResearch}
+            </a>
           </nav>
           <div className="site-mobile-actions">
             <div>
