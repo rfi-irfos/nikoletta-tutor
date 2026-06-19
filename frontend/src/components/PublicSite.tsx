@@ -522,7 +522,7 @@ export function PublicSite({
       setShowSSPLogin(false)
       setSspCode('')
       setSspError(false)
-      window.open((import.meta.env.BASE_URL + 'research.html').replace('//', '/'), '_blank')
+      window.location.href = (import.meta.env.BASE_URL + 'research.html').replace('//', '/')
     } else {
       setSspError(true)
     }
