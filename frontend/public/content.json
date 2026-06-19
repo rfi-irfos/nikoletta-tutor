@@ -282,8 +282,18 @@
   "certificates": {
     "title": "Certificates",
     "items": [
-      { "id": "cert1", "title": "Teaching Business English Certificate", "subtitle": "30 hours — internationally recognised", "file": "uploads/cert-business-english.pdf" },
-      { "id": "cert2", "title": "Level 3 Certificate", "subtitle": "Official qualification with transcript", "file": "uploads/cert-level3.pdf" }
+      {
+        "id": "cert1",
+        "title": "Teaching Business English Certificate",
+        "subtitle": "30 hours — internationally recognised",
+        "file": "uploads/cert-business-english.pdf"
+      },
+      {
+        "id": "cert2",
+        "title": "Level 3 Certificate",
+        "subtitle": "Official qualification with transcript",
+        "file": "uploads/cert-level3.pdf"
+      }
     ]
   },
   "about": {
@@ -310,6 +320,6 @@
     "badge": "Research Portal",
     "title": "The Silent Student Project",
     "sub": "Exploring the half of language learning nobody taught. If you are a language teacher and part of Nikoletta's early-access research, log in to access the reflection portal and your session data.",
-    "button": "Member login →"
+    "button": "login here →"
   }
 }
