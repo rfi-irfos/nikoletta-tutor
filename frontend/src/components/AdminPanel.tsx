@@ -165,9 +165,14 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     return 'edit'
   })
   const [adminMode, setAdminMode] = useState(false)
-  const [adminSection, setAdminSection] = useState<'reviews' | 'students' | 'inbox' | 'research'>('inbox')
+  const [adminSection, setAdminSection] = useState<'reviews' | 'students' | 'inbox' | 'research' | 'fragebogen'>('inbox')
   const [sspReflections, setSspReflections] = useState<SSPReflection[]>(() => loadSSP())
   const [sspExpanded, setSspExpanded] = useState<string | null>(null)
+  const [sspFormVersions, setSspFormVersions] = useState<{id:string,ts:string,label:string,notes:string}[]>(() => {
+    try { return JSON.parse(localStorage.getItem('ssp_form_versions') || '[]') } catch { return [] }
+  })
+  const [fragebogenLabel, setFragebogenLabel] = useState('')
+  const [fragebogenNotes, setFragebogenNotes] = useState('')
   const [pendingReviews, setPendingReviews] = useState<PendingReview[]>(loadPending)
   const [contactInbox, setContactInbox] = useState<ContactInboxItem[]>(loadContactInbox)
 
@@ -482,6 +487,11 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                 Forschung
                 {sspReflections.length > 0 && <span className="crm-badge gold">{sspReflections.length}</span>}
               </button>
+              <button className={`crm-nav-item ${adminSection === 'fragebogen' ? 'active' : ''}`} onClick={() => setAdminSection('fragebogen')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Fragebogen
+                <span className="crm-badge teal">{sspFormVersions.length > 0 ? `v${sspFormVersions.length}` : 'v1'}</span>
+              </button>
             </nav>
 
             <div className="crm-sidebar-stats">
@@ -512,13 +522,14 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
           <div className="crm-main">
             <div className="crm-topbar">
               <div className="crm-topbar-title">
-                {adminSection === 'inbox' ? 'Anfragen' : adminSection === 'students' ? 'Schüler' : adminSection === 'reviews' ? 'Reviews' : 'Forschung'}
+                {adminSection === 'inbox' ? 'Anfragen' : adminSection === 'students' ? 'Schüler' : adminSection === 'reviews' ? 'Reviews' : adminSection === 'fragebogen' ? 'Fragebogen' : 'Forschung'}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 {adminSection === 'inbox' && contactInbox.length > 0 && <span style={{ fontSize: 12, color: '#888' }}>{contactInbox.length} Nachricht{contactInbox.length !== 1 ? 'en' : ''}</span>}
                 {adminSection === 'students' && <span style={{ fontSize: 12, color: '#888' }}>{students.length} Schüler gesamt</span>}
                 {adminSection === 'reviews' && <span style={{ fontSize: 12, color: '#888' }}>{pendingReviews.length} ausstehend</span>}
                 {adminSection === 'research' && <span style={{ fontSize: 12, color: '#888' }}>{sspReflections.length} Einträge</span>}
+                {adminSection === 'fragebogen' && <span style={{ fontSize: 12, color: '#888' }}>{sspFormVersions.length} Version{sspFormVersions.length !== 1 ? 'en' : ''}</span>}
               </div>
             </div>
           <div className="crm-body">
@@ -914,6 +925,103 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                 )}
               </div>
             )}
+
+            {/* ── FRAGEBOGEN ───────────────────────────────────────── */}
+            {adminSection === 'fragebogen' && (() => {
+              const SSP_STEPS = [
+                { step: 1, title: 'Ein bisschen über dich', questions: ['Vorname oder Alias', 'Wie viele Jahre unterrichtest du Sprachen?', 'Welche Sprache(n) unterrichtest du?'] },
+                { step: 2, title: 'Der Unterrichtsrahmen', questions: ['Setting (Privat 1:1 / Schule 1:1 / Kleingruppe / Klasse / Online 1:1 / Online-Gruppe)', 'Altersgruppe der Schüler:innen'] },
+                { step: 3, title: 'Der Schüler / die Gruppe', questions: ['Beziehung zur Sprache (Mehrfachauswahl)', 'Gruppenfokus (bei Gruppen)', 'Warum hast du diesen Schüler/diese Gruppe gewählt?'] },
+                { step: 4, title: 'Was hast du ausprobiert?', questions: ['Methode 1: Schüler fragen wie er lernen möchte', 'Methode 2: Stunde um beiläufige Erwähnung aufbauen', 'Methode 3: Auf Durchbruch mit sichtbarer Begeisterung reagieren', 'Methode 4: Vorbereitetem Schwenk bei Motivationsverlust nutzen', 'Methode 5: Selbstsicherheit & Genauigkeit getrennt tracken'] },
+                { step: 5, title: 'Beobachtungen bewerten', questions: ['Selbstsicherheit (1–5)', 'Genauigkeit (1–5)', 'Sprachbeziehung (1–5)', 'Lehrer-Schüler-Vertrauen (1–5)', 'Nervensystem / Entspannung (1–5)'] },
+                { step: 6, title: 'Was ist passiert?', questions: ['Bemerkenswertester Moment', 'Was hat dich überrascht?', 'Was hat nicht funktioniert?', 'Basis- oder Folgestunde?', 'Stundenummer (bei Folgestunden)'] },
+              ]
+              const saveVersion = () => {
+                if (!fragebogenLabel.trim()) return
+                const newV = { id: Date.now().toString(), ts: new Date().toISOString(), label: fragebogenLabel.trim(), notes: fragebogenNotes.trim() }
+                const next = [...sspFormVersions, newV]
+                localStorage.setItem('ssp_form_versions', JSON.stringify(next))
+                setSspFormVersions(next)
+                setFragebogenLabel('')
+                setFragebogenNotes('')
+              }
+              return (
+                <div className="panel-products">
+                  {/* Active version info */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+                    <span style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.1em', textTransform: 'uppercase', color: '#B8975A' }}>Aktive Version</span>
+                    <span style={{ fontSize: 11, background: '#EDE4D8', color: '#3D4A40', padding: '3px 10px', borderRadius: 20, fontWeight: 600 }}>
+                      {sspFormVersions.length > 0 ? `v1.${sspFormVersions.length}` : 'v1.0'} — 6 Schritte, 5 Dimensionen
+                    </span>
+                  </div>
+
+                  {/* Step cards */}
+                  {SSP_STEPS.map(s => (
+                    <div key={s.step} style={{ background: '#fff', borderRadius: 10, border: '1.5px solid #EDE4D8', marginBottom: 10, overflow: 'hidden' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '11px 16px', borderBottom: '1px solid #F3EDE5' }}>
+                        <span style={{ width: 24, height: 24, borderRadius: '50%', background: '#2C3830', color: '#fff', fontSize: 10, fontWeight: 800, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>{s.step}</span>
+                        <span style={{ fontWeight: 700, fontSize: 13, color: '#2C3830' }}>{s.title}</span>
+                        <span style={{ marginLeft: 'auto', fontSize: 10, color: '#aaa' }}>{s.questions.length} Fragen</span>
+                      </div>
+                      <div style={{ padding: '10px 16px 12px' }}>
+                        {s.questions.map((q, i) => (
+                          <div key={i} style={{ fontSize: 12, color: '#555', padding: '4px 0', borderBottom: i < s.questions.length - 1 ? '1px solid #F5F1EC' : 'none', display: 'flex', gap: 8 }}>
+                            <span style={{ color: '#B8975A', fontWeight: 600, fontSize: 11, flexShrink: 0 }}>{i + 1}.</span>
+                            {q}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Create version */}
+                  <div style={{ marginTop: 24, background: 'linear-gradient(135deg,#2C3830,#3D4A40)', borderRadius: 12, padding: '18px 20px' }}>
+                    <div style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: '#B8975A', marginBottom: 14, fontWeight: 700 }}>Version erstellen</div>
+                    <div style={{ marginBottom: 10 }}>
+                      <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 5 }}>Versionsbezeichnung</div>
+                      <input
+                        value={fragebogenLabel}
+                        onChange={e => setFragebogenLabel(e.target.value)}
+                        placeholder="z.B. v1.1 — Frage 3 umformuliert"
+                        style={{ width: '100%', background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', borderRadius: 7, padding: '8px 12px', fontSize: 13, color: '#fff', fontFamily: 'inherit' }}
+                      />
+                    </div>
+                    <div style={{ marginBottom: 14 }}>
+                      <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', marginBottom: 5 }}>Was hat sich geändert?</div>
+                      <textarea
+                        value={fragebogenNotes}
+                        onChange={e => setFragebogenNotes(e.target.value)}
+                        placeholder="Beschreibe die Änderungen dieser Version..."
+                        rows={3}
+                        style={{ width: '100%', background: 'rgba(255,255,255,.1)', border: '1px solid rgba(255,255,255,.15)', borderRadius: 7, padding: '8px 12px', fontSize: 13, color: '#fff', fontFamily: 'inherit', resize: 'vertical' }}
+                      />
+                    </div>
+                    <button
+                      onClick={saveVersion}
+                      disabled={!fragebogenLabel.trim()}
+                      style={{ background: fragebogenLabel.trim() ? '#B8975A' : 'rgba(184,151,90,.3)', color: '#fff', border: 'none', borderRadius: 8, padding: '9px 20px', fontSize: 13, fontWeight: 700, cursor: fragebogenLabel.trim() ? 'pointer' : 'not-allowed', fontFamily: 'inherit' }}
+                    >
+                      Version speichern (append-only)
+                    </button>
+                  </div>
+
+                  {/* Version history */}
+                  {sspFormVersions.length > 0 && (
+                    <div style={{ marginTop: 20 }}>
+                      <div style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: '#888', marginBottom: 12, fontWeight: 700 }}>Versionshistorie ({sspFormVersions.length})</div>
+                      {[...sspFormVersions].reverse().map((v, i) => (
+                        <div key={v.id} style={{ background: '#fff', borderRadius: 8, border: '1.5px solid #EDE4D8', padding: '12px 16px', marginBottom: 8, position: 'relative' }}>
+                          {i === 0 && <span style={{ position: 'absolute', top: 10, right: 12, fontSize: 9, background: '#3D4A40', color: '#fff', padding: '2px 8px', borderRadius: 10, fontWeight: 700, letterSpacing: '.06em', textTransform: 'uppercase' }}>Neueste</span>}
+                          <div style={{ fontWeight: 700, fontSize: 13, color: '#2C3830', marginBottom: 4 }}>{v.label}</div>
+                          {v.notes && <div style={{ fontSize: 12, color: '#666', lineHeight: 1.5, marginBottom: 6 }}>{v.notes}</div>}
+                          <div style={{ fontSize: 10, color: '#aaa' }}>{new Date(v.ts).toLocaleDateString('de-AT', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )
+            })()}
 
           </div>
           </div>
