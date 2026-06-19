@@ -1497,3 +1497,14 @@ button { cursor: pointer; font-family: inherit; }
 .dynamic-page-body a { color: var(--primary, #0099CC); }
 .dynamic-page-body ul, .dynamic-page-body ol { padding-left: 22px; margin-bottom: 14px; }
 .dynamic-page-body li { margin-bottom: 6px; }
+
+/* ── Builder: research.html field groups ─────────────────────────────────── */
+.rs-group { border: 1px solid var(--panel-border, #e0e0e0); border-radius: 8px; margin-bottom: 8px; overflow: hidden; }
+.rs-group > summary { padding: 9px 12px; background: var(--panel-bg, #f5f5f5); font-size: 12px; font-weight: 700; color: var(--text, #333); cursor: pointer; user-select: none; list-style: none; }
+.rs-group > summary::-webkit-details-marker { display: none; }
+.rs-group > summary::before { content: '▸ '; color: var(--primary, #0099CC); }
+.rs-group[open] > summary::before { content: '▾ '; }
+.rs-group[open] > summary { border-bottom: 1px solid var(--panel-border, #e0e0e0); }
+.rs-group .panel-field { padding: 8px 12px 0; }
+.rs-group .panel-field:last-child { padding-bottom: 10px; }
+.rs-group .panel-field label { font-size: 11px; color: var(--text-soft, #777); font-family: monospace; }

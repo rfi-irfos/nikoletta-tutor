@@ -125,6 +125,10 @@ export interface SiteContent {
     sub?: string
     button?: string
   }
+  research?: {
+    form?: Record<string, string>
+    landing?: Record<string, string>
+  }
   footer: {
     brand: string
     tagline: string

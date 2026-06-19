@@ -142,6 +142,40 @@ const DEVICE_OPTS: { id: DeviceView; label: string; icon: React.ReactNode }[] = 
   { id: 'mobile', label: 'Mobil', icon: <IconMobile /> },
 ]
 
+// Editable text of the standalone research.html project page.
+// Keys match the data-rk attributes in frontend/public/research.html.
+const RESEARCH_LANDING_GROUPS: Array<{ title: string; keys: Array<[string, string]> }> = [
+  { title: 'Hero', keys: [
+    ['heroLabel', 'Label (klein)'], ['heroTitle', 'Überschrift'], ['heroSub', 'Untertitel'],
+    ['heroBy', 'Zeile darunter'], ['eaBadge', 'Early-Access Badge'], ['eaText', 'Early-Access Text'],
+  ] },
+  { title: 'Worum es geht', keys: [
+    ['c1eyebrow', 'Eyebrow'], ['c1title', 'Überschrift'], ['c1p1', 'Absatz 1'], ['c1p2', 'Absatz 2'], ['c1p3', 'Absatz 3'],
+    ['c1getH', '„What you get" Titel'], ['c1getList', '„What you get" Liste (HTML)'],
+    ['c1askH', '„What I ask" Titel'], ['c1askList', '„What I ask" Liste (HTML)'],
+  ] },
+  { title: 'Die Methode', keys: [
+    ['c2eyebrow', 'Eyebrow'], ['c2title', 'Überschrift'], ['c2coreLbl', 'Kernidee Label'], ['c2coreP', 'Kernidee Text'],
+    ['c2p1h', 'Säule 1 Titel'], ['c2p1t', 'Säule 1 Text'], ['c2p2h', 'Säule 2 Titel'], ['c2p2t', 'Säule 2 Text'],
+    ['c2p3h', 'Säule 3 Titel'], ['c2p3t', 'Säule 3 Text'], ['c2p4h', 'Säule 4 Titel'], ['c2p4t', 'Säule 4 Text'],
+    ['c2sciLbl', '„Grounded in" Label'], ['c2sci', 'Theorie-Pills (HTML)'],
+  ] },
+  { title: 'Five things to try', keys: [
+    ['c3eyebrow', 'Eyebrow'], ['c3title', 'Überschrift'], ['c3intro', 'Intro'],
+    ['p1title', 'Prinzip 1 Titel'], ['p1intro', 'Prinzip 1 Intro'], ['p1SoloDesc', 'Prinzip 1 Einzel-Beschr.'], ['p1GroupDesc', 'Prinzip 1 Gruppen-Beschr.'],
+    ['p2title', 'Prinzip 2 Titel'], ['p2intro', 'Prinzip 2 Intro'], ['p2SoloDesc', 'Prinzip 2 Einzel-Beschr.'], ['p2GroupDesc', 'Prinzip 2 Gruppen-Beschr.'],
+    ['p3title', 'Prinzip 3 Titel'], ['p3intro', 'Prinzip 3 Intro'], ['p3SoloDesc', 'Prinzip 3 Einzel-Beschr.'], ['p3GroupDesc', 'Prinzip 3 Gruppen-Beschr.'],
+    ['p4title', 'Prinzip 4 Titel'], ['p4intro', 'Prinzip 4 Intro'], ['p4SoloDesc', 'Prinzip 4 Einzel-Beschr.'], ['p4GroupDesc', 'Prinzip 4 Gruppen-Beschr.'],
+    ['p5title', 'Prinzip 5 Titel'], ['p5intro', 'Prinzip 5 Intro'], ['p5SoloDesc', 'Prinzip 5 Einzel-Beschr.'], ['p5GroupDesc', 'Prinzip 5 Gruppen-Beschr.'],
+  ] },
+  { title: 'Feedback', keys: [
+    ['c4eyebrow', 'Eyebrow'], ['c4title', 'Überschrift'], ['c4p', 'Text'], ['c4list', 'Fragen-Liste (HTML)'],
+  ] },
+  { title: 'Call to Action', keys: [
+    ['ctaTitle', 'Überschrift'], ['ctaP', 'Text'], ['ctaBtn', 'Button'], ['ctaSub', 'Untertext'], ['ctaFoot', 'Fußnote'],
+  ] },
+]
+
 export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onLogout }: Props) {
   const [draft, setDraft] = useState<SiteContent>(content)
   const [activeTab, setActiveTab] = useState<PanelTab>('products')
@@ -328,6 +362,16 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
       }
       cur[keys[keys.length - 1]] = value
       return next as unknown as SiteContent
+    })
+  }
+
+  // Safe nested writer for research.* (creates intermediate objects if absent)
+  const updateResearch = (group: 'form' | 'landing', key: string, value: string) => {
+    setDraft(prev => {
+      const next = structuredClone(prev)
+      next.research = next.research ?? {}
+      next.research[group] = { ...(next.research[group] ?? {}), [key]: value }
+      return next
     })
   }
 
@@ -1545,6 +1589,46 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                       Teilnehmer-Code: <strong style={{ color: '#3D4A40' }}>ssp2026</strong><br />
                       Reflexionen im Verwaltung → Forschung-Tab ansehen.
                     </div>
+                  </PanelSection>
+
+                  <PanelSection title="Forschungsseite (research.html)">
+                    <div style={{ marginBottom: 10, padding: '10px 12px', background: '#EEF3EE', borderRadius: 8, fontSize: 12, color: '#3D4A40', lineHeight: 1.5 }}>
+                      Alle Texte der vollständigen Projektseite. Sprache oben umschalten (EN / DE / HU), um die jeweilige Version zu bearbeiten. Leere Felder behalten den Originaltext.
+                    </div>
+                    {RESEARCH_LANDING_GROUPS.map(g => (
+                      <details key={g.title} className="rs-group">
+                        <summary>{g.title}</summary>
+                        {g.keys.map(([k, label]) => {
+                          const val = draft.research?.landing?.[k] ?? ''
+                          return (
+                            <Field key={k} label={label}>
+                              <textarea
+                                rows={Math.min(6, Math.max(1, Math.ceil((val.length || 1) / 56)))}
+                                value={val}
+                                onChange={e => updateResearch('landing', k, e.target.value)}
+                                style={{ resize: 'vertical', width: '100%' }}
+                              />
+                            </Field>
+                          )
+                        })}
+                      </details>
+                    ))}
+                    <details className="rs-group">
+                      <summary>Formular · alle Felder ({Object.keys(draft.research?.form ?? {}).length})</summary>
+                      {Object.keys(draft.research?.form ?? {}).map(k => {
+                        const val = draft.research?.form?.[k] ?? ''
+                        return (
+                          <Field key={k} label={k}>
+                            <textarea
+                              rows={Math.min(5, Math.max(1, Math.ceil((val.length || 1) / 56)))}
+                              value={val}
+                              onChange={e => updateResearch('form', k, e.target.value)}
+                              style={{ resize: 'vertical', width: '100%' }}
+                            />
+                          </Field>
+                        )
+                      })}
+                    </details>
                   </PanelSection>
                 </>
               )}
