@@ -4,8 +4,13 @@ import type { User } from '../hooks/useAuth'
 import { PublicSite } from './PublicSite'
 import { useStudents } from '../lib/useStudents'
 import { useTestimonials } from '../lib/useTestimonials'
+import { useMeetings } from '../lib/useMeetings'
+import { useLeads } from '../lib/useLeads'
 import type { Student } from '../types/students'
 import type { Testimonial } from '../types/testimonials'
+import type { Meeting } from '../types/meetings'
+import type { Lead, LeadStage } from '../types/leads'
+import { LEAD_STAGES } from '../types/leads'
 import { useLang } from '../hooks/useLang'
 import { ghTraffic } from '../lib/github'
 
@@ -187,6 +192,14 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   const [editingStudent, setEditingStudent] = useState<Student | null>(null)
   const [newStudentForm, setNewStudentForm] = useState(false)
   const [studentDraft, setStudentDraft] = useState<Partial<Student>>({})
+  const { meetings, saving: meetingsSaving, saveError: meetingsSaveError, add: addMeeting, update: updateMeeting, remove: removeMeeting } = useMeetings()
+  const [editingMeeting, setEditingMeeting] = useState<Meeting | null>(null)
+  const [meetingDraft, setMeetingDraft] = useState<Partial<Meeting> | null>(null)
+  const [bookingLeadId, setBookingLeadId] = useState<string | null>(null)
+  const [calMonth, setCalMonth] = useState(() => { const d = new Date(); return new Date(d.getFullYear(), d.getMonth(), 1) })
+  const { leads, saveError: leadsSaveError, add: addLead, update: updateLead, remove: removeLead } = useLeads()
+  const [editingLead, setEditingLead] = useState<Lead | null>(null)
+  const [leadDraft, setLeadDraft] = useState<Partial<Lead> | null>(null)
   const { lang, setLang } = useLang()
 
   // When the editing language switches, the parent refetches that language's
@@ -208,7 +221,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     return 'edit'
   })
   const [adminMode, setAdminMode] = useState(false)
-  const [adminSection, setAdminSection] = useState<'reviews' | 'students' | 'inbox' | 'research' | 'fragebogen' | 'analytics'>('inbox')
+  const [adminSection, setAdminSection] = useState<'reviews' | 'students' | 'inbox' | 'research' | 'fragebogen' | 'analytics' | 'meetings' | 'pipeline'>('inbox')
   const [ghTrafficData, setGhTrafficData] = useState<GhTrafficData | null>(null)
   const [ghTrafficLoading, setGhTrafficLoading] = useState(false)
 
@@ -373,6 +386,62 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
       next.research[group] = { ...(next.research[group] ?? {}), [key]: value }
       return next
     })
+  }
+
+  // ── Funnel actions: inquiry → lead → booked lesson → invoice → student ──
+  const todayISO = () => new Date().toISOString().slice(0, 10)
+
+  // Pull a contact-inbox inquiry into the pipeline at the "Anfrage" stage.
+  const convertInboxToLead = (item: ContactInboxItem) => {
+    addLead({
+      name: item.name, email: item.email, phone: item.phone ?? '',
+      source: 'Website', stage: 'anfrage', value: 0,
+      notes: item.message ?? '',
+    })
+    removeInboxItem(item.id)
+    setAdminSection('pipeline')
+  }
+
+  // Book a lesson for a lead: opens a prefilled meeting form; on save it links
+  // the meeting to the lead and advances the lead to "Gebucht".
+  const bookLessonForLead = (lead: Lead) => {
+    setAdminSection('meetings')
+    setEditingMeeting(null)
+    setBookingLeadId(lead.id)
+    setMeetingDraft({
+      title: `Stunde · ${lead.name}`, person: lead.name,
+      date: todayISO(), time: '16:00', duration: 60, type: 'lesson',
+      location: 'Online', notes: '', status: 'scheduled',
+      studentId: lead.studentId,
+    })
+  }
+
+  // Persist the meeting form (new or edit); if opened to book a lead, advance it.
+  const saveMeetingDraft = () => {
+    if (!meetingDraft?.title) return
+    if (editingMeeting) {
+      updateMeeting(editingMeeting.id, { ...meetingDraft })
+      setEditingMeeting(null); setMeetingDraft(null); return
+    }
+    addMeeting({
+      title: meetingDraft.title, person: meetingDraft.person ?? '',
+      studentId: meetingDraft.studentId, date: meetingDraft.date ?? todayISO(),
+      time: meetingDraft.time ?? '16:00', duration: meetingDraft.duration ?? 60,
+      type: (meetingDraft.type as Meeting['type']) ?? 'lesson',
+      location: meetingDraft.location ?? '', notes: meetingDraft.notes ?? '',
+      status: (meetingDraft.status as Meeting['status']) ?? 'scheduled',
+    })
+    if (bookingLeadId) { updateLead(bookingLeadId, { stage: 'gebucht' }); setBookingLeadId(null) }
+    setMeetingDraft(null)
+  }
+
+  // Convert a lead into a student (after the relationship is established).
+  const leadToStudent = (lead: Lead) => {
+    addStudent({
+      name: lead.name, language: 'Englisch', level: 'B1',
+      status: 'active', sessions: 0, goal: '', notes: lead.notes,
+    } as Omit<Student, 'id' | 'since'>)
+    updateLead(lead.id, { stage: 'abgeschlossen' })
   }
 
   const handleSave = async () => {
@@ -615,10 +684,20 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                 Anfragen
                 {contactInbox.length > 0 && <span className="crm-badge red">{contactInbox.length}</span>}
               </button>
+              <button className={`crm-nav-item ${adminSection === 'pipeline' ? 'active' : ''}`} onClick={() => setAdminSection('pipeline')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+                Pipeline
+                {leads.filter(l => l.stage !== 'abgeschlossen' && l.stage !== 'verloren').length > 0 && <span className="crm-badge gold">{leads.filter(l => l.stage !== 'abgeschlossen' && l.stage !== 'verloren').length}</span>}
+              </button>
               <button className={`crm-nav-item ${adminSection === 'students' ? 'active' : ''}`} onClick={() => setAdminSection('students')}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                 Schüler
                 {students.filter(s => s.status === 'active').length > 0 && <span className="crm-badge teal">{students.filter(s => s.status === 'active').length}</span>}
+              </button>
+              <button className={`crm-nav-item ${adminSection === 'meetings' ? 'active' : ''}`} onClick={() => setAdminSection('meetings')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                Termine
+                {meetings.filter(m => m.status === 'scheduled' && m.date >= new Date().toISOString().slice(0, 10)).length > 0 && <span className="crm-badge teal">{meetings.filter(m => m.status === 'scheduled' && m.date >= new Date().toISOString().slice(0, 10)).length}</span>}
               </button>
               <button className={`crm-nav-item ${adminSection === 'reviews' ? 'active' : ''}`} onClick={() => setAdminSection('reviews')}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
@@ -669,11 +748,13 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
           <div className="crm-main">
             <div className="crm-topbar">
               <div className="crm-topbar-title">
-                {adminSection === 'inbox' ? 'Anfragen' : adminSection === 'students' ? 'Schüler' : adminSection === 'reviews' ? 'Reviews' : adminSection === 'fragebogen' ? 'Fragebogen' : adminSection === 'analytics' ? 'Analytics' : 'Forschung'}
+                {adminSection === 'inbox' ? 'Anfragen' : adminSection === 'pipeline' ? 'Pipeline' : adminSection === 'students' ? 'Schüler' : adminSection === 'meetings' ? 'Termine' : adminSection === 'reviews' ? 'Reviews' : adminSection === 'fragebogen' ? 'Fragebogen' : adminSection === 'analytics' ? 'Analytics' : 'Forschung'}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 {adminSection === 'inbox' && contactInbox.length > 0 && <span style={{ fontSize: 12, color: '#888' }}>{contactInbox.length} Nachricht{contactInbox.length !== 1 ? 'en' : ''}</span>}
+                {adminSection === 'pipeline' && <span style={{ fontSize: 12, color: '#888' }}>{leads.filter(l => l.stage !== 'abgeschlossen' && l.stage !== 'verloren').length} aktiv</span>}
                 {adminSection === 'students' && <span style={{ fontSize: 12, color: '#888' }}>{students.length} Schüler gesamt</span>}
+                {adminSection === 'meetings' && <span style={{ fontSize: 12, color: '#888' }}>{meetings.filter(m => m.status === 'scheduled' && m.date >= new Date().toISOString().slice(0, 10)).length} anstehend</span>}
                 {adminSection === 'reviews' && <span style={{ fontSize: 12, color: '#888' }}>{pendingReviews.length} ausstehend</span>}
                 {adminSection === 'research' && <span style={{ fontSize: 12, color: '#888' }}>{sspReflections.length} Einträge</span>}
                 {adminSection === 'fragebogen' && <span style={{ fontSize: 12, color: '#888' }}>{sspFormVersions.length} Version{sspFormVersions.length !== 1 ? 'en' : ''}</span>}
@@ -704,6 +785,10 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                         style={{ background: '#0099CC', color: '#fff', borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 600, textDecoration: 'none', display: 'inline-block' }}>
                         Antworten
                       </a>
+                      <button onClick={() => convertInboxToLead(item)}
+                        style={{ background: '#B8975A', color: '#fff', border: 'none', borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
+                        → Pipeline
+                      </button>
                       <button onClick={() => removeInboxItem(item.id)}
                         style={{ background: 'none', border: '1px solid #bbb', color: '#666', borderRadius: 6, padding: '5px 14px', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>
                         Erledigt
@@ -932,6 +1017,201 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                 ))}
               </div>
             )}
+
+            {/* ── TERMINE (CALENDAR) ─────────────────────────────────────── */}
+            {adminSection === 'meetings' && (() => {
+              const y = calMonth.getFullYear(), mo = calMonth.getMonth()
+              const monthName = calMonth.toLocaleDateString('de-AT', { month: 'long', year: 'numeric' })
+              const firstDow = (new Date(y, mo, 1).getDay() + 6) % 7 // Mon=0
+              const daysInMonth = new Date(y, mo + 1, 0).getDate()
+              const iso = (d: number) => `${y}-${String(mo + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`
+              const today = new Date().toISOString().slice(0, 10)
+              const typeColor: Record<string, string> = { trial: '#0099CC', lesson: '#3A7A3A', meeting: '#7A5CC4', call: '#B8975A' }
+              const typeLabel: Record<string, string> = { trial: 'Probe', lesson: 'Stunde', meeting: 'Meeting', call: 'Anruf' }
+              const cells: (number | null)[] = []
+              for (let i = 0; i < firstDow; i++) cells.push(null)
+              for (let d = 1; d <= daysInMonth; d++) cells.push(d)
+              const upcoming = [...meetings].filter(m => m.status !== 'cancelled' && m.date >= today).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time))
+              const fst: React.CSSProperties = { width: '100%', borderRadius: 6, border: '1px solid var(--panel-border, #e0e0e0)', padding: '6px 8px', fontSize: 12 }
+              const setD = (patch: Partial<Meeting>) => setMeetingDraft(d => ({ ...(d ?? {}), ...patch }))
+              return (
+                <div className="crm-cal-wrap">
+                  {meetingsSaveError && <div style={{ color: '#c53030', fontSize: 12, fontWeight: 600, padding: '8px 12px', background: '#fff5f5', borderRadius: 8, border: '1px solid #feb2b2', marginBottom: 12 }}>Fehler beim Speichern. Bitte neu laden und nochmal versuchen.</div>}
+
+                  <div className="crm-cal-toolbar">
+                    <div className="crm-cal-nav">
+                      <button onClick={() => setCalMonth(new Date(y, mo - 1, 1))} aria-label="Vorheriger Monat">‹</button>
+                      <span className="crm-cal-month">{monthName}</span>
+                      <button onClick={() => setCalMonth(new Date(y, mo + 1, 1))} aria-label="Nächster Monat">›</button>
+                      <button className="crm-cal-today" onClick={() => { const t = new Date(); setCalMonth(new Date(t.getFullYear(), t.getMonth(), 1)) }}>Heute</button>
+                    </div>
+                    <button className="panel-add-btn" onClick={() => { setEditingMeeting(null); setBookingLeadId(null); setMeetingDraft({ title: '', person: '', date: today, time: '16:00', duration: 60, type: 'lesson', location: 'Online', notes: '', status: 'scheduled' }) }}>+ Termin</button>
+                  </div>
+
+                  {meetingDraft && (
+                    <div className="crm-meeting-form">
+                      <div style={{ fontWeight: 700, marginBottom: 10, fontSize: 13 }}>{editingMeeting ? 'Termin bearbeiten' : 'Neuer Termin'}</div>
+                      <div style={{ marginBottom: 8 }}><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Titel</label><input value={meetingDraft.title ?? ''} onChange={e => setD({ title: e.target.value })} style={fst} placeholder="z.B. Probestunde · Maria" /></div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Person</label><input list="cal-students" value={meetingDraft.person ?? ''} onChange={e => setD({ person: e.target.value })} style={fst} placeholder="Name" /><datalist id="cal-students">{students.map(s => <option key={s.id} value={s.name} />)}</datalist></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Typ</label><select value={meetingDraft.type ?? 'lesson'} onChange={e => setD({ type: e.target.value as Meeting['type'] })} style={fst}><option value="trial">Probestunde</option><option value="lesson">Stunde</option><option value="meeting">Meeting</option><option value="call">Anruf</option></select></div>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8, marginBottom: 8 }}>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Datum</label><input type="date" value={meetingDraft.date ?? today} onChange={e => setD({ date: e.target.value })} style={fst} /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Uhrzeit</label><input type="time" value={meetingDraft.time ?? '16:00'} onChange={e => setD({ time: e.target.value })} style={fst} /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Dauer (Min)</label><input type="number" min={15} step={15} value={meetingDraft.duration ?? 60} onChange={e => setD({ duration: parseInt(e.target.value) || 60 })} style={fst} /></div>
+                      </div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Ort / Link</label><input value={meetingDraft.location ?? ''} onChange={e => setD({ location: e.target.value })} style={fst} placeholder="Online, Adresse, Zoom-Link…" /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Status</label><select value={meetingDraft.status ?? 'scheduled'} onChange={e => setD({ status: e.target.value as Meeting['status'] })} style={fst}><option value="scheduled">Geplant</option><option value="done">Erledigt</option><option value="cancelled">Abgesagt</option></select></div>
+                      </div>
+                      <div style={{ marginBottom: 8 }}><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Notizen</label><textarea rows={2} value={meetingDraft.notes ?? ''} onChange={e => setD({ notes: e.target.value })} style={{ ...fst, resize: 'vertical' }} /></div>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <button className="panel-add-btn" disabled={!meetingDraft.title || meetingsSaving} onClick={saveMeetingDraft}>{meetingsSaving ? 'Speichern…' : 'Speichern'}</button>
+                        <button className="panel-back-btn" onClick={() => { setMeetingDraft(null); setEditingMeeting(null); setBookingLeadId(null) }}>Abbrechen</button>
+                        {editingMeeting && <button className="panel-delete-btn" style={{ marginLeft: 'auto' }} onClick={() => { if (confirm('Termin löschen?')) { removeMeeting(editingMeeting.id); setMeetingDraft(null); setEditingMeeting(null) } }}>Löschen</button>}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="crm-cal-grid">
+                    {['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map(d => <div key={d} className="crm-cal-dow">{d}</div>)}
+                    {cells.map((d, i) => {
+                      if (d === null) return <div key={`b${i}`} className="crm-cal-cell empty" />
+                      const dayIso = iso(d)
+                      const dayMeetings = meetings.filter(m => m.date === dayIso && m.status !== 'cancelled')
+                      return (
+                        <div key={dayIso} className={`crm-cal-cell${dayIso === today ? ' today' : ''}`} onClick={() => { setEditingMeeting(null); setBookingLeadId(null); setMeetingDraft({ title: '', person: '', date: dayIso, time: '16:00', duration: 60, type: 'lesson', location: 'Online', notes: '', status: 'scheduled' }) }}>
+                          <div className="crm-cal-daynum">{d}</div>
+                          {dayMeetings.slice(0, 3).map(m => (
+                            <div key={m.id} className="crm-cal-chip" style={{ background: typeColor[m.type] }} title={`${m.time} ${m.title}`} onClick={e => { e.stopPropagation(); setEditingMeeting(m); setMeetingDraft({ ...m }) }}>{m.time} {m.person || m.title}</div>
+                          ))}
+                          {dayMeetings.length > 3 && <div className="crm-cal-more">+{dayMeetings.length - 3}</div>}
+                        </div>
+                      )
+                    })}
+                  </div>
+
+                  <div className="crm-cal-upcoming">
+                    <div className="crm-cal-upcoming-head">Anstehend</div>
+                    {upcoming.length === 0 && <div style={{ color: 'var(--panel-muted, #aaa)', fontSize: 12, padding: '12px 0' }}>Keine anstehenden Termine.</div>}
+                    {upcoming.map(m => (
+                      <div key={m.id} className="crm-up-row" onClick={() => { setEditingMeeting(m); setMeetingDraft({ ...m }) }}>
+                        <span className="crm-up-dot" style={{ background: typeColor[m.type] }} />
+                        <span className="crm-up-date">{new Date(m.date + 'T00:00').toLocaleDateString('de-AT', { weekday: 'short', day: '2-digit', month: '2-digit' })} · {m.time}</span>
+                        <span className="crm-up-title">{m.title}</span>
+                        <span className="crm-up-type" style={{ color: typeColor[m.type] }}>{typeLabel[m.type]}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
+
+            {/* ── PIPELINE (FUNNEL) ──────────────────────────────────────── */}
+            {adminSection === 'pipeline' && (() => {
+              const active = leads.filter(l => l.stage !== 'abgeschlossen' && l.stage !== 'verloren')
+              const expected = active.reduce((a, l) => a + (l.value || 0), 0)
+              const invoiced = leads.filter(l => l.invoice).reduce((a, l) => a + (l.invoice?.amount || 0), 0)
+              const paidSum = leads.filter(l => l.invoice?.paid).reduce((a, l) => a + (l.invoice?.amount || 0), 0)
+              const eur = (n: number) => '€' + n.toLocaleString('de-AT')
+              const fst: React.CSSProperties = { width: '100%', borderRadius: 6, border: '1px solid var(--panel-border, #e0e0e0)', padding: '6px 8px', fontSize: 12 }
+              const setL = (patch: Partial<Lead>) => setLeadDraft(d => ({ ...(d ?? {}), ...patch }))
+              const setE = (patch: Partial<Lead>) => setEditingLead(d => d ? { ...d, ...patch } : d)
+              const nextInvoiceNo = () => `R-${new Date().getFullYear()}-${String(leads.filter(l => l.invoice).length + 1).padStart(3, '0')}`
+              const sendInvoice = (l: Lead) => updateLead(l.id, { stage: 'rechnung', invoice: { number: nextInvoiceNo(), amount: l.value || 0, sentDate: todayISO(), paid: false } })
+              return (
+                <div className="crm-funnel">
+                  {leadsSaveError && <div style={{ color: '#c53030', fontSize: 12, fontWeight: 600, padding: '8px 12px', background: '#fff5f5', borderRadius: 8, border: '1px solid #feb2b2', marginBottom: 12 }}>Fehler beim Speichern. Bitte neu laden und nochmal versuchen.</div>}
+
+                  <div className="crm-funnel-stats">
+                    <div className="crm-fstat"><span className="crm-fstat-num">{active.length}</span><span className="crm-fstat-lbl">Aktive Leads</span></div>
+                    <div className="crm-fstat"><span className="crm-fstat-num">{eur(expected)}</span><span className="crm-fstat-lbl">Erwartet</span></div>
+                    <div className="crm-fstat"><span className="crm-fstat-num">{eur(invoiced)}</span><span className="crm-fstat-lbl">Berechnet</span></div>
+                    <div className="crm-fstat"><span className="crm-fstat-num" style={{ color: '#3A7A3A' }}>{eur(paidSum)}</span><span className="crm-fstat-lbl">Bezahlt</span></div>
+                  </div>
+
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
+                    <button className="panel-add-btn" onClick={() => { setEditingLead(null); setLeadDraft({ name: '', email: '', phone: '', source: 'Website', stage: 'anfrage', value: 0, notes: '' }) }}>+ Lead</button>
+                  </div>
+
+                  {leadDraft && (
+                    <div className="crm-meeting-form">
+                      <div style={{ fontWeight: 700, marginBottom: 10, fontSize: 13 }}>Neuer Lead</div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Name</label><input value={leadDraft.name ?? ''} onChange={e => setL({ name: e.target.value })} style={fst} /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Quelle</label><input value={leadDraft.source ?? ''} onChange={e => setL({ source: e.target.value })} style={fst} placeholder="Website, Empfehlung…" /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>E-Mail</label><input value={leadDraft.email ?? ''} onChange={e => setL({ email: e.target.value })} style={fst} /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Telefon</label><input value={leadDraft.phone ?? ''} onChange={e => setL({ phone: e.target.value })} style={fst} /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Wert (€)</label><input type="number" min={0} value={leadDraft.value ?? 0} onChange={e => setL({ value: parseInt(e.target.value) || 0 })} style={fst} /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Stufe</label><select value={leadDraft.stage ?? 'anfrage'} onChange={e => setL({ stage: e.target.value as LeadStage })} style={fst}>{LEAD_STAGES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}</select></div>
+                      </div>
+                      <div style={{ marginBottom: 8 }}><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Notizen</label><textarea rows={2} value={leadDraft.notes ?? ''} onChange={e => setL({ notes: e.target.value })} style={{ ...fst, resize: 'vertical' }} /></div>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <button className="panel-add-btn" disabled={!leadDraft.name} onClick={() => { addLead({ name: leadDraft.name ?? '', email: leadDraft.email ?? '', phone: leadDraft.phone ?? '', source: leadDraft.source ?? 'Website', stage: (leadDraft.stage as LeadStage) ?? 'anfrage', value: leadDraft.value ?? 0, notes: leadDraft.notes ?? '' }); setLeadDraft(null) }}>Speichern</button>
+                        <button className="panel-back-btn" onClick={() => setLeadDraft(null)}>Abbrechen</button>
+                      </div>
+                    </div>
+                  )}
+
+                  {editingLead && (
+                    <div className="crm-meeting-form">
+                      <div style={{ fontWeight: 700, marginBottom: 10, fontSize: 13 }}>Lead bearbeiten: {editingLead.name}</div>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8 }}>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Name</label><input value={editingLead.name} onChange={e => setE({ name: e.target.value })} style={fst} /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Quelle</label><input value={editingLead.source} onChange={e => setE({ source: e.target.value })} style={fst} /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>E-Mail</label><input value={editingLead.email} onChange={e => setE({ email: e.target.value })} style={fst} /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Telefon</label><input value={editingLead.phone} onChange={e => setE({ phone: e.target.value })} style={fst} /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Wert (€)</label><input type="number" min={0} value={editingLead.value} onChange={e => setE({ value: parseInt(e.target.value) || 0 })} style={fst} /></div>
+                        <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Stufe</label><select value={editingLead.stage} onChange={e => setE({ stage: e.target.value as LeadStage })} style={fst}>{LEAD_STAGES.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}</select></div>
+                      </div>
+                      {editingLead.invoice && (
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 8, padding: '8px 10px', background: 'var(--panel-surface,#f8f8f8)', borderRadius: 8 }}>
+                          <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Rechnungs-Nr.</label><input value={editingLead.invoice.number} onChange={e => setE({ invoice: { ...editingLead.invoice!, number: e.target.value } })} style={fst} /></div>
+                          <div><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Betrag (€)</label><input type="number" value={editingLead.invoice.amount} onChange={e => setE({ invoice: { ...editingLead.invoice!, amount: parseInt(e.target.value) || 0 } })} style={fst} /></div>
+                        </div>
+                      )}
+                      <div style={{ marginBottom: 8 }}><label style={{ display: 'block', fontSize: 11, fontWeight: 600, marginBottom: 3 }}>Notizen</label><textarea rows={2} value={editingLead.notes} onChange={e => setE({ notes: e.target.value })} style={{ ...fst, resize: 'vertical' }} /></div>
+                      <div style={{ display: 'flex', gap: 8 }}>
+                        <button className="panel-add-btn" onClick={() => { updateLead(editingLead.id, editingLead); setEditingLead(null) }}>Speichern</button>
+                        <button className="panel-back-btn" onClick={() => setEditingLead(null)}>Abbrechen</button>
+                        <button className="panel-delete-btn" style={{ marginLeft: 'auto' }} onClick={() => { if (confirm(`Lead ${editingLead.name} löschen?`)) { removeLead(editingLead.id); setEditingLead(null) } }}>Löschen</button>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="crm-funnel-board">
+                    {LEAD_STAGES.map(stage => {
+                      const col = leads.filter(l => l.stage === stage.id)
+                      return (
+                        <div key={stage.id} className="crm-funnel-col">
+                          <div className="crm-funnel-col-head" style={{ borderTopColor: stage.color }}>
+                            <span style={{ color: stage.color, fontWeight: 700 }}>{stage.label}</span>
+                            <span className="crm-funnel-count">{col.length}</span>
+                          </div>
+                          {col.length === 0 && <div className="crm-funnel-empty">—</div>}
+                          {col.map(l => (
+                            <div key={l.id} className="crm-lead-card">
+                              <div className="crm-lead-name">{l.name}</div>
+                              <div className="crm-lead-meta">{l.source}{l.value ? ` · €${l.value}` : ''}</div>
+                              {(l.email || l.phone) && <div className="crm-lead-contact">{l.email}{l.phone ? ` · ${l.phone}` : ''}</div>}
+                              {l.invoice && <div className="crm-lead-invoice">{l.invoice.number} · €{l.invoice.amount} · {l.invoice.paid ? <span style={{ color: '#3A7A3A', fontWeight: 700 }}>bezahlt</span> : <span style={{ color: '#D98324', fontWeight: 700 }}>offen</span>}</div>}
+                              <div className="crm-lead-actions">
+                                {l.stage !== 'gebucht' && l.stage !== 'rechnung' && l.stage !== 'abgeschlossen' && <button onClick={() => bookLessonForLead(l)} title="Stunde buchen">Buchen</button>}
+                                {l.stage !== 'rechnung' && l.stage !== 'abgeschlossen' && !l.invoice && <button onClick={() => sendInvoice(l)} title="Rechnung als gesendet markieren">Rechnung</button>}
+                                {l.invoice && !l.invoice.paid && <button onClick={() => updateLead(l.id, { invoice: { ...l.invoice!, paid: true, paidDate: todayISO() } })} title="Als bezahlt markieren">Bezahlt</button>}
+                                {l.stage !== 'abgeschlossen' && !l.studentId && <button onClick={() => leadToStudent(l)} title="In Schüler umwandeln">→ Schüler</button>}
+                                <button onClick={() => { setLeadDraft(null); setEditingLead({ ...l }) }} title="Bearbeiten">✎</button>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              )
+            })()}
 
             {/* ── FORSCHUNG (SSP RESEARCH) ───────────────────────────────── */}
             {adminSection === 'research' && (
