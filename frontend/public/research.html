@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Silent Student Project — Nikoletta Csonka</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --green:#3D4A40;--green-dark:#2C3830;--green-mid:#4E5E51;
+  --sand:#F5EFE6;--sand2:#EDE4D8;--sand3:#E2D5C3;
+  --gold:#B8975A;--gold-light:#F5ECD8;
+  --white:#FFFFFF;--mid:#666;--light:#999;--soft:#8A9E8D;--err:#C0392B;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',sans-serif;font-size:16px;color:var(--green-dark);line-height:1.7;
+  background:linear-gradient(145deg,#edf2ee 0%,#f8f4ef 35%,#f0ecf5 70%,#eef2ed 100%);
+  background-attachment:fixed;min-height:100vh;
+}
+#landing{display:block}#form-section{display:none}
+
+/* ── HERO ────────────────────────────────────────────────── */
+.hero{background:var(--green-dark);padding:60px 0 0;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--gold)}
+.hero-in{max-width:800px;margin:0 auto;padding:0 40px;position:relative;z-index:1}
+.proj-label{display:inline-block;font-size:10px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:28px}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(34px,6.5vw,54px);font-weight:600;color:var(--white);line-height:1.12;margin-bottom:22px}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:17px;font-weight:300;color:#A8BFAB;margin-bottom:12px;max-width:520px}
+.hero-by{font-size:12px;color:#6B8870;letter-spacing:.04em;margin-bottom:52px}
+.early-band{background:var(--gold-light);border-top:2px solid var(--gold);padding:26px 40px;display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap}
+.ea-badge{background:var(--gold);color:var(--white);font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:6px 16px;border-radius:3px;flex-shrink:0}
+.ea-text{font-size:13px;color:#7A5C20;max-width:500px;line-height:1.65}
+
+/* ── CONTENT CARDS ───────────────────────────────────────── */
+.outer{max-width:840px;margin:0 auto;padding:32px 24px}
+.ccard{background:rgba(255,255,255,.88);border-radius:20px;box-shadow:0 4px 28px rgba(44,56,48,.07),0 1px 4px rgba(44,56,48,.04);margin-bottom:24px;overflow:hidden;backdrop-filter:blur(6px)}
+.cin{padding:52px 52px}
+.eyebrow{font-size:10px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--soft);margin-bottom:12px}
+h2.sh{font-family:'Playfair Display',serif;font-size:29px;font-weight:600;color:var(--green);margin-bottom:20px;line-height:1.2}
+.bt{color:var(--mid);font-size:15.5px;font-weight:300;margin-bottom:14px}
+.bt strong{color:var(--green-dark);font-weight:500}
+
+/* exchange */
+.exch{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:26px}
+.excard{padding:24px 26px;border-radius:12px}
+.excard.lt{background:var(--sand)}.excard.dk{background:var(--green)}
+.excard h3{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.excard.lt h3{color:var(--green)}.excard.dk h3{color:var(--gold)}
+.excard ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.excard li{font-size:14px;display:flex;align-items:flex-start;gap:10px}
+.excard.lt li{color:var(--mid);font-weight:300}.excard.dk li{color:#B8CCB9;font-weight:300}
+.excard li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);margin-top:8px;flex-shrink:0}
+
+/* pillars */
+.corebox{background:var(--green);border-radius:12px;padding:28px 30px;margin-bottom:26px}
+.core-lbl{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.corebox p{color:#B8CCB9;font-size:15.5px;font-weight:300;line-height:1.7}
+.corebox p strong{color:var(--white);font-weight:500}
+.pillars{display:flex;flex-direction:column}
+.pillar{display:grid;grid-template-columns:36px 1fr;gap:20px;padding:22px 0;border-bottom:1px solid var(--sand2)}
+.pillar:last-child{border-bottom:none}
+.pnum{width:28px;height:28px;background:var(--gold);border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--white);flex-shrink:0;margin-top:1px}
+.pillar h3{font-size:15px;font-weight:600;color:var(--green);margin-bottom:5px}
+.pillar p{font-size:14px;color:var(--mid);font-weight:300;line-height:1.65}
+.sci-row{margin-top:26px;padding-top:20px;border-top:1px solid var(--sand2)}
+.sci-lbl{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:10px}
+.sci-pills{display:flex;flex-wrap:wrap;gap:8px}
+.spill{background:var(--sand);border:1px solid var(--sand3);color:var(--green-mid);font-size:12px;font-weight:500;padding:5px 13px;border-radius:20px}
+
+/* principles accordion */
+.principles{display:flex;flex-direction:column;gap:14px}
+.pcard{border:1.5px solid var(--sand2);border-radius:14px;overflow:hidden;background:var(--white);transition:border-color .15s}
+.pcard.open{border-color:var(--soft)}
+.phead{display:grid;grid-template-columns:52px 1fr;align-items:stretch;cursor:pointer;user-select:none}
+.p-num{background:var(--gold);color:var(--white);font-size:18px;font-weight:600;display:flex;align-items:center;justify-content:center}
+.p-tw{padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:background .15s}
+.phead:hover .p-tw{background:var(--sand)}
+.p-title{font-size:15px;font-weight:600;color:var(--green);line-height:1.3}
+.ptoggle{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--sand3);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.ptoggle svg{width:10px;height:10px;stroke:var(--soft);transition:transform .25s}
+.pcard.open .ptoggle{background:var(--green);border-color:var(--green)}
+.pcard.open .ptoggle svg{stroke:var(--white);transform:rotate(180deg)}
+.pbody{display:none;padding:0 28px 28px}
+.pcard.open .pbody{display:block}
+.p-intro{font-size:14.5px;color:var(--mid);font-weight:300;line-height:1.75;padding:18px 0 20px;border-bottom:1px solid var(--sand2);margin-bottom:18px}
+.stabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.tab-btn{font-size:12px;font-weight:500;padding:6px 16px;border-radius:20px;border:1.5px solid var(--sand3);background:transparent;color:var(--mid);cursor:pointer;transition:all .15s}
+.tab-btn.active{background:var(--green);border-color:var(--green);color:var(--white)}
+.spanel{display:none}.spanel.active{display:block}
+.sdesc{font-size:14px;color:var(--mid);font-weight:300;line-height:1.7;margin-bottom:14px}
+.igrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.iitem{background:var(--sand);border-radius:10px;padding:16px 18px}
+.itype{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+.itask{font-size:13px;font-weight:600;color:var(--green);margin-bottom:5px;line-height:1.3}
+.iitem p{font-size:12.5px;color:var(--mid);font-weight:300;line-height:1.6}
+
+/* questions list */
+.qs{list-style:none;display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.qs li{font-size:14.5px;color:var(--mid);font-weight:300;display:flex;align-items:flex-start;gap:12px}
+.qs li::before{content:'';width:5px;height:5px;border-radius:50%;background:var(--gold);margin-top:9px;flex-shrink:0}
+
+/* CTA */
+.cta{background:var(--green-dark);padding:72px 40px;position:relative;text-align:center}
+.cta::before{content:'';display:block;height:4px;background:var(--gold);position:absolute;top:0;left:0;right:0}
+.cta h2{font-family:'Playfair Display',serif;font-size:33px;font-weight:600;color:var(--white);margin-bottom:14px}
+.cta>p{font-size:16px;color:#A8BFAB;font-weight:300;margin-bottom:30px}
+.btn-start{background:var(--white);color:var(--green-dark);font-size:16px;font-weight:600;padding:16px 56px;border-radius:10px;border:none;cursor:pointer;margin-bottom:30px;transition:all .2s;box-shadow:0 4px 20px rgba(0,0,0,.2);display:inline-block}
+.btn-start:hover{background:var(--gold);color:var(--white);transform:translateY(-2px)}
+.cta-links{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.cta-link{font-size:14px;font-weight:500;color:var(--gold);text-decoration:none;padding:10px 24px;border:1.5px solid var(--gold);border-radius:7px;transition:all .2s}
+.cta-link:hover{background:var(--gold);color:var(--white)}
+.cta-foot{margin-top:34px;font-size:11px;color:#6B8870;line-height:1.8}
+
+/* ── FORM SECTION ────────────────────────────────────────── */
+.topbar{background:var(--green-dark);padding:16px 40px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:3px solid var(--gold)}
+.back-btn{font-size:12px;color:var(--soft);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:7px;transition:color .15s;font-family:inherit}
+.back-btn:hover{color:var(--white)}
+.back-btn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.topbar-title{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.prog-wrap{background:var(--green-mid);height:3px;position:sticky;top:55px;z-index:99}
+.prog-bar{height:100%;background:var(--gold);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.steps-row{max-width:600px;margin:36px auto 0;padding:0 32px;display:flex;align-items:center}
+.sdot{width:30px;height:30px;border-radius:50%;border:2px solid var(--sand3);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--light);flex-shrink:0;transition:all .3s;position:relative;z-index:1}
+.sdot.active{border-color:var(--gold);background:var(--gold);color:var(--white);box-shadow:0 0 0 4px rgba(184,151,90,.15)}
+.sdot.done{border-color:var(--green);background:var(--green);color:transparent}
+.sdot.done::after{content:'';position:absolute;width:9px;height:5px;border-left:2px solid var(--white);border-bottom:2px solid var(--white);transform:rotate(-45deg) translate(1px,-2px)}
+.sline{flex:1;height:2px;background:var(--sand3);transition:background .4s}
+.sline.done{background:var(--green)}
+.fwrap{max-width:600px;margin:24px auto 0;padding:0 24px 100px}
+.fcard{background:rgba(255,255,255,.92);border-radius:18px;padding:40px 40px 32px;box-shadow:0 4px 28px rgba(44,56,48,.08);backdrop-filter:blur(6px)}
+.step{display:none}.step.active{display:block}
+.slabel{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:8px}
+.stitle{font-family:'Playfair Display',serif;font-size:24px;font-weight:600;color:var(--green);margin-bottom:8px;line-height:1.25}
+.ssub{font-size:13.5px;color:var(--mid);font-weight:300;margin-bottom:26px;line-height:1.6}
+
+/* option cards */
+.ogrid{display:grid;gap:10px}
+.ogrid.c2{grid-template-columns:1fr 1fr}.ogrid.c1{grid-template-columns:1fr}
+.ocard{border:2px solid var(--sand2);border-radius:10px;padding:16px 18px;cursor:pointer;transition:all .15s;background:var(--white);text-align:left;display:flex;align-items:flex-start;gap:12px}
+.ocard:hover{border-color:var(--soft);background:var(--sand)}
+.ocard.sel{border-color:var(--green);background:#EEF3EE}
+.ochk{width:20px;height:20px;border-radius:50%;border:2px solid var(--sand3);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.ocard.sel .ochk{background:var(--green);border-color:var(--green)}
+.ocm{width:8px;height:5px;border-left:2px solid var(--white);border-bottom:2px solid var(--white);transform:rotate(-45deg) translate(1px,-1px);display:none}
+.ocard.sel .ocm{display:block}
+.otxt h4{font-size:14px;font-weight:600;color:var(--green-dark);margin-bottom:2px}
+.otxt p{font-size:12px;color:var(--mid);font-weight:300;line-height:1.5}
+.multi-note{font-size:11px;color:var(--soft);margin-bottom:12px;font-weight:500}
+
+/* task cards */
+.tcard{border:2px solid var(--sand2);border-radius:10px;padding:16px 18px;cursor:pointer;transition:all .15s;background:var(--white);display:flex;align-items:flex-start;gap:14px;margin-bottom:10px}
+.tcard:hover{border-color:var(--soft);background:var(--sand)}
+.tcard.sel{border-color:var(--green);background:#EEF3EE}
+.tnum{width:28px;height:28px;border-radius:6px;background:var(--sand2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--green-mid);flex-shrink:0;transition:all .15s}
+.tcard.sel .tnum{background:var(--gold);color:var(--white)}
+.ttxt h4{font-size:14px;font-weight:600;color:var(--green-dark);margin-bottom:3px}
+.ttxt p{font-size:12px;color:var(--mid);font-weight:300;line-height:1.5}
+
+/* sliders */
+.slider-group{background:var(--sand);border-radius:12px;padding:18px 20px;margin-bottom:10px}
+.sl-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+.sl-name{font-size:14px;font-weight:600;color:var(--green)}
+.sl-desc{font-size:11px;color:var(--light);font-weight:300;max-width:55%;text-align:right;line-height:1.4}
+.sl-row{display:flex;align-items:center;gap:12px}
+input[type=range]{
+  -webkit-appearance:none;appearance:none;flex:1;height:6px;border-radius:3px;outline:none;cursor:pointer;
+  background:linear-gradient(to right,var(--gold) 0%,var(--gold) var(--fill,50%),var(--sand3) var(--fill,50%),var(--sand3) 100%);
+  transition:background .08s;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--green);cursor:pointer;
+  border:3px solid var(--white);box-shadow:0 2px 8px rgba(44,56,48,.3);transition:transform .1s,box-shadow .1s;
+}
+input[type=range]:hover::-webkit-slider-thumb{transform:scale(1.15);box-shadow:0 3px 12px rgba(44,56,48,.4)}
+.sl-val{width:30px;text-align:center;font-size:16px;font-weight:700;color:var(--gold)}
+.sl-ends{display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:var(--light)}
+
+/* radar */
+.radar-wrap{display:flex;flex-direction:column;align-items:center;margin-top:22px}
+.radar-lbl{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);margin-bottom:10px}
+#radarSVG{max-width:260px;width:100%}
+.heat-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.hpill{padding:6px 13px;border-radius:20px;font-size:11px;font-weight:600;color:var(--white);transition:background .3s}
+
+/* form fields */
+.fgroup{margin-bottom:22px}.fgroup:last-child{margin-bottom:0}
+label.flbl{font-size:13px;font-weight:600;color:var(--green);margin-bottom:7px;display:block}
+span.fsub{font-size:11px;color:var(--light);font-weight:300;margin-bottom:7px;display:block}
+textarea,input[type=text],input[type=email]{
+  width:100%;border:1.5px solid var(--sand2);border-radius:10px;
+  padding:13px 16px;font-family:'Inter',sans-serif;font-size:14px;font-weight:300;
+  color:var(--green-dark);line-height:1.6;transition:border-color .15s,box-shadow .15s;background:var(--white);
+}
+textarea{resize:vertical;min-height:90px}
+textarea:focus,input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(61,74,64,.08)}
+textarea::placeholder,input::placeholder{color:var(--light)}
+
+/* nav row */
+.nav-row{display:flex;justify-content:space-between;align-items:center;margin-top:26px;padding-top:20px;border-top:1px solid var(--sand2)}
+.btn-back{font-size:13px;font-weight:500;color:var(--mid);background:none;border:none;cursor:pointer;padding:10px 0;display:flex;align-items:center;gap:6px;transition:color .15s}
+.btn-back:hover{color:var(--green)}
+.btn-back svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-next{background:var(--green);color:var(--white);font-size:14px;font-weight:500;border:none;border-radius:9px;padding:13px 28px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s}
+.btn-next:hover{background:var(--green-dark);transform:translateY(-1px)}
+.btn-next svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-review{background:var(--gold);color:var(--white);font-size:14px;font-weight:600;border:none;border-radius:9px;padding:13px 30px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s}
+.btn-review:hover{background:#A0833A;transform:translateY(-1px)}
+.err-msg{font-size:12px;color:var(--err);margin-top:10px;display:none}
+
+/* ── PREVIEW MODAL ───────────────────────────────────────── */
+.modal-ov{position:fixed;inset:0;z-index:1000;background:rgba(20,28,22,.72);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .25s}
+.modal-ov.open{opacity:1;pointer-events:all}
+.modal-box{background:var(--white);border-radius:20px;max-width:580px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 60px rgba(0,0,0,.3);transform:translateY(22px);transition:transform .3s}
+.modal-ov.open .modal-box{transform:translateY(0)}
+.modal-hd{position:sticky;top:0;background:var(--green-dark);padding:20px 28px;display:flex;justify-content:space-between;align-items:center;border-radius:20px 20px 0 0}
+.modal-hd h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--white);font-weight:600}
+.modal-close{background:none;border:none;cursor:pointer;color:var(--soft);font-size:22px;line-height:1;transition:color .15s}
+.modal-close:hover{color:var(--white)}
+.modal-body{padding:28px}
+.pvs{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--sand2)}
+.pvs:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.pvl{font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--soft);margin-bottom:8px}
+.pvv{font-size:14px;color:var(--green-dark);font-weight:400;line-height:1.6}
+.pvtags{display:flex;flex-wrap:wrap;gap:7px;margin-top:6px}
+.ptag{background:var(--sand);border:1px solid var(--sand3);color:var(--green-mid);font-size:12px;font-weight:500;padding:5px 12px;border-radius:20px}
+.ptag.g{background:#EEF3EE;border-color:#9DC49F;color:var(--green)}
+.pvscores{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.pvscore{padding:6px 13px;border-radius:20px;font-size:12px;font-weight:600;color:var(--white)}
+.pvq{font-size:13px;color:var(--mid);font-weight:300;font-style:italic;line-height:1.7;margin-top:8px;padding:12px 16px;background:var(--sand);border-radius:8px;border-left:3px solid var(--gold)}
+.pvql{font-size:11px;font-weight:600;color:var(--mid);letter-spacing:.04em;margin-top:12px;margin-bottom:4px}
+.modal-ft{padding:18px 28px;border-top:1px solid var(--sand2);display:flex;justify-content:space-between;align-items:center;gap:12px}
+.btn-edit{font-size:13px;font-weight:500;color:var(--mid);background:none;border:1.5px solid var(--sand3);border-radius:8px;padding:10px 20px;cursor:pointer;transition:all .15s}
+.btn-edit:hover{border-color:var(--green);color:var(--green)}
+.btn-sub{background:var(--green);color:var(--white);font-size:14px;font-weight:600;border:none;border-radius:9px;padding:12px 28px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:10px}
+.btn-sub:hover{background:var(--green-dark)}
+.spinner{display:none;width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:var(--white);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SUCCESS SCREEN ──────────────────────────────────────── */
+.success{display:none;text-align:center;padding:52px 36px}
+.ss-glow{font-size:60px;display:inline-block;margin-bottom:10px;animation:pop .6s ease forwards;color:var(--gold)}
+@keyframes pop{0%{transform:scale(0) rotate(-30deg);opacity:0}70%{transform:scale(1.18) rotate(4deg)}100%{transform:scale(1) rotate(0);opacity:1}}
+.ss-eye{font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--soft);margin-bottom:14px}
+.ss-title{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;color:var(--green);margin-bottom:18px;line-height:1.25}
+.ss-title em{color:var(--gold);font-style:italic}
+.ss-body{font-size:15px;color:var(--mid);font-weight:300;line-height:1.8;max-width:440px;margin:0 auto 30px}
+.ss-body strong{color:var(--green-dark);font-weight:500}
+.ss-actions{display:flex;flex-direction:column;align-items:center;gap:12px}
+.btn-dl{background:var(--gold);color:var(--white);font-size:14px;font-weight:600;border:none;border-radius:10px;padding:14px 36px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:10px}
+.btn-dl:hover{background:#A0833A;transform:translateY(-2px)}
+.btn-dl svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.btn-again{font-size:13px;font-weight:500;color:var(--mid);background:none;border:1.5px solid var(--sand3);border-radius:8px;padding:10px 24px;cursor:pointer;transition:all .15s}
+.btn-again:hover{border-color:var(--green);color:var(--green)}
+.btn-home{font-size:13px;color:var(--soft);background:none;border:none;cursor:pointer;margin-top:4px;text-decoration:underline;transition:color .15s}
+.btn-home:hover{color:var(--green)}
+.ss-quote{margin:28px auto 0;max-width:380px;font-family:'Playfair Display',serif;font-size:17px;font-style:italic;color:var(--green-mid);line-height:1.65;border-top:1px solid var(--sand2);padding-top:24px}
+
+@media(max-width:680px){
+  .exch{grid-template-columns:1fr}.igrid{grid-template-columns:1fr}
+  .ogrid.c2{grid-template-columns:1fr}.cin{padding:36px 24px}
+  .fcard{padding:28px 22px 24px}.topbar{padding:14px 20px}
+  .hero h1{font-size:32px}.early-band{padding:22px 24px}
+  .modal-body{padding:20px}.modal-ft{flex-direction:column-reverse}
+  .btn-edit,.btn-sub{width:100%;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- Auth gate: redirect to main site if no session -->
+<div id="authLock" style="display:none;position:fixed;inset:0;background:#2C3830;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-family:sans-serif">
+  <div style="font-size:40px;margin-bottom:16px">&#128274;</div>
+  <h2 style="margin:0 0 8px;font-size:22px">Member access required</h2>
+  <p style="color:rgba(255,255,255,.6);font-size:14px;margin-bottom:28px">Please log in via Nikoletta's website first.</p>
+  <a href="/" style="background:#B8975A;color:#fff;text-decoration:none;padding:12px 32px;border-radius:8px;font-weight:600;font-size:15px">Go to website</a>
+</div>
+<script>
+(function(){
+  const sess = localStorage.getItem('ssp_session')
+  if(!sess || !sess.startsWith('valid_')){
+    document.getElementById('authLock').style.display='flex'
+    document.body.style.overflow='hidden'
+  }
+})()
+</script>
+
+<!-- ═══════════════════ LANDING ═══════════════════ -->
+<div id="landing">
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="proj-label">The Silent Student Project</div>
+    <h1>Your quietest students<br>know more than<br>they can <em>say.</em></h1>
+    <p class="hero-sub">A methodology for the half of language learning nobody taught.</p>
+    <p class="hero-by">Nikoletta Csonka &nbsp;/&nbsp; Language Coach &nbsp;/&nbsp; Graz, Austria &nbsp;/&nbsp; 10+ years experience</p>
+  </div>
+  <div class="early-band">
+    <span class="ea-badge">Early Access</span>
+    <span class="ea-text">This methodology is in development and not yet on the market. You are invited to try it first, for free, in exchange for honest feedback.</span>
+  </div>
+</header>
+
+<div class="outer">
+
+  <div class="ccard">
+    <div class="cin">
+      <p class="eyebrow">What this is about</p>
+      <h2 class="sh">Grammar is only half the picture.</h2>
+      <p class="bt">Language teaching has always been brilliant at one thing: grammar and vocabulary. Rules, structures, word lists, tests. And for many students, that is enough.</p>
+      <p class="bt">But there is a whole group of learners for whom it is not. Students who studied for years, know the rules, passed the tests, and still go completely silent the moment they have to actually speak. Not because the knowledge is missing. <strong>Because something else is in the way.</strong></p>
+      <p class="bt">That something else is what this methodology addresses. Confidence. Nervous system regulation. The relationship between the student and the language itself.</p>
+      <div class="exch">
+        <div class="excard lt">
+          <h3>What you get</h3>
+          <ul>
+            <li>Full methodology, free of charge</li>
+            <li>Early access before public launch</li>
+            <li>Practical tools for immediate use</li>
+            <li>Direct contact with the developer</li>
+          </ul>
+        </div>
+        <div class="excard dk">
+          <h3>What I ask in return</h3>
+          <ul>
+            <li>Try one or two elements</li>
+            <li>Observe your students honestly</li>
+            <li>Send me a short reflection</li>
+            <li>That is it</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ccard">
+    <div class="cin">
+      <p class="eyebrow">The method</p>
+      <h2 class="sh">What it is built on.</h2>
+      <div class="corebox">
+        <div class="core-lbl">The core idea</div>
+        <p>Most students who struggle to speak do not lack knowledge. <strong>They lack safety.</strong> When a student anticipates judgment, the nervous system activates a defensive state. In that state, even language the student genuinely knows becomes hard to reach. This is not a motivation problem. It is a physiological response.</p>
+      </div>
+      <div class="pillars">
+        <div class="pillar"><div class="pnum">1</div><div><h3>Safety before content</h3><p>Before any language task, the student needs to feel that mistakes are not dangerous here. Genuine interest in who the student is as a person, before asking them to perform in the language.</p></div></div>
+        <div class="pillar"><div class="pnum">2</div><div><h3>The person is the curriculum</h3><p>The student's own interests, work, and real-life situations become the material. When content is personally meaningful, acquisition happens faster and sticks longer.</p></div></div>
+        <div class="pillar"><div class="pnum">3</div><div><h3>The planned dynamic</h3><p>Sessions open with free, low-pressure conversation. Grammar emerges from what the student actually says, addressed just-in-time, then immediately applied in a real communicative context.</p></div></div>
+        <div class="pillar"><div class="pnum">4</div><div><h3>Visible belief</h3><p>Genuine, visible excitement at a student's progress gives them direct evidence against the belief that they cannot do this. Small wins are made into events.</p></div></div>
+      </div>
+      <div class="sci-row">
+        <div class="sci-lbl">Grounded in</div>
+        <div class="sci-pills">
+          <span class="spill">Polyvagal Theory (Porges)</span>
+          <span class="spill">Affective Filter (Krashen)</span>
+          <span class="spill">Person-Centered Approach (Rogers)</span>
+          <span class="spill">TBLT (Prabhu)</span>
+          <span class="spill">ZPD (Vygotsky)</span>
+          <span class="spill">Self-Efficacy (Bandura)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ccard">
+    <div class="cin">
+      <p class="eyebrow">How to participate</p>
+      <h2 class="sh">Five things to try.</h2>
+      <p class="bt">Each principle works in both private sessions and group settings. Click any to see how to apply it.</p>
+      <div class="principles">
+
+        <div class="pcard" id="p1">
+          <div class="phead" onclick="ptoggle('p1')">
+            <div class="p-num">1</div>
+            <div class="p-tw"><span class="p-title">Ask the student how they want to be taught</span><span class="ptoggle"><svg viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg></span></div>
+          </div>
+          <div class="pbody">
+            <p class="p-intro">Before any content, find out what has not worked for this person before and what a good session feels like for them. Most teachers never ask this.</p>
+            <div class="stabs"><button class="tab-btn active" onclick="stab('p1','solo')">One-on-one</button><button class="tab-btn" onclick="stab('p1','group')">Group</button></div>
+            <div class="spanel active" data-p="p1-solo"><p class="sdesc">Ask directly in the first session: "What has not worked for you before?" and "What would a session look like where you leave feeling good?" Let them talk.</p>
+            <div class="igrid"><div class="iitem"><div class="itype">Structured</div><div class="itask">Add to your intake form</div><p>Include these two questions as required fields. Read answers before planning anything.</p></div><div class="iitem"><div class="itype">Intuitive</div><div class="itask">Ask it in conversation</div><p>Bring it up in the first five minutes. No clipboard. Let them talk and listen more than you speak.</p></div><div class="iitem"><div class="itype">Visual</div><div class="itask">Write it where you can see it</div><p>Note their answers on a sticky note and keep it visible during early sessions.</p></div><div class="iitem"><div class="itype">Digital</div><div class="itask">Let them type their own answers</div><p>Open a shared doc. Seeing their own words on screen often makes students more honest.</p></div></div></div>
+            <div class="spanel" data-p="p1-group"><p class="sdesc">Anonymous written exercise in the first lesson. Two sentences: one thing that has never helped them in language class, and one thing they wish a lesson felt like.</p>
+            <div class="igrid"><div class="iitem"><div class="itype">Structured</div><p>Half-page form, first lesson plan. Read overnight, adapt next session.</p></div><div class="iitem"><div class="itype">Intuitive</div><p>Verbal round: each student says one word that describes their relationship with this language right now.</p></div><div class="iitem"><div class="itype">Visual</div><p>Two columns on the board, "what has not worked" and "what I wish for." Fill together.</p></div><div class="iitem"><div class="itype">Digital</div><p>Google Form for anonymous input. Students often more honest in writing.</p></div></div></div>
+          </div>
+        </div>
+
+        <div class="pcard" id="p2">
+          <div class="phead" onclick="ptoggle('p2')">
+            <div class="p-num">2</div>
+            <div class="p-tw"><span class="p-title">Build one session around something they mentioned casually</span><span class="ptoggle"><svg viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg></span></div>
+          </div>
+          <div class="pbody">
+            <p class="p-intro">Something they said without thinking — a show, a hobby, a trip they mentioned — becomes the material for an entire session. They did not know you were listening that closely. That is the point.</p>
+            <div class="stabs"><button class="tab-btn active" onclick="stab('p2','solo')">One-on-one</button><button class="tab-btn" onclick="stab('p2','group')">Group</button></div>
+            <div class="spanel active" data-p="p2-solo"><p class="sdesc">Pick something they mentioned last session that had energy behind it. Build the whole session around it without telling them in advance.</p>
+            <div class="igrid"><div class="iitem"><div class="itype">Structured</div><div class="itask">Log one detail after every session</div><p>Write down one thing they mentioned with energy. Review before planning the next session.</p></div><div class="iitem"><div class="itype">Intuitive</div><div class="itask">Open with it, unannounced</div><p>No prep note needed. Start the session around what they said and watch their face.</p></div><div class="iitem"><div class="itype">Visual</div><div class="itask">Three-column template</div><p>What they mentioned / how to use it / what language comes from it.</p></div><div class="iitem"><div class="itype">Digital</div><div class="itask">Open the session with a surprise doc</div><p>Build a shared slide around their interest and open it at the start without explanation.</p></div></div></div>
+            <div class="spanel" data-p="p2-group"><p class="sdesc">At the end of one lesson, ask every student to write down one thing they are into right now. Collect the answers. Build the next lesson around the most common theme.</p>
+            <div class="igrid"><div class="iitem"><div class="itype">Structured</div><p>Use answers to plan a themed lesson for the following week.</p></div><div class="iitem"><div class="itype">Intuitive</div><p>Pick the one topic that gives you the most ideas and build freely.</p></div><div class="iitem"><div class="itype">Visual</div><p>Word cloud from their answers shown at the start of the next lesson as a hook.</p></div><div class="iitem"><div class="itype">Digital</div><p>Shared padlet so students can also see each other's answers.</p></div></div></div>
+          </div>
+        </div>
+
+        <div class="pcard" id="p3">
+          <div class="phead" onclick="ptoggle('p3')">
+            <div class="p-num">3</div>
+            <div class="p-tw"><span class="p-title">Respond to a breakthrough with full, visible enthusiasm</span><span class="ptoggle"><svg viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg></span></div>
+          </div>
+          <div class="pbody">
+            <p class="p-intro">When a student does something they have struggled with before, stop. Name it. Make it an event. The moment your reaction tells them it counted is the moment they start to believe they can do this.</p>
+            <div class="stabs"><button class="tab-btn active" onclick="stab('p3','solo')">One-on-one</button><button class="tab-btn" onclick="stab('p3','group')">Group</button></div>
+            <div class="spanel active" data-p="p3-solo"><p class="sdesc">You have the luxury of full attention. When the moment happens, pause. Say exactly what you noticed. Stay with it for a few seconds before moving on.</p>
+            <div class="igrid"><div class="iitem"><div class="itype">Natural</div><div class="itask">Start with the pause</div><p>Two seconds of silence signals something happened before you say a word.</p></div><div class="iitem"><div class="itype">Reserved</div><div class="itask">Name it specifically and calmly</div><p>"I want you to notice what you just did." A precise observation lands just as hard.</p></div><div class="iitem"><div class="itype">Online</div><div class="itask">Write it in the chat too</div><p>Say it and type it. Written words feel more permanent.</p></div><div class="iitem"><div class="itype">Young learners</div><div class="itask">Mark the moment physically</div><p>A high five, a point on a scoreboard. Physicality makes it stick.</p></div></div></div>
+            <div class="spanel" data-p="p3-group"><p class="sdesc">In a group, praise specific enough to feel real but framed to include everyone.</p>
+            <div class="igrid"><div class="iitem"><div class="itype">Inclusive</div><p>"Did everyone hear that? That is exactly what fluent sounds like."</p></div><div class="iitem"><div class="itype">Visual</div><p>Keep a "moments" corner on the board. Write what the student said, word for word.</p></div><div class="iitem"><div class="itype">Young learners</div><p>A class "win wall" — physical or digital — where breakthroughs get posted.</p></div><div class="iitem"><div class="itype">Adults</div><p>"Hold on, say that again" followed by genuine group attention is often more powerful than praise.</p></div></div></div>
+          </div>
+        </div>
+
+        <div class="pcard" id="p4">
+          <div class="phead" onclick="ptoggle('p4')">
+            <div class="p-num">4</div>
+            <div class="p-tw"><span class="p-title">Have a pivot plan ready and use it deliberately</span><span class="ptoggle"><svg viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg></span></div>
+          </div>
+          <div class="pbody">
+            <p class="p-intro">You always have a backup prepared for this specific student or group. Not a generic easy task but something you know they enjoy. When the energy drops, you switch. You do not wait.</p>
+            <div class="stabs"><button class="tab-btn active" onclick="stab('p4','solo')">One-on-one</button><button class="tab-btn" onclick="stab('p4','group')">Group</button></div>
+            <div class="spanel active" data-p="p4-solo"><p class="sdesc">Before each session, decide what your pivot is. Have it ready before you start, not during.</p>
+            <div class="igrid"><div class="iitem"><div class="itype">Structured</div><div class="itask">Add a "pivot option" row to every plan</div><p>Fill it in before the session starts. When the moment comes, the decision is already made.</p></div><div class="iitem"><div class="itype">Intuitive</div><div class="itask">Keep a short list per student</div><p>Three or four things this student reliably responds well to. Pull from the list without overthinking.</p></div><div class="iitem"><div class="itype">Visual</div><div class="itask">Two colored sticky notes</div><p>One for the main plan, one for the pivot. Separate physically makes switching feel intentional.</p></div><div class="iitem"><div class="itype">Online</div><div class="itask">Pre-load the pivot in a tab</div><p>Keep pivot material open in a browser tab before the session. One click, not a scramble.</p></div></div></div>
+            <div class="spanel" data-p="p4-group"><p class="sdesc">One student tired is manageable. Half the class flat means you need to move, and move before it bottoms out.</p>
+            <div class="igrid"><div class="iitem"><div class="itype">Structured</div><p>Prepare a "lazy lesson" folder with activities you know this group enjoys, ready to pull from at any point.</p></div><div class="iitem"><div class="itype">Intuitive</div><p>Read the room at the fifteen-minute mark. If energy is already low, switch then.</p></div><div class="iitem"><div class="itype">Visual</div><p>A physical card on your desk reminding you the pivot option exists. Removes hesitation.</p></div><div class="iitem"><div class="itype">School teachers</div><p>Frame the pivot as part of your lesson plan, not a deviation. Responsive teaching is pedagogy.</p></div></div></div>
+          </div>
+        </div>
+
+        <div class="pcard" id="p5">
+          <div class="phead" onclick="ptoggle('p5')">
+            <div class="p-num">5</div>
+            <div class="p-tw"><span class="p-title">Track confidence and accuracy separately</span><span class="ptoggle"><svg viewBox="0 0 10 6"><path d="M1 1l4 4 4-4"/></svg></span></div>
+          </div>
+          <div class="pbody">
+            <p class="p-intro">Accuracy is how correct the language is. Confidence is how freely and willingly the student speaks. These are two different things and they move at different rates. The hypothesis: confidence often grows before accuracy does.</p>
+            <div class="stabs"><button class="tab-btn active" onclick="stab('p5','solo')">One-on-one</button><button class="tab-btn" onclick="stab('p5','group')">Group</button></div>
+            <div class="spanel active" data-p="p5-solo"><p class="sdesc">After each session, two private scores from 1 to 5: one for accuracy, one for how freely they spoke. Write both down with one sentence of context. Every session for the testing period.</p>
+            <div class="igrid"><div class="iitem"><div class="itype">Structured</div><div class="itask">Spreadsheet: date, accuracy, confidence</div><p>Fill within five minutes of the session ending while your impression is fresh.</p></div><div class="iitem"><div class="itype">Intuitive</div><div class="itask">Voice note right after the session</div><p>Say both scores out loud and one thing you noticed. Transcribe later.</p></div><div class="iitem"><div class="itype">Visual</div><div class="itask">Plot both scores on a chart</div><p>After four sessions, seeing the two lines diverge is often the most convincing moment.</p></div><div class="iitem"><div class="itype">Minimal</div><div class="itask">Track just one student</div><p>Two scores per session, four to six sessions. That is enough to see whether something is happening.</p></div></div></div>
+            <div class="spanel" data-p="p5-group"><p class="sdesc">Pick two or three students you find most interesting. Observe the rest more loosely. Focus especially on the ones who are usually silent.</p>
+            <div class="igrid"><div class="iitem"><div class="itype">Structured</div><p>Simple grid for each selected student: session dates, accuracy note, confidence note after each lesson.</p></div><div class="iitem"><div class="itype">Intuitive</div><p>After each lesson: three names and one word for each — how freely did they speak today compared to last time?</p></div><div class="iitem"><div class="itype">Visual</div><p>Two colored dots per student per session. One color per dimension. Patterns become visible fast.</p></div><div class="iitem"><div class="itype">Large classes</div><p>Focus only on the students who are silent or rarely speak. That is where change will be most visible.</p></div></div></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="ccard">
+    <div class="cin">
+      <p class="eyebrow">What to send me afterward</p>
+      <h2 class="sh">No template. Just honest observations.</h2>
+      <p class="bt">A few sentences is enough, more is welcome.</p>
+      <ul class="qs">
+        <li>What did you try, and with which type of student or group?</li>
+        <li>What did you notice? What shifted, even slightly?</li>
+        <li>What surprised you?</li>
+        <li>What did not work, or felt unnatural to apply?</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- .outer -->
+
+<footer class="cta">
+  <h2>Ready to be part of this?</h2>
+  <p>Join as an early volunteer and try the method in your own sessions for free.</p>
+  <button class="btn-start" onclick="showForm()">Start here!</button>
+  <p style="font-size:13px;color:#A8BFAB;font-weight:300;margin-bottom:16px">Or reach out first if you have questions.</p>
+  <div class="cta-links">
+    <a class="cta-link" href="mailto:nikoletta.tutor@gmail.com">nikoletta.tutor@gmail.com</a>
+    <a class="cta-link" href="https://www.linkedin.com/in/csonikoletta" target="_blank">LinkedIn: Nikoletta Csonka</a>
+  </div>
+  <p class="cta-foot">This is a research initiative. No student data is collected.<br>Feedback is used solely for methodological development.</p>
+</footer>
+
+</div><!-- #landing -->
+
+
+<!-- ═══════════════════ FORM ═══════════════════ -->
+<div id="form-section">
+
+<div class="topbar">
+  <button class="back-btn" onclick="showLanding()">
+    <svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg>
+    Back to the project
+  </button>
+  <span class="topbar-title">Your Teaching Reflection</span>
+</div>
+
+<div class="prog-wrap"><div class="prog-bar" id="progBar"></div></div>
+
+<div class="steps-row">
+  <div class="sdot active" id="d1">1</div><div class="sline" id="l1"></div>
+  <div class="sdot" id="d2">2</div><div class="sline" id="l2"></div>
+  <div class="sdot" id="d3">3</div><div class="sline" id="l3"></div>
+  <div class="sdot" id="d4">4</div><div class="sline" id="l4"></div>
+  <div class="sdot" id="d5">5</div><div class="sline" id="l5"></div>
+  <div class="sdot" id="d6">6</div>
+</div>
+
+<div class="fwrap">
+
+  <!-- STEP 1 -->
+  <div class="fcard step active" id="step1">
+    <p class="slabel">Step 1 of 6</p>
+    <h2 class="stitle">A little about you</h2>
+    <p class="ssub">We keep this anonymous. Just enough context to make the data meaningful.</p>
+    <div class="fgroup">
+      <label class="flbl">First name or alias</label>
+      <span class="fsub">Used only to group your sessions together across submissions.</span>
+      <input type="text" id="teacherName" placeholder="e.g. Maria or Teacher07">
+    </div>
+    <div class="fgroup">
+      <label class="flbl">How many years have you been teaching languages?</label>
+      <div class="ogrid c2" data-grp="experience" data-single="true">
+        <div class="ocard" data-v="0-2" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>0 to 2 years</h4></div></div>
+        <div class="ocard" data-v="3-5" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>3 to 5 years</h4></div></div>
+        <div class="ocard" data-v="6-10" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>6 to 10 years</h4></div></div>
+        <div class="ocard" data-v="10+" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>More than 10 years</h4></div></div>
+      </div>
+    </div>
+    <div class="fgroup">
+      <label class="flbl">Which language(s) do you teach?</label>
+      <input type="text" id="langField" placeholder="e.g. English, German, French">
+    </div>
+    <div class="nav-row">
+      <span></span>
+      <button class="btn-next" onclick="goTo(2)">Next <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5"/></svg></button>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="fcard step" id="step2">
+    <p class="slabel">Step 2 of 6</p>
+    <h2 class="stitle">The setting</h2>
+    <p class="ssub">This helps us understand how the method translates across different contexts.</p>
+    <div class="ogrid c2" data-grp="setting" data-single="true">
+      <div class="ocard" data-v="private_1on1" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Private one-on-one</h4><p>Individual student, outside school</p></div></div>
+      <div class="ocard" data-v="school_1on1" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>School one-on-one</h4><p>Individual student, within a school</p></div></div>
+      <div class="ocard" data-v="small_group" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Small group</h4><p>2 to 8 students</p></div></div>
+      <div class="ocard" data-v="classroom" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Classroom</h4><p>9 or more students</p></div></div>
+      <div class="ocard" data-v="online_1on1" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Online one-on-one</h4><p>Individual student, remote</p></div></div>
+      <div class="ocard" data-v="online_group" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Online group</h4><p>Multiple students, remote</p></div></div>
+    </div>
+    <div class="fgroup" style="margin-top:22px">
+      <label class="flbl">Student age group</label>
+      <p class="multi-note">Select all that apply.</p>
+      <div class="ogrid c2" data-grp="ageGroup" data-single="false">
+        <div class="ocard" data-v="children" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Children</h4><p>Under 12</p></div></div>
+        <div class="ocard" data-v="teenagers" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Teenagers</h4><p>12 to 17</p></div></div>
+        <div class="ocard" data-v="young_adults" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Young adults</h4><p>18 to 30</p></div></div>
+        <div class="ocard" data-v="adults" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Adults</h4><p>30 and above</p></div></div>
+      </div>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(1)"><svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg> Back</button>
+      <button class="btn-next" onclick="goTo(3)">Next <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5"/></svg></button>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="fcard step" id="step3">
+    <p class="slabel">Step 3 of 6</p>
+    <h2 class="stitle">Tell us about this student or group.</h2>
+    <p class="ssub">No names. Just the patterns that matter for the research.</p>
+    <div class="fgroup">
+      <label class="flbl">How would you describe their relationship with the language? Select all that apply.</label>
+      <p class="multi-note">Multiple selections are fine — students are complex.</p>
+      <div class="ogrid c1" data-grp="priorRel" data-single="false">
+        <div class="ocard" data-v="avoids_speaking" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Avoids speaking whenever possible</h4><p>Knows more than they show. Goes silent under pressure.</p></div></div>
+        <div class="ocard" data-v="anxious_but_tries" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Anxious but tries</h4><p>Makes the effort but visibly tense when speaking.</p></div></div>
+        <div class="ocard" data-v="disengaged" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Disengaged or resistant</h4><p>Does not see the point. Participates minimally.</p></div></div>
+        <div class="ocard" data-v="willing_beginner" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Willing but genuinely a beginner</h4><p>No prior anxiety, just limited exposure.</p></div></div>
+        <div class="ocard" data-v="confident" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Already a confident speaker</h4><p>Used as comparison reference.</p></div></div>
+      </div>
+    </div>
+    <div class="fgroup" id="groupFocusField" style="display:none">
+      <label class="flbl">In a group: this observation focuses on…</label>
+      <div class="ogrid c2" data-grp="groupFocus" data-single="true">
+        <div class="ocard" data-v="whole_group" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>The whole group</h4></div></div>
+        <div class="ocard" data-v="selected" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Selected students only</h4><p>1 to 3 tracked in depth</p></div></div>
+      </div>
+    </div>
+    <div class="fgroup">
+      <label class="flbl">Why did you choose this student or group for this experiment?</label>
+      <textarea id="selReason" placeholder="e.g. she never speaks in class despite clearly understanding everything..."></textarea>
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(2)"><svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg> Back</button>
+      <button class="btn-next" onclick="goTo(4)">Next <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5"/></svg></button>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="fcard step" id="step4">
+    <p class="slabel">Step 4 of 6</p>
+    <h2 class="stitle">What did you try?</h2>
+    <p class="ssub">Select everything you used in this session.</p>
+    <p class="multi-note">Multiple selections are fine.</p>
+    <div class="tcard" data-v="task1" onclick="selTask(this)"><div class="tnum">1</div><div class="ttxt"><h4>Ask the student how they want to be taught</h4><p>Opening with "what has not worked before?" and "what would a good session feel like?"</p></div></div>
+    <div class="tcard" data-v="task2" onclick="selTask(this)"><div class="tnum">2</div><div class="ttxt"><h4>Build a session around something they mentioned casually</h4><p>Using a hobby, interest, or situation as the full lesson material.</p></div></div>
+    <div class="tcard" data-v="task3" onclick="selTask(this)"><div class="tnum">3</div><div class="ttxt"><h4>Respond to a breakthrough with full, visible enthusiasm</h4><p>Stopping the session to name and celebrate a moment of progress.</p></div></div>
+    <div class="tcard" data-v="task4" onclick="selTask(this)"><div class="tnum">4</div><div class="ttxt"><h4>Use a prepared pivot when the session loses momentum</h4><p>Switching deliberately to a backup activity tailored to this student.</p></div></div>
+    <div class="tcard" data-v="task5" onclick="selTask(this)"><div class="tnum">5</div><div class="ttxt"><h4>Track confidence and accuracy as separate scores</h4><p>Rating both dimensions independently after the session.</p></div></div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(3)"><svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg> Back</button>
+      <button class="btn-next" onclick="goTo(5)">Next <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5"/></svg></button>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="fcard step" id="step5">
+    <p class="slabel">Step 5 of 6</p>
+    <h2 class="stitle">Rate what you observed.</h2>
+    <p class="ssub">Score each dimension from 1 to 5. Watch your session map build as you drag.</p>
+
+    <div class="slider-group">
+      <div class="sl-hd"><span class="sl-name">Confidence</span><span class="sl-desc">How willing and unafraid to speak?</span></div>
+      <div class="sl-row"><input type="range" min="1" max="5" value="3" id="sc0" oninput="updSlider(this,0)"><span class="sl-val" id="sv0">3</span></div>
+      <div class="sl-ends"><span>Completely silent</span><span>Spoke freely</span></div>
+    </div>
+    <div class="slider-group">
+      <div class="sl-hd"><span class="sl-name">Accuracy</span><span class="sl-desc">How correct was their language use?</span></div>
+      <div class="sl-row"><input type="range" min="1" max="5" value="3" id="sc1" oninput="updSlider(this,1)"><span class="sl-val" id="sv1">3</span></div>
+      <div class="sl-ends"><span>Many structural errors</span><span>Consistently accurate</span></div>
+    </div>
+    <div class="slider-group">
+      <div class="sl-hd"><span class="sl-name">Language relationship</span><span class="sl-desc">How did they seem to feel about the language?</span></div>
+      <div class="sl-row"><input type="range" min="1" max="5" value="3" id="sc2" oninput="updSlider(this,2)"><span class="sl-val" id="sv2">3</span></div>
+      <div class="sl-ends"><span>"This is not for me"</span><span>"I can do this"</span></div>
+    </div>
+    <div class="slider-group">
+      <div class="sl-hd"><span class="sl-name">Teacher-student trust</span><span class="sl-desc">How safe did they feel with you?</span></div>
+      <div class="sl-row"><input type="range" min="1" max="5" value="3" id="sc3" oninput="updSlider(this,3)"><span class="sl-val" id="sv3">3</span></div>
+      <div class="sl-ends"><span>Guarded and closed</span><span>Relaxed and open</span></div>
+    </div>
+    <div class="slider-group">
+      <div class="sl-hd"><span class="sl-name">Nervous system</span><span class="sl-desc">How relaxed and present did they physically seem?</span></div>
+      <div class="sl-row"><input type="range" min="1" max="5" value="3" id="sc4" oninput="updSlider(this,4)"><span class="sl-val" id="sv4">3</span></div>
+      <div class="sl-ends"><span>Tense, avoidant</span><span>Calm, present</span></div>
+    </div>
+
+    <div class="radar-wrap">
+      <p class="radar-lbl">Your session map</p>
+      <svg id="radarSVG" viewBox="0 0 260 260" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="heat-row">
+        <span class="hpill" id="hp0">Confidence: 3</span>
+        <span class="hpill" id="hp1">Accuracy: 3</span>
+        <span class="hpill" id="hp2">Language: 3</span>
+        <span class="hpill" id="hp3">Trust: 3</span>
+        <span class="hpill" id="hp4">Nervous sys: 3</span>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(4)"><svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg> Back</button>
+      <button class="btn-next" onclick="goTo(6)">Next <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5"/></svg></button>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="fcard step" id="step6">
+    <p class="slabel">Step 6 of 6</p>
+    <h2 class="stitle">Tell us what happened.</h2>
+    <p class="ssub">The numbers say what changed. This tells us why. A sentence or two is enough.</p>
+    <div class="fgroup">
+      <label class="flbl">The most notable moment of this session</label>
+      <span class="fsub">What stood out — positive or negative?</span>
+      <textarea id="notable" placeholder="e.g. She self-corrected mid-sentence for the first time without pausing or looking embarrassed."></textarea>
+    </div>
+    <div class="fgroup">
+      <label class="flbl">What surprised you?</label>
+      <textarea id="surprise" placeholder="e.g. He spoke more in the first five minutes than in the previous three sessions combined."></textarea>
+    </div>
+    <div class="fgroup">
+      <label class="flbl">What did not work, or felt unnatural?</label>
+      <span class="fsub">Honest feedback here is the most valuable thing you can give.</span>
+      <textarea id="nowork" placeholder="e.g. The visible enthusiasm felt forced when other students were watching."></textarea>
+    </div>
+    <div class="fgroup">
+      <label class="flbl">Is this a baseline or a follow-up session?</label>
+      <div class="ogrid c2" data-grp="sessType" data-single="true">
+        <div class="ocard" data-v="baseline" onclick="selOpt(this)"><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Baseline</h4><p>First session with this student</p></div></div>
+        <div class="ocard" data-v="followup" onclick="selOpt(this);showSessNum()" ><div class="ochk"><div class="ocm"></div></div><div class="otxt"><h4>Follow-up</h4><p>Session 2 or later</p></div></div>
+      </div>
+    </div>
+    <div class="fgroup" id="sessNumWrap" style="display:none">
+      <label class="flbl">Which session number is this?</label>
+      <input type="text" id="sessNum" placeholder="e.g. 3">
+    </div>
+    <div class="nav-row">
+      <button class="btn-back" onclick="goTo(5)"><svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg> Back</button>
+      <button class="btn-review" onclick="openPreview()">Review &amp; Send</button>
+    </div>
+    <p class="err-msg" id="errMsg">Something went wrong. Please try again or email nikoletta.tutor@gmail.com directly.</p>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="fcard success" id="successScreen">
+    <div class="ss-glow">✦</div>
+    <p class="ss-eye">You did it.</p>
+    <h2 class="ss-title">You are now part of<br>a <em>language revolution.</em></h2>
+    <p class="ss-body">
+      Every student who was always told they were not trying hard enough —
+      this research is for them.<br><br>
+      <strong>Your reflection just made this methodology stronger.</strong><br>
+      Nikoletta has been working on this for years. You just helped prove it is real.
+    </p>
+    <div class="ss-actions">
+      <button class="btn-dl" onclick="downloadReflection()">
+        <svg viewBox="0 0 16 16"><path d="M8 2v9M4 8l4 4 4-4M2 13h12"/></svg>
+        Download my reflection
+      </button>
+      <button class="btn-again" onclick="resetForm()">Submit another reflection</button>
+      <button class="btn-home" onclick="showLanding()">Back to the project</button>
+    </div>
+    <p class="ss-quote">"The quietest learner in the room<br>might be the most ready."</p>
+  </div>
+
+</div><!-- .fwrap -->
+</div><!-- #form-section -->
+
+
+<!-- ═══════════════════ PREVIEW MODAL ═══════════════════ -->
+<div class="modal-ov" id="previewModal">
+  <div class="modal-box">
+    <div class="modal-hd">
+      <h3>Review your reflection</h3>
+      <button class="modal-close" onclick="closePreview()">&#215;</button>
+    </div>
+    <div class="modal-body" id="previewContent"></div>
+    <div class="modal-ft">
+      <button class="btn-edit" onclick="closePreview()">Go back and edit</button>
+      <button class="btn-sub" id="subBtn" onclick="doSubmit()">
+        <span id="subLabel">Send my reflection</span>
+        <span class="spinner" id="subSpinner"></span>
+      </button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+// ── STATE ────────────────────────────────────────────────────
+const S = {
+  cur:1, teacherName:'', experience:'', languages:'',
+  setting:'', ageGroup:[], priorRel:[], groupFocus:'', selReason:'',
+  tasks:[],
+  scores:[3,3,3,3,3],
+  notable:'', surprise:'', nowork:'', sessType:'', sessNum:''
+}
+const SCORE_NAMES = ['Confidence','Accuracy','Language','Trust','Nervous sys.']
+const SCORE_FULL  = ['Confidence','Accuracy','Language relation','Teacher-student trust','Nervous system']
+const TASK_NAMES  = {
+  task1:'Ask how they want to be taught',
+  task2:'Build session around a casual mention',
+  task3:'Respond with full, visible enthusiasm',
+  task4:'Use a prepared pivot',
+  task5:'Track confidence & accuracy separately'
+}
+const REL_NAMES = {
+  avoids_speaking:'Avoids speaking',anxious_but_tries:'Anxious but tries',
+  disengaged:'Disengaged / resistant',willing_beginner:'Willing but beginner',
+  confident:'Confident speaker'
+}
+const SETTING_NAMES = {
+  private_1on1:'Private one-on-one',school_1on1:'School one-on-one',
+  small_group:'Small group',classroom:'Classroom',
+  online_1on1:'Online one-on-one',online_group:'Online group'
+}
+
+// ── NAV ──────────────────────────────────────────────────────
+function goTo(n){
+  document.getElementById('step'+S.cur).classList.remove('active')
+  for(let i=1;i<=6;i++){
+    const d=document.getElementById('d'+i), l=document.getElementById('l'+i)
+    if(i<n){d.className='sdot done';d.textContent='';if(l)l.className='sline done'}
+    else if(i===n){d.className='sdot active';d.textContent=i;if(l)l.className='sline done'}
+    else{d.className='sdot';d.textContent=i;if(l)l.className='sline'}
+  }
+  S.cur=n
+  document.getElementById('step'+n).classList.add('active')
+  document.getElementById('progBar').style.width=(((n-1)/6)*100)+'%'
+  const s=S.setting, gf=document.getElementById('groupFocusField')
+  if(gf) gf.style.display=(s==='small_group'||s==='classroom'||s==='online_group')?'block':'none'
+  if(n===5) setTimeout(()=>drawRadar(S.scores),100)
+  window.scrollTo({top:0,behavior:'smooth'})
+}
+function showForm(){ document.getElementById('landing').style.display='none'; document.getElementById('form-section').style.display='block'; goTo(1); window.scrollTo({top:0,behavior:'instant'}) }
+function showLanding(){ document.getElementById('form-section').style.display='none'; document.getElementById('landing').style.display='block'; window.scrollTo({top:0,behavior:'instant'}) }
+function showSessNum(){ document.getElementById('sessNumWrap').style.display='block' }
+
+// ── OPTION CARDS ─────────────────────────────────────────────
+function selOpt(el){
+  const grid=el.closest('.ogrid'), grp=grid.dataset.grp, single=grid.dataset.single==='true'
+  if(single){ grid.querySelectorAll('.ocard').forEach(c=>c.classList.remove('sel')); el.classList.add('sel'); S[grp]=el.dataset.v }
+  else{ el.classList.toggle('sel'); S[grp]=[...grid.querySelectorAll('.ocard.sel')].map(c=>c.dataset.v) }
+  if(grp==='sessType' && el.dataset.v==='baseline') document.getElementById('sessNumWrap').style.display='none'
+}
+function selTask(el){ el.classList.toggle('sel'); const v=el.dataset.v; if(S.tasks.includes(v)) S.tasks=S.tasks.filter(t=>t!==v); else S.tasks.push(v) }
+
+// ── SLIDERS + RADAR ──────────────────────────────────────────
+let radarTgt=[3,3,3,3,3], radarCur=[3,3,3,3,3], rafId=null
+function updSlider(inp,i){
+  const v=parseInt(inp.value)
+  S.scores[i]=v
+  document.getElementById('sv'+i).textContent=v
+  inp.style.setProperty('--fill',((v-1)/4*100)+'%')
+  radarTgt[i]=v
+  if(!rafId) rafId=requestAnimationFrame(tickRadar)
+}
+function tickRadar(){
+  let done=true
+  for(let i=0;i<5;i++){
+    const d=radarTgt[i]-radarCur[i]
+    if(Math.abs(d)>0.015){radarCur[i]+=d*0.18;done=false}
+    else radarCur[i]=radarTgt[i]
+  }
+  drawRadar(radarCur)
+  rafId=done?null:requestAnimationFrame(tickRadar)
+}
+function scoreColor(v){ const h=Math.round(200-(v-1)/4*155),s=Math.round(45+(v-1)/4*25); return `hsl(${h},${s}%,58%)` }
+function drawRadar(vals){
+  const svg=document.getElementById('radarSVG'); if(!svg) return
+  const cx=130,cy=130,R=90,n=5
+  const ang=Array.from({length:n},(_,i)=>i*2*Math.PI/n-Math.PI/2)
+  let out=''
+  for(let lv=1;lv<=5;lv++){
+    const r=lv/5*R,pts=ang.map(a=>`${cx+r*Math.cos(a)},${cy+r*Math.sin(a)}`).join(' ')
+    out+=`<polygon points="${pts}" fill="${lv%2?'rgba(242,240,237,.6)':'rgba(255,255,255,.4)'}" stroke="#EDE4D8" stroke-width="1"/>`
+  }
+  ang.forEach(a=>{out+=`<line x1="${cx}" y1="${cy}" x2="${cx+R*Math.cos(a)}" y2="${cy+R*Math.sin(a)}" stroke="#E2D5C3" stroke-width="1"/>`})
+  const avg=vals.reduce((a,b)=>a+b,0)/n
+  const col=scoreColor(avg), colFill=col.replace('58%','58%').replace('hsl','hsla').replace(')',',0.28)')
+  const dpts=vals.map((v,i)=>{const r=v/5*R;return `${cx+r*Math.cos(ang[i])},${cy+r*Math.sin(ang[i])}`}).join(' ')
+  out+=`<polygon points="${dpts}" fill="${colFill.replace('hsla','hsl').replace(',0.28)',')')}" fill-opacity="0.28" stroke="${col}" stroke-width="2.5" stroke-linejoin="round"/>`
+  vals.forEach((v,i)=>{const r=v/5*R;out+=`<circle cx="${cx+r*Math.cos(ang[i])}" cy="${cy+r*Math.sin(ang[i])}" r="4.5" fill="${col}" stroke="white" stroke-width="2"/>`})
+  const labs=['Confidence','Accuracy','Language\nrelation','Trust','Nervous\nsystem']
+  ang.forEach((a,i)=>{
+    const lx=cx+(R+28)*Math.cos(a),ly=cy+(R+28)*Math.sin(a)
+    const parts=labs[i].split('\n')
+    let t=''; parts.forEach((p,j)=>{t+=`<tspan x="${lx}" ${j?`dy="12"`:''}>${p}</tspan>`})
+    out+=`<text x="${lx}" y="${ly-((parts.length-1)*6)}" text-anchor="middle" dominant-baseline="middle" font-size="9.5" font-family="Inter,sans-serif" fill="#8A9E8D" font-weight="500">${t}</text>`
+  })
+  out+=`<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="middle" font-size="14" font-family="Inter,sans-serif" font-weight="700" fill="${col}">${avg.toFixed(1)}</text>`
+  svg.innerHTML=out
+  vals.forEach((v,i)=>{
+    const pill=document.getElementById('hp'+i)
+    if(pill){pill.style.background=scoreColor(v);pill.textContent=`${SCORE_NAMES[i]}: ${Math.round(v)}`}
+  })
+}
+
+// ── PREVIEW ──────────────────────────────────────────────────
+function collectData(){
+  S.teacherName=document.getElementById('teacherName').value.trim()
+  S.languages=document.getElementById('langField').value.trim()
+  S.selReason=document.getElementById('selReason').value.trim()
+  S.notable=document.getElementById('notable').value.trim()
+  S.surprise=document.getElementById('surprise').value.trim()
+  S.nowork=document.getElementById('nowork').value.trim()
+  S.sessNum=document.getElementById('sessNum').value.trim()
+  for(let i=0;i<5;i++) S.scores[i]=parseInt(document.getElementById('sc'+i).value)
+}
+function openPreview(){
+  collectData()
+  const tagify=arr=>(arr||[]).map(v=>`<span class="ptag g">${v}</span>`).join('')
+  const relTags=(Array.isArray(S.priorRel)?S.priorRel:[S.priorRel]).filter(Boolean).map(v=>`<span class="ptag">${REL_NAMES[v]||v}</span>`).join('')||'<span class="ptag">—</span>'
+  const ageTags=(Array.isArray(S.ageGroup)?S.ageGroup:[S.ageGroup]).filter(Boolean).map(v=>`<span class="ptag">${v}</span>`).join('')||'<span class="ptag">—</span>'
+  const taskTags=S.tasks.map(t=>`<span class="ptag g">${TASK_NAMES[t]||t}</span>`).join('')||'<span class="ptag">Nothing selected</span>'
+  const scorePills=S.scores.map((v,i)=>`<span class="pvscore" style="background:${scoreColor(v).replace('58%','48%')}">${SCORE_FULL[i]}: ${v}</span>`).join('')
+  const qblock=(lbl,txt)=>txt?`<p class="pvql">${lbl}</p><div class="pvq">${txt}</div>`:''
+  document.getElementById('previewContent').innerHTML=`
+    <div class="pvs"><div class="pvl">About you</div><div class="pvv">${S.teacherName||'(anonymous)'} &nbsp;·&nbsp; ${S.experience||'—'} &nbsp;·&nbsp; ${S.languages||'—'}</div></div>
+    <div class="pvs"><div class="pvl">Session setting</div><div class="pvv">${SETTING_NAMES[S.setting]||'—'}</div><div class="pvtags">${ageTags}</div></div>
+    <div class="pvs"><div class="pvl">Student profile</div><div class="pvtags">${relTags}</div>${S.selReason?`<div class="pvq">${S.selReason}</div>`:''}</div>
+    <div class="pvs"><div class="pvl">What you tried</div><div class="pvtags">${taskTags}</div></div>
+    <div class="pvs"><div class="pvl">Your scores</div><div class="pvscores">${scorePills}</div></div>
+    <div class="pvs"><div class="pvl">Your story</div>${qblock('Notable moment',S.notable)}${qblock('What surprised you',S.surprise)}${qblock('What did not work',S.nowork)}</div>
+  `
+  document.getElementById('previewModal').classList.add('open')
+}
+function closePreview(){ document.getElementById('previewModal').classList.remove('open') }
+
+// ── SUBMIT ───────────────────────────────────────────────────
+async function doSubmit(){
+  document.getElementById('subLabel').textContent='Saving...'
+  document.getElementById('subSpinner').style.display='inline-block'
+  const payload={
+    timestamp:new Date().toISOString(),
+    teacher:{name:S.teacherName,experience:S.experience,languages:S.languages},
+    session:{setting:S.setting,ageGroup:S.ageGroup,sessType:S.sessType,sessNum:S.sessNum},
+    student:{priorRel:S.priorRel,groupFocus:S.groupFocus,selReason:S.selReason},
+    tasks:S.tasks,
+    scores:{confidence:S.scores[0],accuracy:S.scores[1],languageRel:S.scores[2],trust:S.scores[3],nervousSystem:S.scores[4]},
+    story:{notable:S.notable,surprise:S.surprise,nowork:S.nowork}
+  }
+  try{
+    // Save to localStorage so admin panel can read it
+    const existing=JSON.parse(localStorage.getItem('ssp_reflections')||'[]')
+    existing.push(payload)
+    localStorage.setItem('ssp_reflections',JSON.stringify(existing))
+    showSuccess()
+  }catch(e){
+    console.error(e)
+    document.getElementById('subLabel').textContent='Send my reflection'
+    document.getElementById('subSpinner').style.display='none'
+    closePreview()
+    document.getElementById('errMsg').style.display='block'
+  }
+}
+function showSuccess(){
+  closePreview()
+  document.getElementById('step6').classList.remove('active')
+  document.getElementById('successScreen').style.display='block'
+  document.getElementById('progBar').style.width='100%'
+  for(let i=1;i<=6;i++){const d=document.getElementById('d'+i);d.className='sdot done';d.textContent='';const l=document.getElementById('l'+i);if(l)l.className='sline done'}
+  launchConfetti()
+}
+
+// ── CONFETTI ─────────────────────────────────────────────────
+function launchConfetti(){
+  const c=document.createElement('canvas')
+  c.style.cssText='position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99999'
+  document.body.appendChild(c)
+  c.width=window.innerWidth; c.height=window.innerHeight
+  const ctx=c.getContext('2d')
+  const cols=['#B8975A','#3D4A40','#8A9E8D','#EDE4D8','#F5ECD8','#D4C5A9','#6B8870','#F5EFE6']
+  const ps=Array.from({length:180},()=>({
+    x:Math.random()*c.width, y:-30-Math.random()*100,
+    vx:(Math.random()-.5)*4, vy:2+Math.random()*5,
+    rot:Math.random()*Math.PI*2, rv:(Math.random()-.5)*.25,
+    w:6+Math.random()*10, h:4+Math.random()*6,
+    col:cols[Math.floor(Math.random()*cols.length)],
+    circ:Math.random()<.35
+  }))
+  let raf
+  const tick=()=>{
+    ctx.clearRect(0,0,c.width,c.height)
+    let alive=false
+    ps.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.rv; p.vy+=0.06; p.vx*=.997
+      if(p.y<c.height+80) alive=true
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.fillStyle=p.col
+      if(p.circ){ctx.beginPath();ctx.arc(0,0,p.w/2,0,Math.PI*2);ctx.fill()}
+      else ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h)
+      ctx.restore()
+    })
+    if(alive) raf=requestAnimationFrame(tick); else c.remove()
+  }
+  raf=requestAnimationFrame(tick)
+  setTimeout(()=>{cancelAnimationFrame(raf);c.remove()},8000)
+}
+
+// ── DOWNLOAD ─────────────────────────────────────────────────
+function downloadReflection(){
+  const date=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})
+  const scoreRows=S.scores.map((v,i)=>{
+    const h=Math.round(200-(v-1)/4*155),s=Math.round(45+(v-1)/4*25)
+    return `<span style="background:hsl(${h},${s}%,48%);color:white;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;font-family:sans-serif;margin:4px;display:inline-block">${SCORE_FULL[i]}: ${v}/5</span>`
+  }).join('')
+  const qrow=(lbl,t)=>t?`<div style="margin-bottom:22px"><p style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#B8975A;font-family:sans-serif;margin-bottom:8px">${lbl}</p><div style="background:#F5EFE6;padding:14px 18px;border-left:3px solid #B8975A;border-radius:4px;font-style:italic;font-size:14.5px;color:#555;line-height:1.7">${t}</div></div>`:''
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Teaching Reflection — ${S.teacherName||'Anonymous'}</title></head>
+<body style="font-family:Georgia,serif;max-width:640px;margin:52px auto;padding:24px;color:#2C3830;line-height:1.7">
+<h1 style="font-size:30px;margin-bottom:4px">Teaching Reflection</h1>
+<p style="font-size:13px;color:#8A9E8D;margin-bottom:36px;font-family:sans-serif">The Silent Student Project &nbsp;·&nbsp; ${date} &nbsp;·&nbsp; ${S.teacherName||'Anonymous'}</p>
+<hr style="border:none;border-top:1px solid #EDE4D8;margin-bottom:32px">
+<div style="margin-bottom:24px"><p style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#B8975A;font-family:sans-serif;margin-bottom:8px">About you</p><p style="font-size:14.5px">${S.experience||'—'} teaching experience &nbsp;·&nbsp; ${S.languages||'—'}</p></div>
+<div style="margin-bottom:24px"><p style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#B8975A;font-family:sans-serif;margin-bottom:8px">Session setting</p><p style="font-size:14.5px">${SETTING_NAMES[S.setting]||'—'} &nbsp;·&nbsp; ${(Array.isArray(S.ageGroup)?S.ageGroup:[S.ageGroup]).join(', ')||'—'}</p></div>
+<div style="margin-bottom:24px"><p style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#B8975A;font-family:sans-serif;margin-bottom:10px">Your scores</p>${scoreRows}</div>
+${qrow('Notable moment',S.notable)}${qrow('What surprised you',S.surprise)}${qrow('What did not work',S.nowork)}
+<hr style="border:none;border-top:1px solid #EDE4D8;margin-top:40px;margin-bottom:16px">
+<p style="font-size:11px;color:#8A9E8D;font-family:sans-serif">The Silent Student Project &nbsp;·&nbsp; Nikoletta Csonka &nbsp;·&nbsp; nikoletta.tutor@gmail.com</p>
+</body></html>`
+  const blob=new Blob([html],{type:'text/html'})
+  const url=URL.createObjectURL(blob)
+  const a=document.createElement('a'); a.href=url; a.download=`reflection-${(S.teacherName||'anonymous').replace(/\s+/g,'-')}.html`
+  a.click(); URL.revokeObjectURL(url)
+}
+
+// ── RESET ────────────────────────────────────────────────────
+function resetForm(){
+  document.getElementById('successScreen').style.display='none'
+  document.querySelectorAll('.ocard').forEach(c=>c.classList.remove('sel'))
+  document.querySelectorAll('.tcard').forEach(c=>c.classList.remove('sel'))
+  document.querySelectorAll('textarea,input[type=text],input[type=email]').forEach(el=>el.value='')
+  for(let i=0;i<5;i++){const sl=document.getElementById('sc'+i);sl.value=3;sl.style.setProperty('--fill','50%');document.getElementById('sv'+i).textContent='3'}
+  radarTgt=[3,3,3,3,3]; radarCur=[3,3,3,3,3]
+  Object.assign(S,{cur:1,teacherName:'',experience:'',languages:'',setting:'',ageGroup:[],priorRel:[],groupFocus:'',selReason:'',tasks:[],scores:[3,3,3,3,3],notable:'',surprise:'',nowork:'',sessType:'',sessNum:''})
+  document.getElementById('sessNumWrap').style.display='none'
+  goTo(1)
+}
+
+// ── LANDING ACCORDIONS ────────────────────────────────────────
+function ptoggle(id){ document.getElementById(id).classList.toggle('open') }
+function stab(id,which){
+  const c=document.getElementById(id)
+  c.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===(which==='solo'?0:1)))
+  c.querySelectorAll('.spanel').forEach((p,i)=>p.classList.toggle('active',i===(which==='solo'?0:1)))
+}
+
+// init sliders fill
+document.addEventListener('DOMContentLoaded',()=>{
+  for(let i=0;i<5;i++) document.getElementById('sc'+i).style.setProperty('--fill','50%')
+  drawRadar([3,3,3,3,3])
+})
+</script>
+</body>
+</html>

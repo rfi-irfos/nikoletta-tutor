@@ -512,6 +512,21 @@ export function PublicSite({
   const [modalArticle, setModalArticle] = useState<NewsItem | null>(null)
   const [modalCert, setModalCert] = useState<{ title: string; file: string } | null>(null)
   const [browseCatIdx, setBrowseCatIdx] = useState<number | null>(null)
+  const [showSSPLogin, setShowSSPLogin] = useState(false)
+  const [sspCode, setSspCode] = useState('')
+  const [sspError, setSspError] = useState(false)
+
+  const handleSSPLogin = () => {
+    if (sspCode.trim().toLowerCase() === 'ssp2026') {
+      localStorage.setItem('ssp_session', 'valid_' + Date.now())
+      setShowSSPLogin(false)
+      setSspCode('')
+      setSspError(false)
+      window.open((import.meta.env.BASE_URL + 'research.html').replace('//', '/'), '_blank')
+    } else {
+      setSspError(true)
+    }
+  }
   const { theme, setTheme } = useTheme()
   const { t } = useLang()
 
@@ -1248,6 +1263,18 @@ export function PublicSite({
           </section>
         )}
 
+        {/* ── SILENT STUDENT PROJECT CTA ───────────────────────────────── */}
+        <section className="site-ssp-cta">
+          <div className="site-ssp-inner">
+            <span className="site-ssp-badge">Research Portal</span>
+            <h2 className="site-ssp-title">The Silent Student Project</h2>
+            <p className="site-ssp-sub">Exploring the half of language learning nobody taught. If you are a language teacher and part of Nikoletta's early-access research, log in to access the reflection portal and your session data.</p>
+            <button className="site-btn-ssp" onClick={() => { setShowSSPLogin(true); setSspError(false); setSspCode('') }}>
+              Member login →
+            </button>
+          </div>
+        </section>
+
         {/* ── FOOTER ───────────────────────────────────────────────────── */}
         <footer className="site-footer">
           {(footer?.cols?.length ?? 0) > 0 && (
@@ -1344,6 +1371,42 @@ export function PublicSite({
                 ) : (
                   <p className="site-cert-placeholder">{t.noCertificateYet}</p>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── SSP LOGIN MODAL ──────────────────────────────────────────── */}
+        {showSSPLogin && (
+          <div className="site-modal-scrim" onClick={() => setShowSSPLogin(false)} role="dialog" aria-modal="true" aria-label="Research Portal Login">
+            <div className="site-modal site-ssp-modal" onClick={e => e.stopPropagation()}>
+              <button className="site-modal-close" aria-label="Close" onClick={() => setShowSSPLogin(false)}><IconClose /></button>
+              <div className="site-modal-body">
+                <div className="site-ssp-modal-badge">Research Portal</div>
+                <h3 className="site-modal-title">Member Access</h3>
+                <p style={{ fontSize: 14, color: 'var(--text-soft)', marginBottom: 20, lineHeight: 1.6 }}>
+                  Enter your participant code to access the Silent Student Project reflection portal.
+                </p>
+                <input
+                  type="text"
+                  className="site-ssp-code-input"
+                  placeholder="Participant code"
+                  value={sspCode}
+                  onChange={e => { setSspCode(e.target.value); setSspError(false) }}
+                  onKeyDown={e => e.key === 'Enter' && handleSSPLogin()}
+                  autoFocus
+                />
+                {sspError && (
+                  <p style={{ fontSize: 13, color: '#C0392B', marginTop: 8, marginBottom: 0 }}>
+                    Invalid code. Please check your participant code and try again.
+                  </p>
+                )}
+                <button className="site-btn-ssp-submit" onClick={handleSSPLogin} style={{ marginTop: 16 }}>
+                  Continue →
+                </button>
+                <p style={{ fontSize: 12, color: 'var(--text-soft)', marginTop: 14, textAlign: 'center' }}>
+                  Not a participant yet? <a href="mailto:nikoletta.tutor@gmail.com" style={{ color: 'var(--primary)' }}>Reach out to Nikoletta.</a>
+                </p>
               </div>
             </div>
           </div>

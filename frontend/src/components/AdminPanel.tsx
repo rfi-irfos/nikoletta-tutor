@@ -35,6 +35,72 @@ function loadContactInbox(): ContactInboxItem[] {
   try { return JSON.parse(localStorage.getItem('niki_contact_inbox') || '[]') } catch { return [] }
 }
 
+interface SSPReflection {
+  timestamp: string
+  teacher: { name: string; experience: string; languages: string }
+  session: { setting: string; ageGroup: string[]; sessType: string; sessNum: string }
+  student: { priorRel: string[]; groupFocus: string; selReason: string }
+  tasks: string[]
+  scores: { confidence: number; accuracy: number; languageRel: number; trust: number; nervousSystem: number }
+  story: { notable: string; surprise: string; nowork: string }
+}
+
+function loadSSP(): SSPReflection[] {
+  try { return JSON.parse(localStorage.getItem('ssp_reflections') || '[]') } catch { return [] }
+}
+
+const SCORE_KEYS: (keyof SSPReflection['scores'])[] = ['confidence', 'accuracy', 'languageRel', 'trust', 'nervousSystem']
+const SCORE_LABELS = ['Confidence', 'Accuracy', 'Language', 'Trust', 'Nervous sys.']
+const TASK_LABELS: Record<string, string> = {
+  task1: 'Ask how they want to be taught',
+  task2: 'Build session around casual mention',
+  task3: 'Respond with full enthusiasm',
+  task4: 'Use prepared pivot',
+  task5: 'Track conf & acc separately',
+}
+
+function scoreColor(v: number) {
+  const h = Math.round(200 - (v - 1) / 4 * 155)
+  const s = Math.round(45 + (v - 1) / 4 * 25)
+  return `hsl(${h},${s}%,52%)`
+}
+
+function SSPMiniBar({ scores }: { scores: SSPReflection['scores'] }) {
+  const vals = SCORE_KEYS.map(k => scores[k])
+  return (
+    <div style={{ display: 'flex', gap: 4, alignItems: 'flex-end', height: 36, marginTop: 6 }}>
+      {vals.map((v, i) => (
+        <div key={i} title={`${SCORE_LABELS[i]}: ${v}/5`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2 }}>
+          <div style={{ width: 16, height: v / 5 * 30, background: scoreColor(v), borderRadius: 3 }} />
+          <span style={{ fontSize: 8, color: '#aaa', lineHeight: 1 }}>{SCORE_LABELS[i].slice(0, 4)}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function SSPAggregateBars({ reflections }: { reflections: SSPReflection[] }) {
+  if (reflections.length === 0) return null
+  const avgs = SCORE_KEYS.map(k => {
+    const sum = reflections.reduce((a, r) => a + (r.scores[k] ?? 0), 0)
+    return sum / reflections.length
+  })
+  const maxW = 200
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 12 }}>
+      {avgs.map((avg, i) => (
+        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ width: 80, fontSize: 11, color: '#666', fontWeight: 500 }}>{SCORE_LABELS[i]}</span>
+          <div style={{ flex: 1, background: '#f0f0f0', borderRadius: 4, height: 10, maxWidth: maxW }}>
+            <div style={{ width: `${(avg / 5) * 100}%`, height: '100%', background: scoreColor(avg), borderRadius: 4, transition: 'width .4s' }} />
+          </div>
+          <span style={{ fontSize: 11, fontWeight: 700, color: scoreColor(avg), minWidth: 28 }}>{avg.toFixed(1)}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 interface Props {
   content: SiteContent
   user: User
@@ -99,7 +165,9 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
     return 'edit'
   })
   const [adminMode, setAdminMode] = useState(false)
-  const [adminSection, setAdminSection] = useState<'reviews' | 'students' | 'inbox'>('inbox')
+  const [adminSection, setAdminSection] = useState<'reviews' | 'students' | 'inbox' | 'research'>('inbox')
+  const [sspReflections, setSspReflections] = useState<SSPReflection[]>(() => loadSSP())
+  const [sspExpanded, setSspExpanded] = useState<string | null>(null)
   const [pendingReviews, setPendingReviews] = useState<PendingReview[]>(loadPending)
   const [contactInbox, setContactInbox] = useState<ContactInboxItem[]>(loadContactInbox)
 
@@ -378,22 +446,79 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
       {adminMode ? (
 
         /* ── ADMIN FULL-PAGE VIEW ───────────────────────────────────────── */
-        <div className="admin-view">
-          <div className="admin-view-header">
-            <span className="admin-view-title">Verwaltung</span>
-            <div className="admin-view-tabs">
-              <button className={`admin-view-tab ${adminSection === 'inbox' ? 'active' : ''}`} onClick={() => setAdminSection('inbox')} style={{ position: 'relative' }}>
-                Anfragen
-                {contactInbox.length > 0 && <span style={{ marginLeft: 5, background: '#e53e3e', color: '#fff', borderRadius: 10, fontSize: 10, fontWeight: 700, padding: '1px 5px' }}>{contactInbox.length}</span>}
-              </button>
-              <button className={`admin-view-tab ${adminSection === 'reviews' ? 'active' : ''}`} onClick={() => setAdminSection('reviews')} style={{ position: 'relative' }}>
-                Reviews
-                {pendingReviews.length > 0 && <span style={{ marginLeft: 5, background: '#e53e3e', color: '#fff', borderRadius: 10, fontSize: 10, fontWeight: 700, padding: '1px 5px' }}>{pendingReviews.length}</span>}
-              </button>
-              <button className={`admin-view-tab ${adminSection === 'students' ? 'active' : ''}`} onClick={() => setAdminSection('students')}>Schüler</button>
+        <div className="crm-layout">
+
+          {/* ── CRM SIDEBAR ── */}
+          <aside className="crm-sidebar">
+            <div className="crm-sidebar-brand">
+              <span className="crm-sidebar-icon">N</span>
+              <div>
+                <div className="crm-sidebar-name">Niki's Studio</div>
+                <div className="crm-sidebar-sub">Verwaltung</div>
+              </div>
             </div>
-          </div>
-          <div className="admin-view-body">
+
+            <nav className="crm-nav">
+              <button className={`crm-nav-item ${adminSection === 'inbox' ? 'active' : ''}`} onClick={() => setAdminSection('inbox')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                Anfragen
+                {contactInbox.length > 0 && <span className="crm-badge red">{contactInbox.length}</span>}
+              </button>
+              <button className={`crm-nav-item ${adminSection === 'students' ? 'active' : ''}`} onClick={() => setAdminSection('students')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                Schüler
+                {students.filter(s => s.status === 'active').length > 0 && <span className="crm-badge teal">{students.filter(s => s.status === 'active').length}</span>}
+              </button>
+              <button className={`crm-nav-item ${adminSection === 'reviews' ? 'active' : ''}`} onClick={() => setAdminSection('reviews')}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                Reviews
+                {pendingReviews.length > 0 && <span className="crm-badge red">{pendingReviews.length}</span>}
+              </button>
+              <button className={`crm-nav-item ${adminSection === 'research' ? 'active' : ''}`} onClick={() => { setSspReflections(loadSSP()); setAdminSection('research') }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+                Forschung
+                {sspReflections.length > 0 && <span className="crm-badge gold">{sspReflections.length}</span>}
+              </button>
+            </nav>
+
+            <div className="crm-sidebar-stats">
+              <div className="crm-stat-row">
+                <div className="crm-stat-box">
+                  <span className="crm-stat-num">{students.filter(s => s.status === 'active').length}</span>
+                  <span className="crm-stat-lbl">Aktive Schüler</span>
+                </div>
+                <div className="crm-stat-box">
+                  <span className="crm-stat-num">{contactInbox.length + pendingReviews.length}</span>
+                  <span className="crm-stat-lbl">Offen</span>
+                </div>
+              </div>
+              <div className="crm-stat-row">
+                <div className="crm-stat-box">
+                  <span className="crm-stat-num">{students.reduce((a, s) => a + (s.sessions || 0), 0)}</span>
+                  <span className="crm-stat-lbl">Ges. Stunden</span>
+                </div>
+                <div className="crm-stat-box">
+                  <span className="crm-stat-num" style={{ color: '#B8975A' }}>{sspReflections.length}</span>
+                  <span className="crm-stat-lbl">Reflexionen</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+
+          {/* ── CRM MAIN ── */}
+          <div className="crm-main">
+            <div className="crm-topbar">
+              <div className="crm-topbar-title">
+                {adminSection === 'inbox' ? 'Anfragen' : adminSection === 'students' ? 'Schüler' : adminSection === 'reviews' ? 'Reviews' : 'Forschung'}
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                {adminSection === 'inbox' && contactInbox.length > 0 && <span style={{ fontSize: 12, color: '#888' }}>{contactInbox.length} Nachricht{contactInbox.length !== 1 ? 'en' : ''}</span>}
+                {adminSection === 'students' && <span style={{ fontSize: 12, color: '#888' }}>{students.length} Schüler gesamt</span>}
+                {adminSection === 'reviews' && <span style={{ fontSize: 12, color: '#888' }}>{pendingReviews.length} ausstehend</span>}
+                {adminSection === 'research' && <span style={{ fontSize: 12, color: '#888' }}>{sspReflections.length} Einträge</span>}
+              </div>
+            </div>
+          <div className="crm-body">
 
             {/* ── ANFRAGEN (CONTACT INBOX) ─────────────────────────── */}
             {adminSection === 'inbox' && (
@@ -638,6 +763,156 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
               </div>
             )}
 
+            {/* ── FORSCHUNG (SSP RESEARCH) ───────────────────────────────── */}
+            {adminSection === 'research' && (
+              <div className="panel-products">
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <div>
+                    <div style={{ fontWeight: 700, fontSize: 14, marginBottom: 2 }}>Silent Student Project</div>
+                    <div style={{ fontSize: 12, color: 'var(--panel-muted,#888)' }}>{sspReflections.length} Reflexion{sspReflections.length !== 1 ? 'en' : ''} eingegangen</div>
+                  </div>
+                  <button className="panel-back-btn" onClick={() => { setSspReflections(loadSSP()) }}>↺ Aktualisieren</button>
+                </div>
+
+                {sspReflections.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--panel-muted,#aaa)', fontSize: 13 }}>
+                    Noch keine Reflexionen eingegangen. Teile den Portal-Link mit deinen Teilnehmer:innen.<br />
+                    <span style={{ fontSize: 11, marginTop: 8, display: 'block' }}>Teilnehmer-Code: <strong>ssp2026</strong></span>
+                  </div>
+                ) : (
+                  <>
+                    {/* Aggregate overview */}
+                    <div style={{ background: 'linear-gradient(135deg,#2C3830,#3D4A40)', borderRadius: 12, padding: '20px 24px', marginBottom: 20, color: '#fff' }}>
+                      <div style={{ fontSize: 11, letterSpacing: '.1em', textTransform: 'uppercase', color: '#B8975A', marginBottom: 12, fontWeight: 600 }}>Gesamtübersicht</div>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 16 }}>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: 28, fontWeight: 800, color: '#B8975A' }}>{sspReflections.length}</div>
+                          <div style={{ fontSize: 10, color: 'rgba(255,255,255,.65)' }}>Reflexionen</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: 28, fontWeight: 800, color: '#B8975A' }}>
+                            {new Set(sspReflections.map(r => r.teacher?.name || 'anon')).size}
+                          </div>
+                          <div style={{ fontSize: 10, color: 'rgba(255,255,255,.65)' }}>Teilnehmer:innen</div>
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                          <div style={{ fontSize: 28, fontWeight: 800, color: '#B8975A' }}>
+                            {(SCORE_KEYS.reduce((sum, k) => sum + sspReflections.reduce((a, r) => a + (r.scores?.[k] ?? 0), 0) / sspReflections.length, 0) / 5).toFixed(1)}
+                          </div>
+                          <div style={{ fontSize: 10, color: 'rgba(255,255,255,.65)' }}>Ø Score</div>
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,.7)', marginBottom: 8 }}>Durchschnitt je Dimension</div>
+                      <SSPAggregateBars reflections={sspReflections} />
+                    </div>
+
+                    {/* Task frequency */}
+                    <div style={{ background: 'var(--panel-surface,#f8f8f8)', borderRadius: 10, padding: '14px 18px', marginBottom: 16, border: '1px solid var(--panel-border,#e8e8e8)' }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 10, color: 'var(--panel-muted,#666)', textTransform: 'uppercase', letterSpacing: '.08em' }}>Methoden angewendet</div>
+                      {Object.entries(TASK_LABELS).map(([key, label]) => {
+                        const count = sspReflections.filter(r => r.tasks?.includes(key)).length
+                        const pct = Math.round((count / sspReflections.length) * 100)
+                        return (
+                          <div key={key} style={{ marginBottom: 8 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, marginBottom: 3 }}>
+                              <span style={{ color: '#444' }}>{label}</span>
+                              <span style={{ fontWeight: 700, color: '#B8975A' }}>{count}×</span>
+                            </div>
+                            <div style={{ background: '#e8e8e8', borderRadius: 3, height: 5 }}>
+                              <div style={{ width: `${pct}%`, height: '100%', background: '#B8975A', borderRadius: 3 }} />
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+
+                    {/* Individual entries */}
+                    <div style={{ fontSize: 11, fontWeight: 700, marginBottom: 10, color: 'var(--panel-muted,#666)', textTransform: 'uppercase', letterSpacing: '.08em' }}>
+                      Alle Einträge ({sspReflections.length})
+                    </div>
+                    {[...sspReflections].reverse().map((r, i) => {
+                      const id = r.timestamp + i
+                      const open = sspExpanded === id
+                      const avgScore = SCORE_KEYS.reduce((a, k) => a + (r.scores?.[k] ?? 0), 0) / 5
+                      return (
+                        <div key={id} style={{ background: 'var(--panel-surface,#f8f8f8)', borderRadius: 10, marginBottom: 10, border: '1px solid var(--panel-border,#e8e8e8)', overflow: 'hidden' }}>
+                          <button
+                            onClick={() => setSspExpanded(open ? null : id)}
+                            style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left' }}
+                          >
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontWeight: 700, fontSize: 13 }}>{r.teacher?.name || 'Anonym'}</div>
+                              <div style={{ fontSize: 11, color: '#888', marginTop: 1 }}>
+                                {r.teacher?.experience} · {r.teacher?.languages} · {r.session?.setting?.replace(/_/g, ' ')}
+                              </div>
+                            </div>
+                            <SSPMiniBar scores={r.scores} />
+                            <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                              <div style={{ fontSize: 16, fontWeight: 800, color: scoreColor(avgScore) }}>{avgScore.toFixed(1)}</div>
+                              <div style={{ fontSize: 9, color: '#aaa' }}>{new Date(r.timestamp).toLocaleDateString('de')}</div>
+                            </div>
+                            <span style={{ color: '#bbb', fontSize: 16, marginLeft: 4 }}>{open ? '▲' : '▼'}</span>
+                          </button>
+                          {open && (
+                            <div style={{ padding: '0 14px 14px', borderTop: '1px solid var(--panel-border,#eee)' }}>
+                              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginTop: 12 }}>
+                                {SCORE_KEYS.map((k, si) => (
+                                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, padding: '6px 10px', background: '#fff', borderRadius: 6, border: '1px solid #eee' }}>
+                                    <span style={{ color: '#666' }}>{SCORE_LABELS[si]}</span>
+                                    <strong style={{ color: scoreColor(r.scores?.[k] ?? 0) }}>{r.scores?.[k] ?? '—'}/5</strong>
+                                  </div>
+                                ))}
+                              </div>
+                              {r.tasks?.length > 0 && (
+                                <div style={{ marginTop: 10 }}>
+                                  <div style={{ fontSize: 10, fontWeight: 600, color: '#aaa', textTransform: 'uppercase', letterSpacing: '.08em', marginBottom: 5 }}>Methoden</div>
+                                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
+                                    {r.tasks.map(t => <span key={t} style={{ background: '#EEF3EE', color: '#3D4A40', fontSize: 11, padding: '3px 9px', borderRadius: 10, fontWeight: 500 }}>{TASK_LABELS[t] ?? t}</span>)}
+                                  </div>
+                                </div>
+                              )}
+                              {r.story?.notable && (
+                                <div style={{ marginTop: 10, background: '#FBF8F2', borderLeft: '3px solid #B8975A', padding: '10px 12px', borderRadius: '0 6px 6px 0' }}>
+                                  <div style={{ fontSize: 10, fontWeight: 600, color: '#B8975A', marginBottom: 4 }}>Bemerkenswerter Moment</div>
+                                  <div style={{ fontSize: 12, color: '#444', fontStyle: 'italic', lineHeight: 1.6 }}>{r.story.notable}</div>
+                                </div>
+                              )}
+                              {r.story?.surprise && (
+                                <div style={{ marginTop: 8, background: '#f8f8f8', padding: '8px 12px', borderRadius: 6 }}>
+                                  <div style={{ fontSize: 10, fontWeight: 600, color: '#888', marginBottom: 3 }}>Überraschung</div>
+                                  <div style={{ fontSize: 12, color: '#555', lineHeight: 1.5 }}>{r.story.surprise}</div>
+                                </div>
+                              )}
+                              {r.story?.nowork && (
+                                <div style={{ marginTop: 8, background: '#f8f8f8', padding: '8px 12px', borderRadius: 6 }}>
+                                  <div style={{ fontSize: 10, fontWeight: 600, color: '#888', marginBottom: 3 }}>Was nicht funktioniert hat</div>
+                                  <div style={{ fontSize: 12, color: '#555', lineHeight: 1.5 }}>{r.story.nowork}</div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      )
+                    })}
+
+                    {/* Export */}
+                    <button
+                      onClick={() => {
+                        const blob = new Blob([JSON.stringify(sspReflections, null, 2)], { type: 'application/json' })
+                        const url = URL.createObjectURL(blob)
+                        const a = document.createElement('a'); a.href = url; a.download = 'ssp-reflections.json'; a.click()
+                        URL.revokeObjectURL(url)
+                      }}
+                      style={{ marginTop: 12, width: '100%', background: 'none', border: '1.5px solid var(--panel-border,#e0e0e0)', borderRadius: 8, padding: '9px 0', fontSize: 12, fontWeight: 600, color: '#666', cursor: 'pointer' }}
+                    >
+                      Alle Daten als JSON exportieren
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+
+          </div>
           </div>
         </div>
 
