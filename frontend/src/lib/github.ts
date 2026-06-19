@@ -1,6 +1,10 @@
-// GitHub Contents API wrapper — no dependencies, pure fetch
+// GitHub reads (public repo, no auth) + writes via the RFI write-proxy.
+// The GitHub token lives ONLY on the proxy (a Fly secret) — never in the
+// browser. The admin authenticates writes with the password they already type.
 
 const BASE = 'https://api.github.com'
+const PROXY = 'https://rfi-write-proxy.fly.dev'
+const SITE = 'niki' // identifies this site to the proxy
 
 export const OWNER   = import.meta.env.VITE_GH_OWNER   as string
 export const REPO    = import.meta.env.VITE_GH_REPO    as string
@@ -9,53 +13,44 @@ const UPLOADS_DIR   = (import.meta.env.VITE_GH_UPLOADS_DIR   as string) || 'publ
 
 export { CONTENT_PATH, UPLOADS_DIR }
 
-// Runtime-only token. NEVER baked into the build — a baked PAT ends up in the
-// public JS bundle and grants write access to anyone who opens the site. The
-// admin pastes a fine-grained PAT once; kept in localStorage so it sticks on
-// that machine (paste once, never again). Cleared on logout.
-const TOKEN_KEY = 'gh_pat'
-let _runtimeToken = ''
-try { _runtimeToken = localStorage.getItem(TOKEN_KEY) || '' } catch { /* no storage */ }
-export function setGhToken(t: string) { _runtimeToken = t.trim(); try { localStorage.setItem(TOKEN_KEY, _runtimeToken) } catch { /* ignore */ } }
-export function clearGhToken() { _runtimeToken = ''; try { localStorage.removeItem(TOKEN_KEY) } catch { /* ignore */ } }
-export function hasGhToken() { return !!_runtimeToken }
+// The admin password authenticates writes to the proxy. Kept in sessionStorage
+// (this tab only); never a GitHub token, never persisted to disk.
+const PW_KEY = 'admin_pw'
+let _pw = ''
+try { _pw = sessionStorage.getItem(PW_KEY) || '' } catch { /* no storage */ }
+export function setAdminPw(p: string) { _pw = p; try { sessionStorage.setItem(PW_KEY, p) } catch { /* ignore */ } }
+export function clearAdminPw() { _pw = ''; try { sessionStorage.removeItem(PW_KEY) } catch { /* ignore */ } }
+export function hasAdminPw() { return !!_pw }
 
 // content.json (en) -> content.de.json / content.hu.json. Languages side by side.
 export function contentPathFor(lang: string): string {
   return lang === 'en' ? CONTENT_PATH : CONTENT_PATH.replace(/\.json$/, `.${lang}.json`)
 }
 
-function headers() {
-  return {
-    'Authorization': `Bearer ${_runtimeToken}`,
-    'Accept': 'application/vnd.github+json',
-    'X-GitHub-Api-Version': '2022-11-28',
-    'Content-Type': 'application/json',
-  }
-}
+const readHeaders = { 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28' }
 
 export interface GHFile {
   sha: string
   content: string  // base64-encoded
 }
 
+// Reads are public (public repo) — no auth needed.
 export async function ghRead(path: string): Promise<GHFile> {
-  const res = await fetch(`${BASE}/repos/${OWNER}/${REPO}/contents/${path}`, { headers: headers() })
+  const res = await fetch(`${BASE}/repos/${OWNER}/${REPO}/contents/${path}`, { headers: readHeaders })
   if (!res.ok) throw new Error(`GitHub API ${res.status} reading ${path}`)
   return res.json()
 }
 
+// Writes go through the proxy, which holds the token server-side.
 export async function ghWrite(path: string, b64: string, sha: string | null, message: string): Promise<GHFile> {
-  const body: Record<string, string> = { message, content: b64 }
-  if (sha) body.sha = sha
-  const res = await fetch(`${BASE}/repos/${OWNER}/${REPO}/contents/${path}`, {
-    method: 'PUT',
-    headers: headers(),
-    body: JSON.stringify(body),
+  const res = await fetch(`${PROXY}/write`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ site: SITE, password: _pw, path, content: b64, sha: sha || undefined, message }),
   })
-  if (!res.ok) throw new Error(`GitHub API ${res.status} writing ${path}: ${await res.text()}`)
-  const data = await res.json()
-  return data.content  // the updated file metadata
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(`Speichern fehlgeschlagen (${res.status}): ${data.error || 'Proxy-Fehler'}`)
+  return { sha: data.sha, content: b64 }
 }
 
 export function b64Encode(str: string): string {
@@ -67,11 +62,13 @@ export function b64Decode(b64: string): string {
 }
 
 export function isConfigured(): boolean {
-  return !!(OWNER && REPO && _runtimeToken)
+  return !!(OWNER && REPO && _pw)
 }
 
 export async function ghTraffic(endpoint: string): Promise<unknown> {
-  const res = await fetch(`${BASE}/repos/${OWNER}/${REPO}/traffic/${endpoint}`, { headers: headers() })
+  // Traffic API needs push access; without a browser token this returns 403
+  // and the Analytics tab just shows "no data" (unchanged behaviour).
+  const res = await fetch(`${BASE}/repos/${OWNER}/${REPO}/traffic/${endpoint}`, { headers: readHeaders })
   if (!res.ok) throw new Error(`GH Traffic ${res.status}`)
   return res.json()
 }

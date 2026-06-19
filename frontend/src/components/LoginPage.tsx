@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react'
-import { setGhToken, hasGhToken } from '../lib/github'
+import { setAdminPw } from '../lib/github'
 
 interface Props { onLogin: (pw: string) => Promise<boolean | 'locked'>; lockSecondsRemaining: () => number }
 
 export function LoginPage({ onLogin, lockSecondsRemaining }: Props) {
   const [pw, setPw] = useState('')
-  const [token, setToken] = useState('')
   const [error, setError] = useState(false)
   const [busy, setBusy] = useState(false)
   const [lockSecs, setLockSecs] = useState(() => lockSecondsRemaining())
-  // If a token is already cached from this session, the field can stay empty.
-  const tokenCached = hasGhToken()
 
   useEffect(() => {
     if (lockSecs <= 0) return
@@ -28,7 +25,8 @@ export function LoginPage({ onLogin, lockSecondsRemaining }: Props) {
     if (rem > 0) { setLockSecs(rem); return }
     setBusy(true)
     const ok = await onLogin(pw)
-    if (ok === true && token.trim()) setGhToken(token)
+    // Password authenticates writes to the proxy (no GitHub token in the browser).
+    if (ok === true) setAdminPw(pw)
     setBusy(false)
     if (ok === 'locked' || !ok) {
       setError(true)
@@ -60,19 +58,6 @@ export function LoginPage({ onLogin, lockSecondsRemaining }: Props) {
             disabled={isLocked || busy}
             className="login-pw-input"
           />
-          <input
-            type="password"
-            value={token}
-            onChange={e => setToken(e.target.value)}
-            placeholder={tokenCached ? 'GitHub-Token (gespeichert — leer lassen)' : 'GitHub-Token (für Bearbeiten)'}
-            disabled={isLocked || busy}
-            className="login-pw-input"
-            style={{ marginTop: 8 }}
-            autoComplete="off"
-          />
-          <p className="login-sub" style={{ fontSize: 11, marginTop: 6, textAlign: 'left', color: '#888' }}>
-            Fine-grained Token, nur dieses Repo, „Contents: Read and write". Wird nur in diesem Tab gespeichert, nie veröffentlicht.
-          </p>
           {isLocked && (
             <p className="login-error">
               Zu viele Fehlversuche. Bitte warten: {lockSecs}s
