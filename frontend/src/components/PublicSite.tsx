@@ -1140,7 +1140,7 @@ export function PublicSite({
 
         {/* ── PRICING ──────────────────────────────────────────────────── */}
         {pricing?.body && (
-          <section className="site-section site-pricing" id="pricing">
+          <section className="site-section site-pricing" id="pricing" data-cid="pricing.title">
             <h2 className="site-section-title">{pricing.title}</h2>
             <div className="site-pricing-body">
               {pricing.body.split('\n\n').map((para, i) => (
@@ -1219,7 +1219,7 @@ export function PublicSite({
 
         {/* ── CERTIFICATES ─────────────────────────────────────────────── */}
         {(certificates?.items?.length ?? 0) > 0 && (
-          <section className="site-section site-certificates" id="certificates">
+          <section className="site-section site-certificates" id="certificates" data-cid="certificates.items.0">
             {certificates!.title && <h2 className="site-section-title">{certificates!.title}</h2>}
             <div className="site-cert-grid">
               {certificates!.items.map(cert => (
