@@ -205,6 +205,12 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
   // When the editing language switches, the parent refetches that language's
   // content. Re-seed the local draft so the panel edits the right document.
   useEffect(() => { setDraft(content) }, [content])
+  // research.html is a standalone page; preview it in an iframe when its tab is
+  // open. Unlock its auth gate for the preview (same-origin localStorage).
+  const [sspPreviewKey, setSspPreviewKey] = useState(0)
+  useEffect(() => {
+    if (activeTab === 'ssp') { try { localStorage.setItem('ssp_session', 'valid_preview') } catch { /* ignore */ } }
+  }, [activeTab])
   const [saved, setSaved] = useState(false)
   const [saveErr, setSaveErr] = useState(false)
   const [uploadTarget, setUploadTarget] = useState<string | null>(null)
@@ -1601,7 +1607,25 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
         <div className="builder-body">
 
           {/* LEFT: Canvas editor OR device preview */}
-          {device === 'edit' ? (
+          {device === 'edit' && activeTab === 'ssp' ? (
+            <div className="builder-canvas-pane" style={{ display: 'flex', flexDirection: 'column', background: '#fff' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', borderBottom: '1px solid var(--panel-border, #e8e8e8)', fontSize: 12, color: '#666', background: 'var(--panel-surface, #f8f8f8)' }}>
+                <span style={{ fontWeight: 700, color: '#3D4A40' }}>Vorschau: research.html</span>
+                <span style={{ color: '#999' }}>Sprache im Seitenkopf umschaltbar (EN/DE/HU)</span>
+                <button onClick={() => setSspPreviewKey(k => k + 1)} className="panel-add-btn" style={{ marginLeft: 'auto' }} title="Nach dem Speichern klicken, um die Vorschau zu aktualisieren">↻ Aktualisieren</button>
+                <a href={`${import.meta.env.BASE_URL}research.html`} target="_blank" rel="noreferrer" className="panel-back-btn" style={{ textDecoration: 'none' }}>↗ Neuer Tab</a>
+              </div>
+              <iframe
+                key={sspPreviewKey}
+                src={`${import.meta.env.BASE_URL}research.html?preview=${sspPreviewKey}`}
+                title="research.html Vorschau"
+                style={{ flex: 1, width: '100%', border: 'none', background: '#fff' }}
+              />
+              <div style={{ padding: '6px 12px', fontSize: 11, color: '#999', background: 'var(--panel-surface, #f8f8f8)', borderTop: '1px solid var(--panel-border, #e8e8e8)' }}>
+                Tipp: rechts bearbeiten → <strong>Speichern</strong> → hier <strong>↻ Aktualisieren</strong>. Änderungen erscheinen nach dem Speichern.
+              </div>
+            </div>
+          ) : device === 'edit' ? (
             <div className="builder-canvas-pane" ref={previewRef} onClick={handleCanvasClick}>
               {/* 1:1 edit layer: the REAL public site, inline-editable (no separate
                   draggable-box canvas). Click any text to edit, images to swap. */}
