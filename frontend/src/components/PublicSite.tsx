@@ -838,7 +838,6 @@ export function PublicSite({
               {nav.links.map((l, i) => (
                 <E key={i} field={`nav.links.${i}.label`} value={l.label} as="a" href={l.href} />
               ))}
-              <a href="#ssp">{t.navResearch}</a>
             </nav>
             <div className="site-nav-right">
               <div className="site-nav-desktop">
@@ -878,14 +877,6 @@ export function PublicSite({
             {nav.links.map((l, i) => (
               <a key={i} href={l.href} onClick={() => setMenuOpen(false)}>{l.label}</a>
             ))}
-            <a
-              className="site-mobile-research-link"
-              href="#ssp"
-              onClick={() => setMenuOpen(false)}
-              style={{ display: 'block', width: '100%', textAlign: 'left', padding: '13px 24px', fontSize: 16, fontWeight: 700, color: 'var(--accent,#B3E600)', borderTop: '1px solid var(--border,rgba(0,0,0,.08))', textDecoration: 'none' }}
-            >
-              {t.navResearch}
-            </a>
           </nav>
           <div className="site-mobile-actions">
             <div>

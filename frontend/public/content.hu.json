@@ -29,6 +29,10 @@
       {
         "label": "Kapcsolat",
         "href": "#location"
+      },
+      {
+        "label": "Kutatás",
+        "href": "#p/ssp"
       }
     ],
     "ctaLabel": "Ingyenes próbaóra",
@@ -320,5 +324,15 @@
     "title": "A Silent Student Projekt",
     "sub": "A Silent Student Project egy kísérleti módszertan nyelvtanárok és nyelv coachok számára, akik olyan tanulókkal dolgoznak, akik értik a nyelvet, mégis nehezen szólalnak meg magabiztosan. A megközelítés szerint a beszédet gátló nehézségek sok esetben nem a tudás hiányából fakadnak, hanem a szorongásból, a megítéléstől való félelemből és az idegrendszer olyan reakcióiból, amelyek megnehezítik a már meglévő nyelvtudás előhívását. A módszer olyan gyakorlati pedagógiai elveket kínál, amelyek a pszichológiai biztonságot, a személyesen jelentős tartalmakat és a valódi kommunikációt helyezik előtérbe a formális hibajavítással szemben. Nyelvelsajátítási, pszichológiai és pedagógiai elméletekre építve segíti a tanárokat abban, hogy tanulóik bátrabban és könnyebben használják a célnyelvet. A résztvevők ingyenes korai hozzáférést kapnak a teljes módszertanhoz még a nyilvános bevezetés előtt, azonnal alkalmazhatják annak eszközeit saját munkájukban, visszajelzéseikkel alakíthatják a fejlesztést és olyan erőforráshoz juthatnak hozzá, amely később kizárólagosan fizetős programként lesz elérhető.",
     "button": "Belépés"
-  }
+  },
+  "pages": [
+    {
+      "id": "page-ssp-001",
+      "title": "A Silent Student Projekt",
+      "slug": "ssp",
+      "metaTitle": "A Silent Student Projekt — Nikoletta",
+      "showInNav": false,
+      "body": "<p class=\"sp-lead\">Kísérleti módszertan nyelvtanárok és language coachok számára, akik olyan tanulókkal dolgoznak, akik értik a nyelvet, mégis nehezen szólalnak meg magabiztosan.</p>\n\n<h2>A probléma</h2>\n<p>Sok nyelvtanuló sokkal többet ért, mint amennyit képes kimondani. Ismerik a szókincset, felismerik a grammatikát, követik a párbeszédeket — mégis, ha nekik kell megszólalni, valami leáll. Ez nem tudáshiány. Szorongás, az ítélkezéstől való félelem és idegrendszeri reakciók akadályozzák a már meglévő nyelvtudás előhívását.</p>\n\n<h2>Mit javasol ez a projekt</h2>\n<p>A Silent Student Project egy strukturált pedagógiai módszertan, amely egyetlen alapfelismerésre épül: a beszédet gátló nehézségek ritkán fakadnak hiányzó tudásból — szinte mindig a pszichológiai biztonság hiányáról van szó. A módszer olyan gyakorlati keretet ad tanároknak, amely a biztonságot, a személyesen fontos tartalmakat és a valódi kommunikációt helyezi előtérbe, a formális hibajavítás előtt.</p>\n\n<h2>Kinek szól</h2>\n<p>Nyelvtanároknak és coachoknak, akik olyan tanulókkal dolgoznak, akik évekig tanultak egy nyelvet, mégis blokkolódnak, ha meg kellene szólalniuk. Ha a diákod tudja a szavakat, de nem tudja kimondani őket — ez a módszertan neked szól.</p>\n\n<h2>Mit kapnak a résztvevők</h2>\n<ul>\n<li>Ingyenes korai hozzáférés a teljes módszertanhoz a nyilvános bevezetés előtt</li>\n<li>Azonnal alkalmazható eszközök a mindennapi órákon</li>\n<li>Lehetőség a módszertan fejlesztésének alakítására visszajelzések révén</li>\n<li>Hozzáférés egy olyan forráshoz, amely később kizárólag fizetős programként lesz elérhető</li>\n</ul>\n\n<h2>A tudományos háttér</h2>\n<p>A módszertan megalapozott elméletekre épít: a nyelvelsajátítás területéről (Krashen affektív szűrő modellje, érthető input), az idegrendszer szabályozásából (polivagális elmélet) és a pedagógiai pszichológiából. Nem áltudományról van szó — hanem bizonyítékon alapuló gyakorlatról, amelyet a mindennapi tanítás számára tettünk elérhetővé.</p>\n\n<h2>Már résztvevő vagy?</h2>\n<p>Menj vissza a <a href=\"/\">főoldalra</a>, görgess a Kutatás szekcióhoz, és add meg a résztvevői kódodat a reflexiós portál eléréséhez.</p>"
+    }
+  ]
 }

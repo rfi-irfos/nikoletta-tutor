@@ -29,6 +29,10 @@
       {
         "label": "Kontakt",
         "href": "#location"
+      },
+      {
+        "label": "Forschung",
+        "href": "#p/ssp"
       }
     ],
     "ctaLabel": "Kostenlose Probestunde",
@@ -320,5 +324,15 @@
     "title": "Das Silent Student Project",
     "sub": "Das Silent Student Project ist eine experimentelle Methodik für Sprachlehrkräfte, die mit Lernenden arbeiten, die eine Sprache verstehen, aber Schwierigkeiten haben, sie selbstbewusst zu sprechen. Es geht davon aus, dass viele Sprechhemmungen nicht auf fehlendes Wissen zurückzuführen sind, sondern auf Angst, die Erwartung von Bewertung und Reaktionen des Nervensystems, die den Zugriff auf bereits vorhandene Sprachkenntnisse erschweren. Die Methodik bietet praktische Unterrichtsprinzipien, die psychologische Sicherheit, persönlich relevante Inhalte und echte Kommunikation vor formaler Fehlerkorrektur in den Mittelpunkt stellen. Basierend auf etablierten Theorien aus Sprachdidaktik, Psychologie und Pädagogik unterstützt sie Lehrkräfte dabei, Lernende zum Sprechen zu ermutigen und ihre sprachliche Handlungsfähigkeit zu stärken. Teilnehmende erhalten kostenlosen Frühzugang zur vollständigen Methodik vor ihrer öffentlichen Veröffentlichung, können die Werkzeuge sofort in ihrer Praxis einsetzen, ihre Weiterentwicklung mitgestalten und von einem Angebot profitieren, das später als kostenpflichtiges Programm verfügbar sein wird.",
     "button": "Login"
-  }
+  },
+  "pages": [
+    {
+      "id": "page-ssp-001",
+      "title": "Das Silent Student Project",
+      "slug": "ssp",
+      "metaTitle": "Das Silent Student Project — Nikoletta",
+      "showInNav": false,
+      "body": "<p class=\"sp-lead\">Eine experimentelle Methodik für Sprachlehrkräfte, die mit Lernenden arbeiten, die eine Sprache verstehen, aber Schwierigkeiten haben, sie selbstbewusst zu sprechen.</p>\n\n<h2>Das Problem</h2>\n<p>Viele Sprachlernende verstehen weit mehr, als sie sagen können. Sie kennen den Wortschatz, erkennen Grammatikstrukturen, folgen Gesprächen — doch wenn sie selbst sprechen sollen, blockiert etwas. Das ist keine Wissenslücke. Es sind Angst, die Erwartung von Bewertung und Reaktionen des Nervensystems, die den Zugriff auf bereits vorhandene Sprachkenntnisse erschweren.</p>\n\n<h2>Was dieses Projekt vorschlägt</h2>\n<p>Das Silent Student Project ist eine strukturierte Unterrichtsmethodik, die auf einer zentralen Erkenntnis basiert: Sprechhemmungen entstehen selten durch fehlendes Wissen, sondern durch mangelnde psychologische Sicherheit. Die Methodik gibt Lehrkräften einen praktischen Rahmen, der Sicherheit, persönliche Relevanz und echte Kommunikation in den Vordergrund stellt — formale Fehlerkorrektur kommt später.</p>\n\n<h2>Für wen es gedacht ist</h2>\n<p>Sprachlehrkräfte und Coaches, die mit Lernenden arbeiten, die jahrelang eine Sprache gelernt haben und trotzdem blockiert sind, sobald sie sprechen sollen. Wenn deine Schüler:innen die Wörter kennen, sie aber nicht herausbekommen — diese Methodik ist für dich.</p>\n\n<h2>Was Teilnehmende erhalten</h2>\n<ul>\n<li>Kostenloser Frühzugang zur vollständigen Methodik vor der öffentlichen Veröffentlichung</li>\n<li>Praktische Werkzeuge, die sofort im Unterricht einsetzbar sind</li>\n<li>Die Möglichkeit, die Weiterentwicklung der Methodik durch Feedback mitzugestalten</li>\n<li>Zugang zu einem Angebot, das später ausschließlich kostenpflichtig verfügbar sein wird</li>\n</ul>\n\n<h2>Die wissenschaftliche Basis</h2>\n<p>Die Methodik stützt sich auf etablierte Theorien aus der Spracherwerbsforschung (Krashens affektiver Filter, verständlicher Input), der Regulation des Nervensystems (Polyvagaltheorie) und der pädagogischen Psychologie. Sie ist keine Pseudowissenschaft — sondern evidenzbasierte Praxis, zugänglich aufbereitet für Lehrende im Alltag.</p>\n\n<h2>Bereits Teilnehmende?</h2>\n<p>Geh zurück zur <a href=\"/\">Startseite</a>, scrolle zum Forschungsbereich und gib deinen Teilnehmer-Code ein, um auf das Reflexionsportal zuzugreifen.</p>"
+    }
+  ]
 }
