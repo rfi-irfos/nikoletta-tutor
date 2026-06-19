@@ -1084,5 +1084,324 @@ document.addEventListener('DOMContentLoaded',()=>{
   drawRadar([3,3,3,3,3])
 })
 </script>
+
+<!-- ── LANGUAGE ENGINE ───────────────────────────────────────── -->
+<script>
+(function(){
+const T={
+en:{
+  back:'Back to the project',title:'Your Teaching Reflection',
+  s1lbl:'Step 1 of 6',s1h:'A little about you',s1sub:'We keep this anonymous. Just enough context to make the data meaningful.',
+  name:'First name or alias',nameSub:'Used only to group your sessions together across submissions.',namePh:'e.g. Maria or Teacher07',
+  exp:'How many years have you been teaching languages?',
+  e1:'0 to 2 years',e2:'3 to 5 years',e3:'6 to 10 years',e4:'More than 10 years',
+  lang:'Which language(s) do you teach?',langPh:'e.g. English, German, French',
+  s2lbl:'Step 2 of 6',s2h:'The setting',s2sub:'This helps us understand how the method translates across different contexts.',
+  set1h:'Private one-on-one',set1p:'Individual student, outside school',
+  set2h:'School one-on-one',set2p:'Individual student, within a school',
+  set3h:'Small group',set3p:'2 to 8 students',
+  set4h:'Classroom',set4p:'9 or more students',
+  set5h:'Online one-on-one',set5p:'Individual student, remote',
+  set6h:'Online group',set6p:'Multiple students, remote',
+  ageLbl:'Student age group',ageNote:'Select all that apply.',
+  age1h:'Children',age1p:'Under 12',age2h:'Teenagers',age2p:'12 to 17',age3h:'Young adults',age3p:'18 to 30',age4h:'Adults',age4p:'30 and above',
+  s3lbl:'Step 3 of 6',s3h:'Tell us about this student or group.',s3sub:'No names. Just the patterns that matter for the research.',
+  relLbl:'How would you describe their relationship with the language? Select all that apply.',relNote:'Multiple selections are fine — students are complex.',
+  r1h:'Avoids speaking whenever possible',r1p:'Knows more than they show. Goes silent under pressure.',
+  r2h:'Anxious but tries',r2p:'Makes the effort but visibly tense when speaking.',
+  r3h:'Disengaged or resistant',r3p:'Does not see the point. Participates minimally.',
+  r4h:'Willing but genuinely a beginner',r4p:'No prior anxiety, just limited exposure.',
+  r5h:'Already a confident speaker',r5p:'Used as comparison reference.',
+  grpLbl:'In a group: this observation focuses on…',
+  gf1h:'The whole group',gf2h:'Selected students only',gf2p:'1 to 3 tracked in depth',
+  selLbl:'Why did you choose this student or group for this experiment?',selPh:'e.g. she never speaks in class despite clearly understanding everything...',
+  s4lbl:'Step 4 of 6',s4h:'What did you try?',s4sub:'Select everything you used in this session.',multiNote:'Multiple selections are fine.',
+  t1h:'Ask the student how they want to be taught',t1p:'Opening with "what has not worked before?" and "what would a good session feel like?"',
+  t2h:'Build a session around something they mentioned casually',t2p:'Using a hobby, interest, or situation as the full lesson material.',
+  t3h:'Respond to a breakthrough with full, visible enthusiasm',t3p:'Stopping the session to name and celebrate a moment of progress.',
+  t4h:'Use a prepared pivot when the session loses momentum',t4p:'Switching deliberately to a backup activity tailored to this student.',
+  t5h:'Track confidence and accuracy as separate scores',t5p:'Rating both dimensions independently after the session.',
+  s5lbl:'Step 5 of 6',s5h:'Rate what you observed.',s5sub:'Score each dimension from 1 to 5. Watch your session map build as you drag.',
+  sc0n:'Confidence',sc0d:'How willing and unafraid to speak?',sc0lo:'Completely silent',sc0hi:'Spoke freely',
+  sc1n:'Accuracy',sc1d:'How correct was their language use?',sc1lo:'Many structural errors',sc1hi:'Consistently accurate',
+  sc2n:'Language relationship',sc2d:'How did they seem to feel about the language?',sc2lo:'"This is not for me"',sc2hi:'"I can do this"',
+  sc3n:'Teacher-student trust',sc3d:'How safe did they feel with you?',sc3lo:'Guarded and closed',sc3hi:'Relaxed and open',
+  sc4n:'Nervous system',sc4d:'How relaxed and present did they physically seem?',sc4lo:'Tense, avoidant',sc4hi:'Calm, present',
+  radarLbl:'Your session map',
+  s6lbl:'Step 6 of 6',s6h:'Tell us what happened.',s6sub:'The numbers say what changed. This tells us why. A sentence or two is enough.',
+  notLbl:'The most notable moment of this session',notSub:'What stood out — positive or negative?',notPh:'e.g. She self-corrected mid-sentence for the first time without pausing or looking embarrassed.',
+  surLbl:'What surprised you?',surPh:'e.g. He spoke more in the first five minutes than in the previous three sessions combined.',
+  nowLbl:'What did not work, or felt unnatural?',nowSub:'Honest feedback here is the most valuable thing you can give.',nowPh:'e.g. The visible enthusiasm felt forced when other students were watching.',
+  sessLbl:'Is this a baseline or a follow-up session?',
+  bas1h:'Baseline',bas1p:'First session with this student',bas2h:'Follow-up',bas2p:'Session 2 or later',
+  sessNumLbl:'Which session number is this?',sessNumPh:'e.g. 3',
+  reviewBtn:'Review &amp; Send',
+  ssGlow:'You did it.',ssTitle:'You are now part of<br>a <em>language revolution.</em>',
+  ssBody:'Every student who was always told they were not trying hard enough —\nthis research is for them.<br><br><strong>Your reflection just made this methodology stronger.</strong><br>Nikoletta has been working on this for years. You just helped prove it is real.',
+  ssDl:'Download my reflection',ssAgain:'Submit another reflection',ssHome:'Back to the project',
+  ssQuote:'"The quietest learner in the room<br>might be the most ready."',
+  nextBtn:'Next',backBtn:'Back'
+},
+de:{
+  back:'Zurück zum Projekt',title:'Deine Unterrichtsreflexion',
+  s1lbl:'Schritt 1 von 6',s1h:'Ein bisschen über dich',s1sub:'Alles bleibt anonym. Nur so viel Kontext wie nötig, damit die Daten aussagekräftig sind.',
+  name:'Vorname oder Alias',nameSub:'Wird nur verwendet, um deine Einreichungen sessionübergreifend zuzuordnen.',namePh:'z.B. Maria oder Lehrer07',
+  exp:'Wie viele Jahre unterrichtest du schon Sprachen?',
+  e1:'0 bis 2 Jahre',e2:'3 bis 5 Jahre',e3:'6 bis 10 Jahre',e4:'Mehr als 10 Jahre',
+  lang:'Welche Sprache(n) unterrichtest du?',langPh:'z.B. Englisch, Deutsch, Französisch',
+  s2lbl:'Schritt 2 von 6',s2h:'Der Unterrichtsrahmen',s2sub:'Das hilft uns zu verstehen, wie die Methode in verschiedenen Kontexten wirkt.',
+  set1h:'Privater Einzelunterricht',set1p:'Einzelner Schüler, außerschulisch',
+  set2h:'Schulischer Einzelunterricht',set2p:'Einzelner Schüler, in der Schule',
+  set3h:'Kleingruppe',set3p:'2 bis 8 Schüler',
+  set4h:'Klassenraum',set4p:'9 oder mehr Schüler',
+  set5h:'Online-Einzelunterricht',set5p:'Einzelner Schüler, remote',
+  set6h:'Online-Gruppe',set6p:'Mehrere Schüler, remote',
+  ageLbl:'Altersgruppe der Schüler',ageNote:'Alle zutreffenden auswählen.',
+  age1h:'Kinder',age1p:'Unter 12 Jahren',age2h:'Teenager',age2p:'12 bis 17 Jahre',age3h:'Junge Erwachsene',age3p:'18 bis 30 Jahre',age4h:'Erwachsene',age4p:'30 Jahre und älter',
+  s3lbl:'Schritt 3 von 6',s3h:'Erzähl uns von diesem Schüler oder dieser Gruppe.',s3sub:'Keine Namen. Nur die Muster, die für die Forschung wichtig sind.',
+  relLbl:'Wie würdest du ihre Beziehung zur Sprache beschreiben? Alle zutreffenden auswählen.',relNote:'Mehrfachauswahl ist in Ordnung — Schüler sind komplex.',
+  r1h:'Vermeidet Sprechen so gut es geht',r1p:'Weiß mehr als er/sie zeigt. Wird unter Druck still.',
+  r2h:'Ängstlich, aber bemüht',r2p:'Macht den Versuch, aber sichtlich angespannt beim Sprechen.',
+  r3h:'Desinteressiert oder ablehnend',r3p:'Sieht keinen Sinn darin. Beteiligt sich kaum.',
+  r4h:'Motiviert, aber wirklich Anfänger',r4p:'Keine Angst, nur wenig Erfahrung.',
+  r5h:'Bereits selbstsicherer Sprecher',r5p:'Als Vergleichsreferenz verwendet.',
+  grpLbl:'In einer Gruppe: Diese Beobachtung konzentriert sich auf…',
+  gf1h:'Die gesamte Gruppe',gf2h:'Ausgewählte Schüler',gf2p:'1 bis 3 intensiv beobachtet',
+  selLbl:'Warum hast du diesen Schüler oder diese Gruppe für das Experiment ausgewählt?',selPh:'z.B. sie spricht nie im Unterricht, obwohl sie offensichtlich alles versteht...',
+  s4lbl:'Schritt 4 von 6',s4h:'Was hast du ausprobiert?',s4sub:'Wähle alles aus, was du in dieser Stunde verwendet hast.',multiNote:'Mehrfachauswahl ist in Ordnung.',
+  t1h:'Den Schüler fragen, wie er unterrichtet werden möchte',t1p:'Einstieg mit „Was hat früher nicht funktioniert?" und „Wie sollte eine gute Stunde aussehen?"',
+  t2h:'Eine Stunde um etwas aufbauen, das er beiläufig erwähnt hat',t2p:'Ein Hobby, Interesse oder eine Situation als gesamtes Unterrichtsmaterial nutzen.',
+  t3h:'Auf einen Durchbruch mit sichtbarer Begeisterung reagieren',t3p:'Die Stunde unterbrechen, um einen Fortschritt zu benennen und zu feiern.',
+  t4h:'Bei Motivationsverlust einen vorbereiteten Schwenk verwenden',t4p:'Bewusst zu einer Alternativaktivität wechseln, die auf diesen Schüler zugeschnitten ist.',
+  t5h:'Selbstsicherheit und Genauigkeit als separate Werte festhalten',t5p:'Beide Dimensionen unabhängig voneinander nach der Stunde bewerten.',
+  s5lbl:'Schritt 5 von 6',s5h:'Bewerte, was du beobachtet hast.',s5sub:'Bewerte jede Dimension von 1 bis 5. Beobachte, wie deine Session-Karte entsteht.',
+  sc0n:'Selbstsicherheit',sc0d:'Wie bereit und furchtlos beim Sprechen?',sc0lo:'Völlig still',sc0hi:'Sprach frei',
+  sc1n:'Genauigkeit',sc1d:'Wie korrekt war ihr Sprachgebrauch?',sc1lo:'Viele Strukturfehler',sc1hi:'Durchgehend korrekt',
+  sc2n:'Sprachbeziehung',sc2d:'Wie schienen sie die Sprache zu empfinden?',sc2lo:'„Das ist nichts für mich"',sc2hi:'„Das kann ich schaffen"',
+  sc3n:'Lehrer-Schüler-Vertrauen',sc3d:'Wie sicher fühlten sie sich bei dir?',sc3lo:'Verschlossen und abweisend',sc3hi:'Entspannt und offen',
+  sc4n:'Nervensystem',sc4d:'Wie entspannt und präsent wirkten sie körperlich?',sc4lo:'Angespannt, ausweichend',sc4hi:'Ruhig, präsent',
+  radarLbl:'Deine Session-Karte',
+  s6lbl:'Schritt 6 von 6',s6h:'Erzähl uns, was passiert ist.',s6sub:'Die Zahlen zeigen, was sich geändert hat. Das hier erklärt, warum. Ein bis zwei Sätze genügen.',
+  notLbl:'Der bemerkenswerteste Moment dieser Stunde',notSub:'Was ist aufgefallen — positiv oder negativ?',notPh:'z.B. Sie korrigierte sich zum ersten Mal mitten im Satz, ohne zu pausieren oder verlegen zu wirken.',
+  surLbl:'Was hat dich überrascht?',surPh:'z.B. Er sprach in den ersten fünf Minuten mehr als in den drei vorherigen Stunden zusammen.',
+  nowLbl:'Was hat nicht funktioniert oder sich unnatürlich angefühlt?',nowSub:'Ehrliches Feedback ist hier das Wertvollste, was du geben kannst.',nowPh:'z.B. Die sichtbare Begeisterung fühlte sich erzwungen an, wenn andere Schüler zuschauten.',
+  sessLbl:'Ist das eine Basis- oder eine Folgesitzung?',
+  bas1h:'Basissitzung',bas1p:'Erste Stunde mit diesem Schüler',bas2h:'Folgesitzung',bas2p:'Stunde 2 oder später',
+  sessNumLbl:'Um welche Stundennummer handelt es sich?',sessNumPh:'z.B. 3',
+  reviewBtn:'Prüfen &amp; Senden',
+  ssGlow:'Du hast es geschafft.',ssTitle:'Du bist jetzt Teil<br>einer <em>Sprachrevolution.</em>',
+  ssBody:'Für jeden Schüler, dem immer gesagt wurde, er würde sich nicht genug anstrengen —\ndiese Forschung ist für ihn.<br><br><strong>Deine Reflexion hat diese Methode gerade stärker gemacht.</strong><br>Nikoletta arbeitet seit Jahren daran. Du hast gerade geholfen zu beweisen, dass es funktioniert.',
+  ssDl:'Meine Reflexion herunterladen',ssAgain:'Weitere Reflexion einreichen',ssHome:'Zurück zum Projekt',
+  ssQuote:'„Der stillste Lerner im Raum<br>könnte der Bereiteste sein."',
+  nextBtn:'Weiter',backBtn:'Zurück'
+},
+hu:{
+  back:'Vissza a projekthez',title:'Tanítási reflexiód',
+  s1lbl:'1. lépés a 6-ból',s1h:'Egy kicsit rólad',s1sub:'Névtelenül kezeljük. Csak annyi kontextus, amennyi az adatokat értelmessé teszi.',
+  name:'Keresztnév vagy álnév',nameSub:'Csak arra szolgál, hogy a beküldéseid összekapcsoljuk.',namePh:'pl. Mária vagy Tanár07',
+  exp:'Hány éve tanítasz nyelveket?',
+  e1:'0–2 év',e2:'3–5 év',e3:'6–10 év',e4:'Több mint 10 év',
+  lang:'Melyik nyelv(ek)et tanítod?',langPh:'pl. Angol, Német, Francia',
+  s2lbl:'2. lépés a 6-ból',s2h:'A tanítási körülmények',s2sub:'Ez segít megérteni, hogyan működik a módszer különböző kontextusokban.',
+  set1h:'Magán egyéni oktatás',set1p:'Egyéni tanuló, iskolán kívül',
+  set2h:'Iskolai egyéni oktatás',set2p:'Egyéni tanuló, iskolában',
+  set3h:'Kiscsoportos',set3p:'2–8 tanuló',
+  set4h:'Osztályterem',set4p:'9 vagy több tanuló',
+  set5h:'Online egyéni oktatás',set5p:'Egyéni tanuló, távolról',
+  set6h:'Online csoport',set6p:'Több tanuló, távolról',
+  ageLbl:'Tanulók korosztálya',ageNote:'Válaszd ki az összes megfelelőt.',
+  age1h:'Gyerekek',age1p:'12 év alatt',age2h:'Tinédzserek',age2p:'12–17 év',age3h:'Fiatal felnőttek',age3p:'18–30 év',age4h:'Felnőttek',age4p:'30 év felett',
+  s3lbl:'3. lépés a 6-ból',s3h:'Mesélj erről a tanulóról vagy csoportról.',s3sub:'Nincs névhasználat. Csak azok a minták, amelyek fontosak a kutatás szempontjából.',
+  relLbl:'Hogyan jellemeznéd a nyelvhez való viszonyukat? Válaszd ki az összes megfelelőt.',relNote:'Több válasz is rendben van — a tanulók összetett lények.',
+  r1h:'Kerüli a beszédet, amikor csak lehet',r1p:'Többet tud, mint amennyit mutat. Nyomás alatt elhallgat.',
+  r2h:'Szorongó, de próbálkozik',r2p:'Erőfeszítést tesz, de láthatóan feszült beszéd közben.',
+  r3h:'Érdektelen vagy ellenálló',r3p:'Nem látja értelmét. Alig vesz részt.',
+  r4h:'Motivált, de valódi kezdő',r4p:'Nincs korábbi szorongás, csak kevés tapasztalat.',
+  r5h:'Már magabiztos beszélő',r5p:'Összehasonlítási referenciaként használva.',
+  grpLbl:'Csoportban: Ez a megfigyelés arra összpontosít…',
+  gf1h:'Az egész csoport',gf2h:'Csak kiválasztott tanulók',gf2p:'1–3 tanuló mélyebben nyomon követve',
+  selLbl:'Miért választottad ezt a tanulót vagy csoportot a kísérlethez?',selPh:'pl. soha nem szól az órán, holott nyilvánvalóan mindent ért...',
+  s4lbl:'4. lépés a 6-ból',s4h:'Mit próbáltál ki?',s4sub:'Jelöld ki mindent, amit ezen az órán alkalmaztál.',multiNote:'Több válasz is rendben van.',
+  t1h:'Megkérdezni a tanulót, hogyan szeretne tanulni',t1p:'Azzal kezdeni: „Mi nem működött korábban?" és „Hogyan nézne ki egy jó óra?"',
+  t2h:'Egy órát valami köré felépíteni, amit véletlenszerűen említett',t2p:'Egy hobbi, érdeklődési kör vagy helyzet teljes órai anyagként való felhasználása.',
+  t3h:'Egy áttörésre teljes, látható lelkesedéssel reagálni',t3p:'Az óra megszakítása egy fejlődési pillanat megnevezéséhez és megünnepléséhez.',
+  t4h:'Készített fordulatot alkalmazni, ha az óra elveszíti a lendületét',t4p:'Tudatosan váltani egy erre a tanulóra szabott tartalék tevékenységre.',
+  t5h:'Önbizalmat és pontosságot külön pontszámként rögzíteni',t5p:'Mindkét dimenzió önálló értékelése az óra után.',
+  s5lbl:'5. lépés a 6-ból',s5h:'Értékeld, amit megfigyeltél.',s5sub:'Értékeld minden dimenziót 1-től 5-ig. Figyeld, ahogy az óratérkép kirajzolódik.',
+  sc0n:'Önbizalom',sc0d:'Mennyire hajlandó és bátor a megszólalásra?',sc0lo:'Teljesen csöndes',sc0hi:'Szabadon beszélt',
+  sc1n:'Pontosság',sc1d:'Mennyire volt helyes a nyelvhasználatuk?',sc1lo:'Sok szerkezeti hiba',sc1hi:'Következetesen pontos',
+  sc2n:'Nyelvhez való viszony',sc2d:'Hogyan viszonyultak a nyelvhez?',sc2lo:'„Ez nem nekem való"',sc2hi:'„Meg tudom csinálni"',
+  sc3n:'Tanár-tanuló bizalom',sc3d:'Mennyire érezték magukat biztonságban nálad?',sc3lo:'Zárkózott és visszahúzódó',sc3hi:'Laza és nyitott',
+  sc4n:'Idegrendszer',sc4d:'Mennyire tűntek fizikailag ellazultnak és jelenlévőnek?',sc4lo:'Feszült, elkerülő',sc4hi:'Nyugodt, jelenlévő',
+  radarLbl:'Az óratérképed',
+  s6lbl:'6. lépés a 6-ból',s6h:'Mesélj, mi történt.',s6sub:'A számok megmutatják, mi változott. Ez elmondja, miért. Egy-két mondat is elég.',
+  notLbl:'Az óra legfigyelemreméltóbb pillanata',notSub:'Mi tűnt ki — pozitív vagy negatív?',notPh:'pl. Először javította ki magát mondat közben, megállás vagy szégyenkezés nélkül.',
+  surLbl:'Mi lepett meg?',surPh:'pl. Az első öt percben többet beszélt, mint az előző három órán összesen.',
+  nowLbl:'Mi nem működött, vagy érzett természetellenesnek?',nowSub:'Az őszinte visszajelzés itt a legértékesebb, amit adhatsz.',nowPh:'pl. A látható lelkesedés erőltetettnek tűnt, amikor más tanulók is figyeltek.',
+  sessLbl:'Ez egy alapszintű vagy egy folytatólagos óra?',
+  bas1h:'Alapszintű',bas1p:'Első óra ezzel a tanulóval',bas2h:'Folytatólagos',bas2p:'2. óra vagy később',
+  sessNumLbl:'Hányadik óra ez?',sessNumPh:'pl. 3',
+  reviewBtn:'Áttekintés &amp; Küldés',
+  ssGlow:'Megcsináltad.',ssTitle:'Most már egy<br><em>nyelvforradalom</em> részese vagy.',
+  ssBody:'Minden tanulóért, akinek mindig azt mondták, hogy nem próbálkozik elég keményen —\nez a kutatás értük van.<br><br><strong>A reflexiód épp most tette erősebbé ezt a módszertant.</strong><br>Nikoletta évek óta dolgozik ezen. Te most segítettél bebizonyítani, hogy valódi.',
+  ssDl:'Reflexióm letöltése',ssAgain:'Újabb reflexió beküldése',ssHome:'Vissza a projekthez',
+  ssQuote:'„A legcsendesebb tanuló a teremben<br>lehet a legkészebb."',
+  nextBtn:'Tovább',backBtn:'Vissza'
+}
+}
+
+function _applyLang(lang){
+  const L=T[lang]||T.en
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.innerHTML=v}
+  const st=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v}
+  const ph=(id,v)=>{const e=document.getElementById(id);if(e)e.placeholder=v}
+  const q=(sel,v,html)=>{const e=document.querySelector(sel);if(e){if(html)e.innerHTML=v;else e.textContent=v}}
+  const qa=(sel,cb)=>{document.querySelectorAll(sel).forEach(cb)}
+
+  s('t-back',`<svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg> ${L.back}`)
+  st('t-title',L.title)
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang))
+
+  // Step labels & headings
+  const steps=[
+    [L.s1lbl,L.s1h,L.s1sub],[L.s2lbl,L.s2h,L.s2sub],[L.s3lbl,L.s3h,L.s3sub],
+    [L.s4lbl,L.s4h,L.s4sub],[L.s5lbl,L.s5h,L.s5sub],[L.s6lbl,L.s6h,L.s6sub]
+  ]
+  steps.forEach(([lbl,h,sub],i)=>{
+    const el=document.getElementById('step'+(i+1))
+    if(!el)return
+    const sl=el.querySelector('.slabel');if(sl)sl.textContent=lbl
+    const st2=el.querySelector('.stitle');if(st2)st2.textContent=h
+    const ss=el.querySelector('.ssub');if(ss)ss.textContent=sub
+  })
+
+  // Step 1
+  const step1=document.getElementById('step1')
+  if(step1){
+    const lbls=step1.querySelectorAll('.flbl')
+    if(lbls[0])lbls[0].textContent=L.name
+    const fsubs=step1.querySelectorAll('.fsub')
+    if(fsubs[0])fsubs[0].textContent=L.nameSub
+    ph('teacherName',L.namePh)
+    if(lbls[1])lbls[1].textContent=L.exp
+    if(lbls[2])lbls[2].textContent=L.lang
+    ph('langField',L.langPh)
+    const cards=step1.querySelectorAll('.ocard h4')
+    if(cards[0])cards[0].textContent=L.e1
+    if(cards[1])cards[1].textContent=L.e2
+    if(cards[2])cards[2].textContent=L.e3
+    if(cards[3])cards[3].textContent=L.e4
+  }
+
+  // Step 2
+  const step2=document.getElementById('step2')
+  if(step2){
+    const ocards=step2.querySelectorAll('.ocard')
+    const setData=[[L.set1h,L.set1p],[L.set2h,L.set2p],[L.set3h,L.set3p],[L.set4h,L.set4p],[L.set5h,L.set5p],[L.set6h,L.set6p]]
+    ocards.forEach((c,i)=>{if(setData[i]){const h4=c.querySelector('h4');const p=c.querySelector('p');if(h4)h4.textContent=setData[i][0];if(p)p.textContent=setData[i][1]}})
+    const lbls=step2.querySelectorAll('.flbl')
+    if(lbls[0])lbls[0].textContent=L.ageLbl
+    const mn=step2.querySelector('.multi-note');if(mn)mn.textContent=L.ageNote
+    const ag=step2.querySelectorAll('[data-grp="ageGroup"] .ocard')
+    const ageData=[[L.age1h,L.age1p],[L.age2h,L.age2p],[L.age3h,L.age3p],[L.age4h,L.age4p]]
+    ag.forEach((c,i)=>{if(ageData[i]){const h4=c.querySelector('h4');const p=c.querySelector('p');if(h4)h4.textContent=ageData[i][0];if(p)p.textContent=ageData[i][1]}})
+  }
+
+  // Step 3
+  const step3=document.getElementById('step3')
+  if(step3){
+    const lbl3=step3.querySelectorAll('.flbl')
+    if(lbl3[0])lbl3[0].textContent=L.relLbl
+    const mn3=step3.querySelector('.multi-note');if(mn3)mn3.textContent=L.relNote
+    const relCards=step3.querySelectorAll('[data-grp="priorRel"] .ocard')
+    const relData=[[L.r1h,L.r1p],[L.r2h,L.r2p],[L.r3h,L.r3p],[L.r4h,L.r4p],[L.r5h,L.r5p]]
+    relCards.forEach((c,i)=>{if(relData[i]){const h4=c.querySelector('h4');const p=c.querySelector('p');if(h4)h4.textContent=relData[i][0];if(p)p.textContent=relData[i][1]}})
+    if(lbl3[1])lbl3[1].textContent=L.grpLbl
+    const gfCards=step3.querySelectorAll('[data-grp="groupFocus"] .ocard')
+    if(gfCards[0])gfCards[0].querySelector('h4').textContent=L.gf1h
+    if(gfCards[1]){gfCards[1].querySelector('h4').textContent=L.gf2h;const p=gfCards[1].querySelector('p');if(p)p.textContent=L.gf2p}
+    if(lbl3[2])lbl3[2].textContent=L.selLbl
+    ph('selReason',L.selPh)
+  }
+
+  // Step 4
+  const step4=document.getElementById('step4')
+  if(step4){
+    const mn4=step4.querySelector('.multi-note');if(mn4)mn4.textContent=L.multiNote
+    const tcards=step4.querySelectorAll('.tcard')
+    const tData=[[L.t1h,L.t1p],[L.t2h,L.t2p],[L.t3h,L.t3p],[L.t4h,L.t4p],[L.t5h,L.t5p]]
+    tcards.forEach((c,i)=>{if(tData[i]){const h4=c.querySelector('h4');const p=c.querySelector('p');if(h4)h4.textContent=tData[i][0];if(p)p.textContent=tData[i][1]}})
+  }
+
+  // Step 5
+  const step5=document.getElementById('step5')
+  if(step5){
+    const sliders=[
+      [L.sc0n,L.sc0d,L.sc0lo,L.sc0hi,'hp0','Confidence'],
+      [L.sc1n,L.sc1d,L.sc1lo,L.sc1hi,'hp1','Accuracy'],
+      [L.sc2n,L.sc2d,L.sc2lo,L.sc2hi,'hp2','Language'],
+      [L.sc3n,L.sc3d,L.sc3lo,L.sc3hi,'hp3','Trust'],
+      [L.sc4n,L.sc4d,L.sc4lo,L.sc4hi,'hp4','Nervous sys'],
+    ]
+    step5.querySelectorAll('.slider-group').forEach((sg,i)=>{
+      if(!sliders[i])return
+      const [name,desc,lo,hi,hpId]=sliders[i]
+      const nm=sg.querySelector('.sl-name');if(nm)nm.textContent=name
+      const ds=sg.querySelector('.sl-desc');if(ds)ds.textContent=desc
+      const ends=sg.querySelectorAll('.sl-ends span')
+      if(ends[0])ends[0].textContent=lo
+      if(ends[1])ends[1].textContent=hi
+      const hp=document.getElementById(hpId)
+      if(hp){const cur=hp.textContent.split(':')[1]||'3';hp.textContent=name+':'+cur}
+    })
+    const rl=step5.querySelector('.radar-lbl');if(rl)rl.textContent=L.radarLbl
+  }
+
+  // Step 6
+  const step6=document.getElementById('step6')
+  if(step6){
+    const lbls6=step6.querySelectorAll('.flbl')
+    if(lbls6[0])lbls6[0].textContent=L.notLbl
+    const fsubs6=step6.querySelectorAll('.fsub')
+    if(fsubs6[0])fsubs6[0].textContent=L.notSub
+    ph('notable',L.notPh)
+    if(lbls6[1])lbls6[1].textContent=L.surLbl
+    ph('surprise',L.surPh)
+    if(lbls6[2])lbls6[2].textContent=L.nowLbl
+    if(fsubs6[1])fsubs6[1].textContent=L.nowSub
+    ph('nowork',L.nowPh)
+    if(lbls6[3])lbls6[3].textContent=L.sessLbl
+    const sessCards=step6.querySelectorAll('[data-grp="sessType"] .ocard')
+    if(sessCards[0]){const h4=sessCards[0].querySelector('h4');const p=sessCards[0].querySelector('p');if(h4)h4.textContent=L.bas1h;if(p)p.textContent=L.bas1p}
+    if(sessCards[1]){const h4=sessCards[1].querySelector('h4');const p=sessCards[1].querySelector('p');if(h4)h4.textContent=L.bas2h;if(p)p.textContent=L.bas2p}
+    if(lbls6[4])lbls6[4].textContent=L.sessNumLbl
+    ph('sessNum',L.sessNumPh)
+    const rb=step6.querySelector('.btn-review');if(rb)rb.innerHTML=L.reviewBtn
+  }
+
+  // Nav buttons
+  document.querySelectorAll('.btn-next').forEach(b=>{b.innerHTML=L.nextBtn+' <svg viewBox="0 0 14 14"><path d="M5 2l5 5-5 5"/></svg>'})
+  document.querySelectorAll('.btn-back').forEach(b=>{b.innerHTML='<svg viewBox="0 0 14 14"><path d="M9 2L4 7l5 5"/></svg> '+L.backBtn})
+
+  // Success screen
+  const ss=document.getElementById('successScreen')
+  if(ss){
+    const glow=ss.querySelector('.ss-glow');if(glow)glow.textContent=L.ssGlow
+    const ttl=ss.querySelector('.ss-title');if(ttl)ttl.innerHTML=L.ssTitle
+    const body=ss.querySelector('.ss-body');if(body)body.innerHTML=L.ssBody
+    const dl=ss.querySelector('.btn-dl');if(dl)dl.innerHTML='<svg viewBox="0 0 16 16"><path d="M8 2v9M4 8l4 4 4-4M2 13h12"/></svg> '+L.ssDl
+    const ag=ss.querySelector('.btn-again');if(ag)ag.textContent=L.ssAgain
+    const hm=ss.querySelector('.btn-home');if(hm)hm.textContent=L.ssHome
+    const qt=ss.querySelector('.ss-quote');if(qt)qt.innerHTML=L.ssQuote
+  }
+
+  localStorage.setItem('ssp_lang',lang)
+}
+window._applyLang=_applyLang
+document.addEventListener('DOMContentLoaded',function(){
+  _applyLang(localStorage.getItem('ssp_lang')||'en')
+})
+})()
+</script>
 </body>
 </html>
