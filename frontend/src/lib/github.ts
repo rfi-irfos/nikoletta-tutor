@@ -17,9 +17,9 @@ export { CONTENT_PATH, UPLOADS_DIR }
 // (this tab only); never a GitHub token, never persisted to disk.
 const PW_KEY = 'admin_pw'
 let _pw = ''
-try { _pw = sessionStorage.getItem(PW_KEY) || '' } catch { /* no storage */ }
-export function setAdminPw(p: string) { _pw = p; try { sessionStorage.setItem(PW_KEY, p) } catch { /* ignore */ } }
-export function clearAdminPw() { _pw = ''; try { sessionStorage.removeItem(PW_KEY) } catch { /* ignore */ } }
+try { _pw = localStorage.getItem(PW_KEY) || '' } catch { /* no storage */ }
+export function setAdminPw(p: string) { _pw = p; try { localStorage.setItem(PW_KEY, p) } catch { /* ignore */ } }
+export function clearAdminPw() { _pw = ''; try { localStorage.removeItem(PW_KEY) } catch { /* ignore */ } }
 export function hasAdminPw() { return !!_pw }
 
 // content.json (en) -> content.de.json / content.hu.json. Languages side by side.

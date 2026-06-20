@@ -17,7 +17,7 @@ function getFailCount(): number { return parseInt(sessionStorage.getItem(FAIL_KE
 function getLockUntil(): number { return parseInt(sessionStorage.getItem(LOCK_KEY) || '0', 10) }
 
 export function useAuth() {
-  // Logged in for THIS tab only if the password is still cached (writes need it).
+  // Logged in if session flag + password are both in localStorage (persist across browser restarts).
   const [user, setUser] = useState<User | null>(() =>
     (localStorage.getItem(SESSION_KEY) && hasAdminPw()) ? { name: 'Admin', email: '', picture: '' } : null
   )

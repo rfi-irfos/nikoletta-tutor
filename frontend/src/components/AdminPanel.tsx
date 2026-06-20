@@ -654,7 +654,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
           </button>
           {saveErr && (
             <div style={{ position: 'fixed', bottom: 24, right: 24, background: '#c53030', color: '#fff', borderRadius: 10, padding: '12px 18px', fontSize: 13, fontWeight: 600, boxShadow: '0 4px 20px rgba(0,0,0,.25)', zIndex: 9999, maxWidth: 320, lineHeight: 1.5 }}>
-              Speichern fehlgeschlagen. Bitte prüfe, ob der GitHub-Token noch gültig ist und ausreichend Berechtigungen hat.
+              Speichern fehlgeschlagen. Bitte Seite neu laden, neu einloggen und nochmal versuchen.
             </div>
           )}
           <a
@@ -1531,7 +1531,7 @@ export function AdminPanel({ content, user: _user, saving, onSave, onUpload, onL
                 )}
                 {!ghTrafficLoading && !ghTrafficData && (
                   <div style={{ textAlign: 'center', color: '#aaa', padding: '40px 0', fontSize: 13 }}>
-                    Keine Daten. Prüfe ob der GitHub-Token "push"-Rechte hat.
+                    Keine Statistik-Daten verfügbar.
                   </div>
                 )}
                 {ghTrafficData && (() => {
