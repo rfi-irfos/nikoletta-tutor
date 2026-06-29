@@ -38,3 +38,6 @@ Thumbs.db
 # Runtime data (not source)
 backend/contacts.jsonl
 backend/uploads/
+data/students.json
+data/leads.json
+data/meetings.json

@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { ghRead, ghWrite, b64Encode, b64Decode, isConfigured } from './github'
+import { proxyRead, proxyWrite, b64Encode, b64Decode } from './github'
 import type { Meeting } from '../types/meetings'
 
-// Out of the deployed public/ dir on purpose — CRM PII must not be served on Pages.
 const MEETINGS_PATH = 'data/meetings.json'
 
 export function useMeetings() {
@@ -10,7 +9,6 @@ export function useMeetings() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState(false)
-  const [sha, setSha] = useState<string | null>(null)
 
   useEffect(() => {
     load()
@@ -19,14 +17,8 @@ export function useMeetings() {
   async function load() {
     setLoading(true)
     try {
-      if (isConfigured()) {
-        const file = await ghRead(MEETINGS_PATH)
-        setSha(file.sha)
-        setMeetings(JSON.parse(b64Decode(file.content)))
-      } else {
-        const res = await fetch('meetings.json')
-        if (res.ok) setMeetings(await res.json())
-      }
+      const file = await proxyRead(MEETINGS_PATH)
+      setMeetings(JSON.parse(b64Decode(file.content)))
     } catch {
       setMeetings([])
     } finally {
@@ -38,9 +30,7 @@ export function useMeetings() {
     setSaving(true)
     setSaveError(false)
     try {
-      const encoded = b64Encode(JSON.stringify(next, null, 2))
-      const file = await ghWrite(MEETINGS_PATH, encoded, sha, 'update: meetings')
-      setSha(file.sha)
+      await proxyWrite(MEETINGS_PATH, b64Encode(JSON.stringify(next, null, 2)))
       setMeetings(next)
     } catch (e) {
       console.error('Meeting save failed:', e)

@@ -65,6 +65,28 @@ export function isConfigured(): boolean {
   return !!(OWNER && REPO && _pw)
 }
 
+// Sensitive data (students/leads/meetings) — stored on Fly volume, never in the public repo.
+export async function proxyRead(filePath: string): Promise<GHFile> {
+  const res = await fetch(`${PROXY}/data/read`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ site: SITE, password: _pw, path: filePath }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(`Lesen fehlgeschlagen (${res.status}): ${data.error || 'Proxy-Fehler'}`)
+  return { sha: data.sha ?? null, content: data.content }
+}
+
+export async function proxyWrite(filePath: string, b64: string): Promise<void> {
+  const res = await fetch(`${PROXY}/data/write`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ site: SITE, password: _pw, path: filePath, content: b64 }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(`Speichern fehlgeschlagen (${res.status}): ${data.error || 'Proxy-Fehler'}`)
+}
+
 export async function ghTraffic(endpoint: string): Promise<unknown> {
   // Traffic API needs push access; without a browser token this returns 403
   // and the Analytics tab just shows "no data" (unchanged behaviour).

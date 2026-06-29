@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { ghRead, ghWrite, b64Encode, b64Decode, isConfigured } from './github'
+import { proxyRead, proxyWrite, b64Encode, b64Decode } from './github'
 import type { Lead } from '../types/leads'
 
-// Out of the deployed public/ dir on purpose — CRM PII must not be served on Pages.
 const LEADS_PATH = 'data/leads.json'
 
 export function useLeads() {
@@ -10,7 +9,6 @@ export function useLeads() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState(false)
-  const [sha, setSha] = useState<string | null>(null)
 
   useEffect(() => {
     load()
@@ -19,14 +17,8 @@ export function useLeads() {
   async function load() {
     setLoading(true)
     try {
-      if (isConfigured()) {
-        const file = await ghRead(LEADS_PATH)
-        setSha(file.sha)
-        setLeads(JSON.parse(b64Decode(file.content)))
-      } else {
-        const res = await fetch('leads.json')
-        if (res.ok) setLeads(await res.json())
-      }
+      const file = await proxyRead(LEADS_PATH)
+      setLeads(JSON.parse(b64Decode(file.content)))
     } catch {
       setLeads([])
     } finally {
@@ -38,9 +30,7 @@ export function useLeads() {
     setSaving(true)
     setSaveError(false)
     try {
-      const encoded = b64Encode(JSON.stringify(next, null, 2))
-      const file = await ghWrite(LEADS_PATH, encoded, sha, 'update: pipeline leads')
-      setSha(file.sha)
+      await proxyWrite(LEADS_PATH, b64Encode(JSON.stringify(next, null, 2)))
       setLeads(next)
     } catch (e) {
       console.error('Lead save failed:', e)

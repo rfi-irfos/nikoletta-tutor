@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { ghRead, ghWrite, b64Encode, b64Decode, isConfigured } from './github'
+import { proxyRead, proxyWrite, b64Encode, b64Decode } from './github'
 import type { Student } from '../types/students'
 
-// Out of the deployed public/ dir on purpose — CRM PII must not be served on Pages.
 const STUDENTS_PATH = 'data/students.json'
 
 export function useStudents() {
@@ -10,7 +9,6 @@ export function useStudents() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState(false)
-  const [sha, setSha] = useState<string | null>(null)
 
   useEffect(() => {
     load()
@@ -19,14 +17,8 @@ export function useStudents() {
   async function load() {
     setLoading(true)
     try {
-      if (isConfigured()) {
-        const file = await ghRead(STUDENTS_PATH)
-        setSha(file.sha)
-        setStudents(JSON.parse(b64Decode(file.content)))
-      } else {
-        const res = await fetch('students.json')
-        if (res.ok) setStudents(await res.json())
-      }
+      const file = await proxyRead(STUDENTS_PATH)
+      setStudents(JSON.parse(b64Decode(file.content)))
     } catch {
       setStudents([])
     } finally {
@@ -38,9 +30,7 @@ export function useStudents() {
     setSaving(true)
     setSaveError(false)
     try {
-      const encoded = b64Encode(JSON.stringify(next, null, 2))
-      const file = await ghWrite(STUDENTS_PATH, encoded, sha, 'update: student list')
-      setSha(file.sha)
+      await proxyWrite(STUDENTS_PATH, b64Encode(JSON.stringify(next, null, 2)))
       setStudents(next)
     } catch (e) {
       console.error('Student save failed:', e)
